@@ -1,0 +1,48 @@
+<div class="contenedor-tareas">
+  <h1>BANDEJA DE TAREAS</h1>
+  
+  <div class="contenedor-filtros">
+    <mat-icon>filter_list</mat-icon>
+    <span>Filtros</span>
+  </div>
+
+  <div class="barra-acciones">
+    <div class="iconos-exportar">
+      <button mat-icon-button><mat-icon>description</mat-icon></button> <!-- DOC -->
+      <button mat-icon-button><mat-icon>insert_drive_file</mat-icon></button> <!-- PDF -->
+      <button mat-icon-button><mat-icon>table_chart</mat-icon></button> <!-- Excel -->
+    </div>
+    <button mat-icon-button class="boton-buscar"><mat-icon>search</mat-icon></button>
+  </div>
+
+  <div class="contenedor-tabla">
+    <div class="barra-busqueda">
+      <input type="text" placeholder="Órgano" class="buscador-columna">
+      <input type="text" placeholder="Nº Episodio" class="buscador-columna">
+      <input type="text" placeholder="Tipo Procedimiento" class="buscador-columna">
+      <input type="text" placeholder="Nº/Año" class="buscador-columna">
+      <input type="text" placeholder="Tipo Asistencia" class="buscador-columna">
+      <input type="text" placeholder="Nº Expediente" class="buscador-columna">
+      <input type="text" placeholder="Sujeto" class="buscador-columna">
+      <input type="text" placeholder="Responsable" class="buscador-columna">
+    </div>
+
+    <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8" #table>
+      <ng-container *ngFor="let columna of columnasVisibles" [matColumnDef]="columna">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header class="redimensionable" [style.width]="anchosCabeceros[columna]">
+          <div class="contenido-celda-encabezado">
+            {{ obtenerTituloColumna(columna) }}
+            <mat-icon class="icono-ordenacion">arrow_upward</mat-icon>
+          </div>
+          <div class="manejador-redimension" (mousedown)="alRedimensionarColumna($event, columna)"></div>
+        </th>
+        <td mat-cell *matCellDef="let elemento">{{ elemento[columna] }}</td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="columnasVisibles"></tr>
+      <tr mat-row *matRowDef="let fila; columns: columnasVisibles;"></tr>
+    </table>
+
+    <mat-paginator [pageSize]="10" [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+  </div>
+</div>

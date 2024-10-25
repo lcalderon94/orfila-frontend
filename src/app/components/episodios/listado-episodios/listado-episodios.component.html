@@ -1,0 +1,172 @@
+<div class="contenedor-episodios">
+  <h1>Listado Episodios</h1>
+
+  <!-- Botón para mostrar/ocultar filtros -->
+  <div class="contenedor-filtros" (click)="toggleFiltros()">
+    <mat-icon>filter_list</mat-icon>
+    <span>Filtros</span>
+  </div>
+
+  <!-- Panel de filtros -->
+  <div class="filtros-panel" *ngIf="mostrarFiltros">
+    <!-- Filtro: TIPO SOLICITANTE -->
+    <div class="filtro-seccion">
+      <h3>TIPO SOLICITANTE</h3>
+      <mat-radio-group [(ngModel)]="filtros.tipoSolicitante">
+        <mat-radio-button value="todos">Todos</mat-radio-button>
+        <mat-radio-button value="juzgado">Juzgado</mat-radio-button>
+        <mat-radio-button value="aseguradora">Aseguradora</mat-radio-button>
+      </mat-radio-group>
+    </div>
+
+    <!-- Filtro: TIPO ASISTENCIA -->
+    <div class="filtro-seccion">
+      <h3>TIPO ASISTENCIA</h3>
+      <div class="grid-container">
+        <mat-form-field>
+          <mat-select [(ngModel)]="filtros.tipoAsistencia" placeholder="Seleccione una opción...">
+            <mat-option value="">Seleccione una opción...</mat-option>
+            <!-- Agregar opciones según sea necesario -->
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field>
+          <input matInput [matDatepicker]="pickerDesde" placeholder="Fecha Registro Desde" [(ngModel)]="filtros.fechaRegistroDesde">
+          <mat-datepicker-toggle matSuffix [for]="pickerDesde"></mat-datepicker-toggle>
+          <mat-datepicker #pickerDesde></mat-datepicker>
+        </mat-form-field>
+        <mat-form-field>
+          <input matInput [matDatepicker]="pickerHasta" placeholder="Fecha Registro Hasta" [(ngModel)]="filtros.fechaRegistroHasta">
+          <mat-datepicker-toggle matSuffix [for]="pickerHasta"></mat-datepicker-toggle>
+          <mat-datepicker #pickerHasta></mat-datepicker>
+        </mat-form-field>
+        <mat-form-field>
+          <input matInput [matDatepicker]="pickerActDesde" placeholder="Fecha Actualización Desde" [(ngModel)]="filtros.fechaActualizacionDesde">
+          <mat-datepicker-toggle matSuffix [for]="pickerActDesde"></mat-datepicker-toggle>
+          <mat-datepicker #pickerActDesde></mat-datepicker>
+        </mat-form-field>
+        <mat-form-field>
+          <input matInput [matDatepicker]="pickerActHasta" placeholder="Fecha Actualización Hasta" [(ngModel)]="filtros.fechaActualizacionHasta">
+          <mat-datepicker-toggle matSuffix [for]="pickerActHasta"></mat-datepicker-toggle>
+          <mat-datepicker #pickerActHasta></mat-datepicker>
+        </mat-form-field>
+        <mat-form-field>
+          <input matInput placeholder="NIG" [(ngModel)]="filtros.nig">
+        </mat-form-field>
+      </div>
+    </div>
+
+    <!-- Filtro: INCLUIR FINALIZADAS -->
+    <div class="filtro-seccion">
+      <h3>INCLUIR FINALIZADAS</h3>
+      <mat-radio-group [(ngModel)]="filtros.incluirFinalizadas">
+        <mat-radio-button [value]="true">Sí</mat-radio-button>
+        <mat-radio-button [value]="false">No</mat-radio-button>
+      </mat-radio-group>
+    </div>
+
+    <!-- Filtro: SUJETO -->
+    <div class="filtro-seccion">
+      <h3>SUJETO</h3>
+      <div class="grid-container">
+        <mat-form-field>
+          <input matInput placeholder="Nombre" [(ngModel)]="filtros.nombreSujeto">
+        </mat-form-field>
+        <mat-form-field>
+          <input matInput placeholder="Nº Expediente" [(ngModel)]="filtros.numExpediente">
+        </mat-form-field>
+        <mat-form-field>
+          <input matInput placeholder="Apellido 1" [(ngModel)]="filtros.apellido1Sujeto">
+        </mat-form-field>
+        <mat-form-field>
+          <input matInput placeholder="Apellido 2" [(ngModel)]="filtros.apellido2Sujeto">
+        </mat-form-field>
+        <mat-form-field>
+          <input matInput placeholder="Nº Identificación" [(ngModel)]="filtros.numIdentificacion">
+        </mat-form-field>
+      </div>
+    </div>
+
+    <!-- Botones de acción de los filtros -->
+    <div class="botones-filtro">
+      <button mat-raised-button color="primary" (click)="aplicarFiltros()">BUSCAR</button>
+      <button mat-stroked-button (click)="limpiarFiltros()">LIMPIAR</button>
+    </div>
+  </div>
+
+  <!-- Barra de acciones -->
+  <div class="barra-acciones">
+    <mat-form-field>
+      <mat-select [(value)]="itemsPorPagina" (selectionChange)="cambiarItemsPorPagina()">
+        <mat-option [value]="10">Mostrando 10</mat-option>
+        <mat-option [value]="20">Mostrando 20</mat-option>
+        <mat-option [value]="50">Mostrando 50</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <div class="iconos-exportar">
+      <button mat-icon-button><mat-icon>description</mat-icon></button>
+      <button mat-icon-button><mat-icon>picture_as_pdf</mat-icon></button>
+      <button mat-icon-button><mat-icon>table_chart</mat-icon></button>
+    </div>
+
+    <div class="acciones-derecha">
+      <button mat-icon-button><mat-icon>search</mat-icon></button>
+      <button mat-icon-button><mat-icon>refresh</mat-icon></button>
+    </div>
+  </div>
+
+  <!-- Buscadores superiores -->
+  <div class="buscadores-superiores">
+    <input placeholder="Nº Episodio">
+    <input placeholder="Fecha Hecho">
+    <input placeholder="Órgano / Aseguradora">
+    <input placeholder="Tipo Procedimiento">
+    <input placeholder="Nº/Año">
+    <input placeholder="Adm. Responsable">
+    <input placeholder="Nº Expediente">
+    <input placeholder="Sujeto">
+  </div>
+
+  <!-- Tabla de episodios -->
+  <div class="contenedor-tabla">
+    <table mat-table [dataSource]="dataSource" matSort #table>
+      <!-- Definición de columnas -->
+      <ng-container *ngFor="let columna of columnasVisibles" [matColumnDef]="columna">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>
+          <div class="contenido-celda-encabezado">
+            {{ obtenerTituloColumna(columna) }}
+            <mat-icon class="icono-ordenacion">arrow_upward</mat-icon>
+          </div>
+          <div class="manejador-redimension" (mousedown)="alRedimensionarColumna($event, columna)"></div>
+        </th>
+        <td mat-cell *matCellDef="let elemento">
+          <ng-container [ngSwitch]="columna">
+            <!-- Columna de opciones -->
+            <ng-container *ngSwitchCase="'opciones'">
+              <button mat-icon-button [routerLink]="['/episodios/modificar', elemento.nEpisodio]">
+                <mat-icon>edit</mat-icon>
+              </button>
+              <button mat-icon-button (click)="eliminarEpisodio(elemento.nEpisodio)">
+                <mat-icon>delete</mat-icon>
+              </button>
+              <button mat-icon-button (click)="verSujetos(elemento.nEpisodio)">
+                <mat-icon>people</mat-icon>
+              </button>
+            </ng-container>
+            <!-- Otras columnas -->
+            <ng-container *ngSwitchDefault>
+              {{ elemento[columna] }}
+            </ng-container>
+          </ng-container>
+        </td>
+      </ng-container>
+
+      <!-- Filas de encabezado y datos -->
+      <tr mat-header-row *matHeaderRowDef="columnasVisibles"></tr>
+      <tr mat-row *matRowDef="let row; columns: columnasVisibles;"></tr>
+    </table>
+  </div>
+
+  <!-- Paginador -->
+  <mat-paginator [pageSizeOptions]="[10, 20, 50]" showFirstLastButtons></mat-paginator>
+</div>

@@ -1,0 +1,155 @@
+.contenedor-nuevo-episodio {
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+  
+  .seccion {
+    margin-bottom: 30px;
+    border: 1px solid #e0e0e0;
+    padding: 20px;
+    border-radius: 4px;
+  }
+  
+  h2 {
+    display: flex;
+    align-items: center;
+    font-size: 18px;
+    margin-bottom: 15px;
+    color: #1976d2;
+  }
+  
+  h2 mat-icon {
+    margin-right: 10px;
+  }
+  
+  .row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-bottom: 15px;
+  }
+  
+  mat-form-field {
+    flex: 1;
+    min-width: 200px;
+  }
+  
+  .numero-anio {
+    flex: 0 0 100px;
+  }
+  
+  .anio {
+    flex: 0 0 80px;
+  }
+  
+  .nig-container {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+  
+  .nig-container mat-form-field {
+    flex: 1;
+  }
+  
+  .checkbox-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+  
+  .radio-group-container {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .radio-group-container label {
+    margin-bottom: 5px;
+  }
+  
+  mat-radio-group {
+    display: flex;
+    gap: 15px;
+  }
+  
+  .full-width {
+    width: 100%;
+  }
+  
+  .botones-accion {
+    margin-top: 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .botones-derecha {
+    display: flex;
+    gap: 10px;
+  }
+  
+  .btn-atras {
+    background-color: #f0f0f0;
+    color: #333;
+  }
+  
+  .btn-nuevo-sujeto {
+    background-color: #2196F3;
+    color: white;
+  }
+  
+  .btn-notas {
+    background-color: #f0f0f0;
+    color: #333;
+  }
+  
+  .btn-guardar {
+    background-color: #1565C0;
+    color: white;
+  }
+  
+  .botones-accion button {
+    min-width: 120px;
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-weight: 500;
+    text-transform: uppercase;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .botones-accion button:hover {
+    opacity: 0.9;
+  }
+  
+  @media (max-width: 768px) {
+    .checkbox-container {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .botones-accion {
+      flex-direction: column;
+      align-items: stretch;
+    }
+    
+    .botones-derecha {
+      margin-top: 10px;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .checkbox-container {
+      grid-template-columns: 1fr;
+    }
+    
+    .botones-derecha {
+      flex-direction: column;
+    }
+  }

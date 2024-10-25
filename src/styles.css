@@ -1,1 +1,36 @@
-/* You can add global styles to this file, and also import other style files */
+body {
+    margin: 0;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+  }
+  
+  .spacer {
+    flex: 1 1 auto;
+  }
+  
+  .center-logo {
+    display: block;
+    margin: auto;
+    max-width: 300px;
+    padding: 50px 0;
+  }
+  
+  mat-sidenav-container {
+    height: 100vh;
+  }
+  
+  mat-sidenav {
+    width: 250px;
+    background-color: #004a80;
+  }
+  
+  mat-sidenav-content {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+  
+  .main-content {
+    flex-grow: 1;
+  }
+
+  

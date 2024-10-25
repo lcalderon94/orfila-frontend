@@ -1,0 +1,63 @@
+nav {
+  background-color: #1976d2;
+  height: 100%;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+li {
+  padding: 0;
+}
+
+a {
+  color: white;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  padding: 15px 20px;
+  transition: background-color 0.3s;
+}
+
+i {
+  margin-right: 20px;
+  font-size: 20px;
+  width: 24px;
+  text-align: center;
+}
+
+.icon-expand {
+  margin-left: auto;
+  font-size: 12px;
+  transition: transform 0.3s;
+}
+
+.icon-expand.expanded {
+  transform: rotate(180deg);
+}
+
+ul ul {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+ul ul a {
+  padding-left: 64px;
+}
+
+a:hover, a.active {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Estilos específicos para cada icono */
+.icon-tareas::before { content: '≡'; }
+.icon-episodios::before { content: '📁'; }
+.icon-consulta-antecedentes::before { content: '🕒'; }
+.icon-consulta-documentos::before { content: '📄'; }
+.icon-portafirmas::before { content: '✏️'; }
+.icon-lexnet::before { content: '▶'; }
+.icon-gestion-muestras::before { content: '🔬'; }
+.icon-people::before { content: '👥'; }

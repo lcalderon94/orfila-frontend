@@ -1,0 +1,28 @@
+<nav>
+  <ul>
+    <ng-container *ngFor="let item of menuItems">
+      <li>
+        <ng-container *ngIf="!item.subItems">
+          <a [routerLink]="item.route" routerLinkActive="active">
+            <i [class]="'icon-' + item.icon"></i>
+            <span>{{item.name}}</span>
+          </a>
+        </ng-container>
+        <ng-container *ngIf="item.subItems">
+          <a [routerLink]="item.route" (click)="toggleExpand(item, $event)" [class.active]="item.expanded" routerLinkActive="active">
+            <i [class]="'icon-' + item.icon"></i>
+            <span>{{item.name}}</span>
+            <i class="icon-expand" [class.expanded]="item.expanded">▼</i>
+          </a>
+          <ul [@expandCollapse]="item.expanded ? 'expanded' : 'collapsed'">
+            <li *ngFor="let subItem of item.subItems">
+              <a [routerLink]="subItem.route" routerLinkActive="active">
+                <span>{{subItem.name}}</span>
+              </a>
+            </li>
+          </ul>
+        </ng-container>
+      </li>
+    </ng-container>
+  </ul>
+</nav>

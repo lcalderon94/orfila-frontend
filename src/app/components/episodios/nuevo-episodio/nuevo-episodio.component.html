@@ -1,0 +1,165 @@
+<div class="contenedor-nuevo-episodio">
+  <h1>Nuevo Episodio</h1>
+
+  <form [formGroup]="episodioForm" (ngSubmit)="onSubmit()">
+    <div class="seccion">
+      <h2>
+        <mat-icon>person</mat-icon>
+        Solicitante
+      </h2>
+      <p>Tipo Solicitante</p>
+      <mat-radio-group formControlName="tipoSolicitante" class="radio-group">
+        <mat-radio-button value="juzgado">Juzgado</mat-radio-button>
+        <mat-radio-button value="aseguradora">Aseguradora</mat-radio-button>
+      </mat-radio-group>
+    </div>
+
+    <div class="seccion">
+      <h2>
+        <mat-icon>notifications</mat-icon>
+        Dirección
+      </h2>
+      <div class="row">
+        <mat-form-field>
+          <mat-label>Dirección/Subdirección</mat-label>
+          <mat-select formControlName="direccionSubdireccion">
+            <mat-option value="iml">IML y CCrF de Palencia, Salamanca y Valladolid</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>Adm. Responsable</mat-label>
+          <mat-select formControlName="admResponsable">
+            <mat-option value="">Seleccione una opción...</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <div class="seccion">
+      <h2>
+        <mat-icon>home</mat-icon>
+        Juzgado
+      </h2>
+      <div class="row">
+        <mat-form-field>
+          <mat-label>Tipo Organismo</mat-label>
+          <mat-select formControlName="tipoOrganismo">
+            <mat-option value="">Seleccione una opción...</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>Organismo</mat-label>
+          <mat-select formControlName="organismo">
+            <mat-option value="">Seleccione una opción...</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>Tipo Procedimiento</mat-label>
+          <mat-select formControlName="tipoProcedimiento">
+            <mat-option value="">Seleccione una opción...</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="row">
+        <mat-form-field class="numero-anio">
+          <input matInput placeholder="Nº" formControlName="numeroAnio">
+        </mat-form-field>
+        <mat-form-field class="anio">
+          <mat-select formControlName="anio">
+            <mat-option [value]="2022">2022</mat-option>
+            <mat-option [value]="2023">2023</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field class="numero-anio">
+          <input matInput placeholder="Nº Atestado" formControlName="numeroAtestadoAnio">
+        </mat-form-field>
+        <mat-form-field class="anio">
+          <mat-select formControlName="anioAtestado">
+            <mat-option [value]="2022">2022</mat-option>
+            <mat-option [value]="2023">2023</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field>
+          <input matInput [matDatepicker]="picker" placeholder="Fecha hecho" formControlName="fechaHecho">
+          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+      </div>
+      <div class="row nig-container" formArrayName="nig">
+        <mat-form-field *ngFor="let control of nigControls; let i = index">
+          <input matInput [formControlName]="i" placeholder="NIG {{i + 1}}">
+        </mat-form-field>
+        <button mat-icon-button (click)="copiarNIG()">
+          <mat-icon>content_copy</mat-icon>
+        </button>
+      </div>
+      <div class="checkbox-container">
+        <div class="radio-group-container">
+          <label>Juzgado de Guardia</label>
+          <mat-radio-group formControlName="juzgadoGuardia">
+            <mat-radio-button [value]="true">Sí</mat-radio-button>
+            <mat-radio-button [value]="false">No</mat-radio-button>
+          </mat-radio-group>
+        </div>
+        <div class="radio-group-container">
+          <label>Violencia de Género</label>
+          <mat-radio-group formControlName="violenciaGenero">
+            <mat-radio-button [value]="true">Sí</mat-radio-button>
+            <mat-radio-button [value]="false">No</mat-radio-button>
+          </mat-radio-group>
+        </div>
+        <div class="radio-group-container">
+          <label>Testigo Protegido</label>
+          <mat-radio-group formControlName="testigoProtegido">
+            <mat-radio-button [value]="true">Sí</mat-radio-button>
+            <mat-radio-button [value]="false">No</mat-radio-button>
+          </mat-radio-group>
+        </div>
+        <div class="radio-group-container">
+          <label>Causa con Preso</label>
+          <mat-radio-group formControlName="causaConPreso">
+            <mat-radio-button [value]="true">Sí</mat-radio-button>
+            <mat-radio-button [value]="false">No</mat-radio-button>
+          </mat-radio-group>
+        </div>
+        <div class="radio-group-container">
+          <label>Secreto de Sumario</label>
+          <mat-radio-group formControlName="secretoSumario">
+            <mat-radio-button [value]="true">Sí</mat-radio-button>
+            <mat-radio-button [value]="false">No</mat-radio-button>
+          </mat-radio-group>
+        </div>
+        <div class="radio-group-container">
+          <label>Violencia Doméstica</label>
+          <mat-radio-group formControlName="violenciaDomestica">
+            <mat-radio-button [value]="true">Sí</mat-radio-button>
+            <mat-radio-button [value]="false">No</mat-radio-button>
+          </mat-radio-group>
+        </div>
+        <div class="radio-group-container">
+          <label>Urgente</label>
+          <mat-radio-group formControlName="urgente">
+            <mat-radio-button [value]="true">Sí</mat-radio-button>
+            <mat-radio-button [value]="false">No</mat-radio-button>
+          </mat-radio-group>
+        </div>
+      </div>
+    </div>
+
+    <div class="seccion">
+      <h2>Episodios</h2>
+      <mat-form-field class="full-width">
+        <textarea matInput placeholder="Descripción Episodio" formControlName="descripcionEpisodio"></textarea>
+      </mat-form-field>
+    </div>
+
+    <div class="botones-accion">
+      <button mat-button type="button" class="btn-atras">ATRÁS</button>
+      <div class="botones-derecha">
+        <button mat-button type="button" (click)="nuevoSujeto()" class="btn-nuevo-sujeto">NUEVO SUJETO</button>
+        <button mat-button type="button" (click)="notasEpisodio()" class="btn-notas">NOTAS DEL EPISODIO</button>
+        <button mat-raised-button color="primary" type="submit" class="btn-guardar">GUARDAR</button>
+      </div>
+    </div>
+  </form>
+</div>
