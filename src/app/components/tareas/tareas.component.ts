@@ -1,9 +1,10 @@
-import { Component, OnInit, ViewChild, ElementRef, Renderer2, AfterViewInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
-import { MatPaginator } from '@angular/material/paginator';
+import { MatPaginator, MatPaginatorIntl } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
-interface Tarea {
+export interface Tarea {
   organo: string;
   numEpisodio: string;
   tipoProcedimiento: string;
@@ -12,6 +13,9 @@ interface Tarea {
   numExpediente: string;
   sujeto: string;
   responsable: string;
+  prioridad?: boolean;
+  nuevoDocumento?: boolean;
+  grupal?: boolean;
 }
 
 @Component({
@@ -19,26 +23,65 @@ interface Tarea {
   templateUrl: './tareas.component.html',
   styleUrls: ['./tareas.component.css']
 })
-export class TareasComponent implements OnInit, AfterViewInit {
-  columnasVisibles: string[] = ['organo', 'numEpisodio', 'tipoProcedimiento', 'numAnio', 'tipoAsistencia', 'numExpediente', 'sujeto', 'responsable'];
-  dataSource: MatTableDataSource<Tarea>;
-  anchosCabeceros: { [key: string]: string } = {
-    'organo': '200px',
-    'numEpisodio': '100px',
-    'tipoProcedimiento': '200px',
-    'numAnio': '100px',
-    'tipoAsistencia': '150px',
-    'numExpediente': '120px',
-    'sujeto': '180px',
-    'responsable': '150px'
-  };
-
+export class TareasComponent implements OnInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
-  @ViewChild('table', { static: true }) table!: ElementRef;
 
-  constructor(private renderer: Renderer2) {
-    const tareas: Tarea[] = [
+  dataSource: MatTableDataSource<Tarea>;
+  mostrarFiltros = false;
+  itemsPorPagina = 10;
+
+  columnasVisibles: string[] = [
+    'iconos',
+    'organo',
+    'numEpisodio',
+    'tipoProcedimiento',
+    'numAnio',
+    'tipoAsistencia',
+    'numExpediente',
+    'sujeto',
+    'responsable'
+  ];
+
+  filtros = {
+    incluirFinalizadas: false,
+    soloMiIml: true
+  };
+
+  filtrosColumnas = {
+    organo: '',
+    numEpisodio: '',
+    tipoProcedimiento: '',
+    numAnio: '',
+    tipoAsistencia: '',
+    numExpediente: '',
+    sujeto: '',
+    responsable: ''
+  };
+
+  constructor(
+    private snackBar: MatSnackBar,
+    private paginatorIntl: MatPaginatorIntl
+  ) {
+    this.dataSource = new MatTableDataSource(this.obtenerDatosEjemplo());
+  }
+
+  ngOnInit() {
+    this.configurarFiltrado();
+  }
+
+  ngAfterViewInit() {
+    if (this.paginator) {
+      this.dataSource.paginator = this.paginator;
+      this.configurarPaginadorEspanol();
+    }
+    if (this.sort) {
+      this.dataSource.sort = this.sort;
+    }
+  }
+
+  private obtenerDatosEjemplo(): Tarea[] {
+    return [
       {
         organo: 'Jdo. de lo Penal Nº 1 de Salamanca',
         numEpisodio: '81329',
@@ -47,7 +90,8 @@ export class TareasComponent implements OnInit, AfterViewInit {
         tipoAsistencia: 'Análisis Genético',
         numExpediente: 'EX2017586',
         sujeto: 'Maria Isabel Rodriguez Alvarez',
-        responsable: '30000332C'
+        responsable: '30000332C',
+        prioridad: true
       },
       {
         organo: 'Sección 2ª de la A. Prov. Valladolid',
@@ -57,7 +101,8 @@ export class TareasComponent implements OnInit, AfterViewInit {
         tipoAsistencia: 'Análisis Genético',
         numExpediente: 'EX2013527',
         sujeto: '-',
-        responsable: 'Asignar'
+        responsable: 'Asignar',
+        grupal: true
       },
       {
         organo: 'Abog. CCAA de CASTILLA Y LEON',
@@ -77,7 +122,8 @@ export class TareasComponent implements OnInit, AfterViewInit {
         tipoAsistencia: 'Autopsia',
         numExpediente: 'EX2013586',
         sujeto: 'Maria Isabel Rodriguez Alvarez',
-        responsable: 'Asignar'
+        responsable: 'Asignar',
+        nuevoDocumento: true
       },
       {
         organo: 'Jdo. de lo Penal Nº 1 de Salamanca',
@@ -88,81 +134,134 @@ export class TareasComponent implements OnInit, AfterViewInit {
         numExpediente: 'EX2013585',
         sujeto: 'Maria Isabel Rodriguez Alvarez',
         responsable: '30000328W'
-      },
-      {
-        organo: 'Jdo. de lo Penal Nº 1 de Salamanca',
-        numEpisodio: '81304',
-        tipoProcedimiento: 'ASISTENCIAS SECRETARIOS JUDICIALES',
-        numAnio: '000001/2022',
-        tipoAsistencia: 'Autopsia',
-        numExpediente: 'EX2013584',
-        sujeto: 'Maria Isabel Rodriguez Alvarez',
-        responsable: 'Asignar'
-      },
-      {
-        organo: 'Jdo. de lo Penal Nº 1 de Salamanca',
-        numEpisodio: '81325',
-        tipoProcedimiento: 'ASISTENCIAS SECRETARIOS JUDICIALES',
-        numAnio: '0000001/2022',
-        tipoAsistencia: 'Lesiones en tráfico (PSIC)',
-        numExpediente: 'EX2013544',
-        sujeto: 'KUAHolapeptitopep',
-        responsable: 'Asignar'
-      },
+      }
     ];
-    this.dataSource = new MatTableDataSource(tareas);
   }
 
-  ngOnInit(): void {
-    // Inicialización adicional si es necesaria
-  }
+  private configurarFiltrado() {
+    this.dataSource.filterPredicate = (data: Tarea, filter: string) => {
+      const searchTerms = JSON.parse(filter);
+      
+      // Aplicar filtros generales
+      let cumpleFiltros = true;
+      
+      if (!searchTerms.incluirFinalizadas && this.filtros.incluirFinalizadas === false) {
+        // Lógica para filtrar finalizadas según necesidad
+        return false;
+      }
+      
+      if (searchTerms.soloMiIml && this.filtros.soloMiIml === true) {
+        // Lógica para filtrar por IML según necesidad
+        return false;
+      }
 
-  ngAfterViewInit() {
-    this.dataSource.paginator = this.paginator;
-    this.dataSource.sort = this.sort;
-    this.aplicarAnchosCabeceros();
-  }
+      // Aplicar filtros de columnas
+      Object.keys(searchTerms.columnas).forEach(key => {
+        const valor = searchTerms.columnas[key].toLowerCase();
+        if (valor && data[key as keyof Tarea]) {
+          const dataValue = String(data[key as keyof Tarea]).toLowerCase();
+          if (!dataValue.includes(valor)) {
+            cumpleFiltros = false;
+          }
+        }
+      });
 
-  obtenerTituloColumna(columna: string): string {
-    const titulos: { [key: string]: string } = {
-      'organo': 'Órgano',
-      'numEpisodio': 'Nº Episodio',
-      'tipoProcedimiento': 'Tipo Procedimiento',
-      'numAnio': 'Nº/Año',
-      'tipoAsistencia': 'Tipo Asistencia',
-      'numExpediente': 'Nº Expediente',
-      'sujeto': 'Sujeto',
-      'responsable': 'Responsable'
+      return cumpleFiltros;
     };
-    return titulos[columna] || columna;
   }
 
-  aplicarAnchosCabeceros() {
-    const cabeceros = this.table.nativeElement.querySelectorAll('th');
-    cabeceros.forEach((cabecero: HTMLElement, index: number) => {
-      const columna = this.columnasVisibles[index];
-      this.renderer.setStyle(cabecero, 'width', this.anchosCabeceros[columna]);
+  filtrarTabla() {
+    const filtroCompleto = {
+      incluirFinalizadas: this.filtros.incluirFinalizadas,
+      soloMiIml: this.filtros.soloMiIml,
+      columnas: this.filtrosColumnas
+    };
+    this.dataSource.filter = JSON.stringify(filtroCompleto);
+
+    if (this.dataSource.paginator) {
+      this.dataSource.paginator.firstPage();
+    }
+  }
+
+  limpiarFiltros() {
+    this.filtros = {
+      incluirFinalizadas: false,
+      soloMiIml: true
+    };
+
+    this.filtrosColumnas = {
+      organo: '',
+      numEpisodio: '',
+      tipoProcedimiento: '',
+      numAnio: '',
+      tipoAsistencia: '',
+      numExpediente: '',
+      sujeto: '',
+      responsable: ''
+    };
+
+    this.filtrarTabla();
+    this.mostrarMensaje('Filtros limpiados');
+  }
+
+  aplicarFiltros() {
+    this.filtrarTabla();
+    this.mostrarMensaje('Filtros aplicados');
+  }
+
+  cambiarItemsPorPagina(event: Event) {
+    const selectElement = event.target as HTMLSelectElement;
+    this.itemsPorPagina = Number(selectElement.value);
+    if (this.paginator) {
+      this.paginator.pageSize = this.itemsPorPagina;
+      this.paginator.pageIndex = 0;
+    }
+  }
+
+  cargarTareas() {
+    this.dataSource.data = this.obtenerDatosEjemplo();
+    this.mostrarMensaje('Datos actualizados');
+  }
+
+  exportarWord() {
+    this.mostrarMensaje('Exportando a Word...');
+    // Implementar exportación
+  }
+
+  exportarPDF() {
+    this.mostrarMensaje('Exportando a PDF...');
+    // Implementar exportación
+  }
+
+  exportarExcel() {
+    this.mostrarMensaje('Exportando a Excel...');
+    // Implementar exportación
+  }
+
+  private configurarPaginadorEspanol() {
+    this.paginatorIntl.itemsPerPageLabel = 'Items por página:';
+    this.paginatorIntl.nextPageLabel = 'Siguiente';
+    this.paginatorIntl.previousPageLabel = 'Anterior';
+    this.paginatorIntl.firstPageLabel = 'Primera página';
+    this.paginatorIntl.lastPageLabel = 'Última página';
+    this.paginatorIntl.getRangeLabel = (page: number, pageSize: number, length: number) => {
+      if (length === 0) {
+        return `0 de ${length}`;
+      }
+      length = Math.max(length, 0);
+      const startIndex = page * pageSize;
+      const endIndex = startIndex < length ? 
+        Math.min(startIndex + pageSize, length) : 
+        startIndex + pageSize;
+      return `${startIndex + 1} - ${endIndex} de ${length}`;
+    };
+  }
+
+  private mostrarMensaje(mensaje: string) {
+    this.snackBar.open(mensaje, 'Cerrar', {
+      duration: 3000,
+      horizontalPosition: 'center',
+      verticalPosition: 'top',
     });
-  }
-
-  alRedimensionarColumna(evento: MouseEvent, columna: string) {
-    evento.preventDefault();
-    const th = evento.target as HTMLElement;
-    const startX = evento.pageX;
-    const startWidth = th.offsetWidth;
-
-    const onMouseMove = (e: MouseEvent) => {
-      const width = startWidth + (e.pageX - startX);
-      this.renderer.setStyle(th, 'width', `${width}px`);
-      this.anchosCabeceros[columna] = `${width}px`;
-    };
-
-    const onMouseUp = () => {
-      document.removeEventListener('mousemove', onMouseMove);
-      document.removeEventListener('mouseup', onMouseUp);
-    };
-
-    document.addEventListener('mousemove', onMouseMove);
-    document.addEventListener('mouseup', onMouseUp);
   }
 }
