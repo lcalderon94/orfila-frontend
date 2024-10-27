@@ -1,121 +1,319 @@
 .contenedor-tareas {
   padding: 20px;
+  font-family: Arial, sans-serif;
 }
 
 h1 {
   font-size: 24px;
+  color: #0099FF;
   margin-bottom: 20px;
 }
 
 .contenedor-filtros {
   display: flex;
   align-items: center;
-  margin-bottom: 10px;
+  margin-bottom: 15px;
+  cursor: pointer;
+  color: #0099FF;
 }
 
 .contenedor-filtros mat-icon {
   margin-right: 5px;
 }
 
+/* Panel de Filtros */
+.filtros-panel {
+  background-color: #ffffff;
+  padding: 20px;
+  margin-bottom: 20px;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.filtro-seccion {
+  margin-bottom: 25px;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  padding: 15px;
+}
+
+.filtro-seccion h3 {
+  margin-bottom: 15px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #2196F3;
+}
+
+/* Barra de acciones */
 .barra-acciones {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #f5f5f5;
-  padding: 10px;
+  height: 48px;
   margin-bottom: 10px;
 }
 
-.iconos-exportar button {
-  margin-right: 10px;
-}
-
-.contenedor-tabla {
-  position: relative;
-}
-
-.barra-busqueda {
+.selector-registros {
   display: flex;
-  margin-bottom: 0;
-  position: absolute;
-  top: -40px;
-  left: 0;
-  right: 0;
-  background-color: #f5f5f5;
-  padding: 5px;
+  align-items: center;
 }
 
-.buscador-columna {
-  flex: 1;
-  margin-right: 1px;
-  padding: 5px;
+.selector-registros span {
+  margin-right: 8px;
+}
+
+.selector-registros select {
+  padding: 4px 8px;
   border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: white;
+  font-size: 14px;
+}
+
+.iconos-exportar {
+  display: flex;
+  gap: 5px;
+}
+
+.acciones-derecha {
+  display: flex;
+  gap: 5px;
+}
+
+/* Buscadores superiores */
+.buscadores-superiores {
+  display: flex;
+  gap: 1px;
+  margin-bottom: 15px; /* Aumentamos el margin-bottom */
+  border-bottom: 1px solid #ddd; /* Opcional: añade una línea separadora */
+  padding-bottom: 10px; /* Opcional: añade padding abajo */
+}
+
+.buscadores-superiores input {
+  flex: 1;
+  border: 1px solid #ddd;
+  padding: 8px;
+  font-size: 14px;
+  background-color: white;
+}
+
+.buscadores-superiores input:first-child {
+  max-width: 50px;
+}
+
+/* Contenedor de la tabla */
+.contenedor-tabla {
+  width: 100%;
+  overflow-x: auto;
+  margin-top: -1px;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
 }
 
 table {
-  width: 100%;
+  min-width: 100%; /* Asegura que la tabla ocupe al menos el 100% del contenedor */
+  width: max-content; /* Permite que la tabla crezca si es necesario */
   border-collapse: separate;
   border-spacing: 0;
 }
 
+/* Aseguramos que las columnas tengan un ancho mínimo */
+.mat-column-iconos { min-width: 50px; }
+.mat-column-organo { min-width: 200px; }
+.mat-column-numEpisodio { min-width: 100px; }
+.mat-column-tipoProcedimiento { min-width: 200px; }
+.mat-column-numAnio { min-width: 100px; }
+.mat-column-tipoAsistencia { min-width: 150px; }
+.mat-column-numExpediente { min-width: 120px; }
+.mat-column-sujeto { min-width: 180px; }
+.mat-column-responsable { min-width: 150px; }
+
+/* Estilos para los headers */
 .mat-mdc-header-cell {
   background-color: #1976d2 !important;
   color: white !important;
-  font-weight: bold;
-  padding: 10px;
-  border-right: 1px solid white;
-  position: relative;
+  font-weight: bold !important;
+  padding: 12px !important;
+  border-right: 1px solid rgba(255, 255, 255, 0.2);
+  font-size: 14px;
+}
+
+.mat-mdc-header-cell:first-child {
+  padding-left: 24px !important;
 }
 
 .mat-mdc-header-cell:last-child {
   border-right: none;
 }
 
-.contenido-celda-encabezado {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.icono-ordenacion {
-  font-size: 18px;
-  color: white;
-}
-
+/* Estilos para las celdas */
 .mat-mdc-cell {
-  padding: 10px;
+  padding: 12px !important;
+  border-bottom: 1px solid #e0e0e0;
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.87);
 }
 
+.mat-mdc-cell:first-child {
+  padding-left: 24px !important;
+}
+
+/* Estilos para las filas */
 .mat-mdc-row:nth-child(even) {
-  background-color: #f5f5f5;
+  background-color: #f8f9fa;
 }
 
 .mat-mdc-row:hover {
-  background-color: #e0e0e0;
+  background-color: #f5f5f5;
 }
 
-.manejador-redimension {
-  position: absolute;
-  top: 0;
-  right: -3px;
-  bottom: 0;
-  width: 6px;
-  cursor: col-resize;
-  z-index: 1;
+/* Columna de iconos */
+.mat-column-iconos {
+  width: 50px;
+  padding-right: 0 !important;
 }
 
-.redimensionable {
-  position: relative;
+/* Estilos para los iconos */
+mat-icon {
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+  vertical-align: middle;
 }
 
+.icono-prioritario {
+  color: #f44336;
+}
+
+.icono-nuevo {
+  color: #2196F3;
+}
+
+.icono-grupal {
+  color: #4CAF50;
+}
+
+/* Paginador */
+.mat-mdc-paginator {
+  border-top: 1px solid #e0e0e0;
+  background-color: white;
+}
+
+/* Ordenamiento */
 ::ng-deep .mat-sort-header-arrow {
   color: white !important;
 }
 
-::ng-deep .mat-sort-header-content {
-  color: white !important;
+/* Botones */
+button.mat-icon-button {
+  width: 36px;
+  height: 36px;
+  line-height: 36px;
+  color: rgba(0, 0, 0, 0.54);
 }
 
-.mat-mdc-paginator {
-  background-color: transparent;
+button.mat-icon-button:hover {
+  background-color: rgba(0, 0, 0, 0.04);
 }
+
+/* Responsive */
+@media (max-width: 768px) {
+  .buscadores-superiores {
+    flex-wrap: wrap;
+  }
+
+  .buscadores-superiores input {
+    min-width: 120px;
+  }
+
+  .barra-acciones {
+    flex-wrap: wrap;
+    height: auto;
+    padding: 8px 0;
+  }
+}
+
+/* Panel de Filtros */
+.filtros-panel {
+  background-color: #ffffff;
+  padding: 15px;
+  margin-bottom: 20px;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.filtros-container {
+  display: flex;
+  gap: 30px;
+  margin-bottom: 15px;
+}
+
+.filtro-seccion {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+}
+
+.filtro-seccion h3 {
+  margin-bottom: 10px;
+  font-size: 14px;
+  font-weight: bold;
+  color: #0099FF;
+}
+
+.mat-radio-group {
+  display: flex;
+  gap: 20px;
+}
+
+.botones-filtro {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+/* Ajuste para los radio buttons */
+::ng-deep .mat-radio-button {
+  margin-right: 15px;
+}
+
+/* Ajustes de Material Design */
+::ng-deep .mat-mdc-form-field {
+  width: 100%;
+}
+
+::ng-deep .mat-mdc-form-field-appearance-outline .mat-mdc-form-field-infix {
+  padding: 0.5em 0;
+}
+
+::ng-deep .mat-mdc-form-field-appearance-outline .mat-mdc-form-field-outline {
+  color: rgba(0, 0, 0, 0.12);
+}
+
+/* Ajuste para los anchos de los buscadores superiores */
+.buscadores-superiores {
+  display: flex;
+  gap: 1px;
+  margin-bottom: 15px;
+  overflow-x: auto; /* Para permitir scroll horizontal si es necesario */
+  min-width: 100%;
+}
+
+.buscadores-superiores input {
+  flex: none; /* Cambiamos de flex: 1 a flex: none */
+  padding: 8px;
+  border: 1px solid #ddd;
+  font-size: 14px;
+}
+
+/* Anchos específicos para cada buscador para que coincidan con las columnas */
+.buscadores-superiores input:nth-child(1) { width: 50px; } /* Columna iconos */
+.buscadores-superiores input:nth-child(2) { width: 200px; } /* Columna órgano */
+.buscadores-superiores input:nth-child(3) { width: 100px; } /* Columna nº episodio */
+.buscadores-superiores input:nth-child(4) { width: 200px; } /* Columna tipo procedimiento */
+.buscadores-superiores input:nth-child(5) { width: 100px; } /* Columna nº/año */
+.buscadores-superiores input:nth-child(6) { width: 150px; } /* Columna tipo asistencia */
+.buscadores-superiores input:nth-child(7) { width: 120px; } /* Columna nº expediente */
+.buscadores-superiores input:nth-child(8) { width: 180px; } /* Columna sujeto */
+.buscadores-superiores input:nth-child(9) { width: 150px; } /* Columna responsable */
