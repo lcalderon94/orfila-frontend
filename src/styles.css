@@ -33,4 +33,409 @@ body {
     flex-grow: 1;
   }
 
+  /* Estilos base de navegación sidebar */
+nav {
+  background-color: #1976d2;
+  height: 100%;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+li {
+  padding: 0;
+}
+
+a {
+  color: white;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  padding: 15px 20px;
+  transition: background-color 0.3s;
+}
+
+i {
+  margin-right: 20px;
+  font-size: 20px;
+  width: 24px;
+  text-align: center;
+}
+
+/* Estilos de submenu */
+ul ul {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+ul ul a {
+  padding-left: 64px;
+}
+
+/* Estados */
+a:hover, 
+a.active {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Spacer ya que se usa en varios componentes */
+.spacer {
+  flex: 1 1 auto;
+}
+
+/* Estilos base de toolbar que pueden usarse en otros componentes */
+mat-toolbar {
+  height: 40px;
+  background-color: #f5f5f5;
+}
+
+/* Variables globales */
+:root {
+  --primary-blue: #0099FF;
+  --primary-dark: #1976d2;
+  --border-color: #e0e0e0;
+  --hover-bg: #f5f5f5;
+  --even-row-bg: #f8f9fa;
+  --text-dark: rgba(0, 0, 0, 0.87);
+  --text-light: white;
+}
+
+/* Contenedores comunes */
+.contenedor-pagina {
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+/* Títulos comunes */
+h1 {
+  font-size: 24px;
+  color: var(--primary-blue);
+  margin-bottom: 20px;
+}
+
+/* Panel de Filtros común */
+.filtros-panel {
+  background-color: #ffffff;
+  padding: 20px;
+  margin-bottom: 20px;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.filtro-seccion {
+  margin-bottom: 25px;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  padding: 15px;
+}
+
+.filtro-seccion h3 {
+  margin-bottom: 15px;
+  font-size: 16px;
+  font-weight: bold;
+  color: var(--primary-dark);
+}
+
+/* Barra de acciones común */
+.barra-acciones {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #f5f5f5;
+  padding: 10px;
+  margin-bottom: 15px;
+  border-radius: 4px;
+}
+
+/* Estilos de tabla comunes */
+.contenedor-tabla {
+  width: 100%;
+  overflow-x: auto;
+  margin-top: -1px;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+}
+
+.mat-mdc-header-cell {
+  background-color: var(--primary-dark) !important;
+  color: var(--text-light) !important;
+  font-weight: bold !important;
+  padding: 12px !important;
+  border-right: 1px solid rgba(255, 255, 255, 0.2);
+  font-size: 14px;
+}
+
+.mat-mdc-cell {
+  padding: 12px !important;
+  border-bottom: 1px solid var(--border-color);
+  font-size: 14px;
+  color: var(--text-dark);
+}
+
+.mat-mdc-row:nth-child(even) {
+  background-color: var(--even-row-bg);
+}
+
+.mat-mdc-row:hover {
+  background-color: var(--hover-bg);
+}
+
+/* Paginador común */
+.mat-mdc-paginator {
+  border-top: 1px solid var(--border-color);
+  background-color: white;
+}
+
+/* Estilos Material Design comunes */
+.mat-mdc-form-field {
+  width: 100%;
+}
+
+.mat-mdc-form-field-appearance-outline .mat-mdc-form-field-infix {
+  padding: 0.5em 0;
+}
+
+.mat-radio-group {
+  display: flex;
+  gap: 20px;
+}
+
+/* Utilidades comunes */
+.botones-filtro {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+/* Responsive común */
+@media (max-width: 768px) {
+  .buscadores-superiores {
+    flex-wrap: wrap;
+  }
+  
+  .barra-acciones {
+    flex-wrap: wrap;
+    height: auto;
+    padding: 8px 0;
+  }
+}
+
+/* Nuevos componentes de grid */
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+}
+
+/* Nuevos estilos de botones */
+button.mat-raised-button,
+button.mat-stroked-button {
+  min-width: 120px;
+}
+
+/* Nuevos estilos de encabezado */
+.contenido-celda-encabezado {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.icono-ordenacion {
+  font-size: 18px;
+  color: white;
+}
+
+/* Nuevo radio button spacing */
+.mat-radio-button ~ .mat-radio-button {
+  margin-left: 16px;
+}
+
+/* Estilos de ordenamiento adicionales */
+::ng-deep .mat-sort-header-content {
+  color: white !important;
+}
+
+/* Espaciado de paginador */
+mat-paginator {
+  margin-top: 20px;
+}
+
+/* Media queries adicionales */
+@media (max-width: 768px) {
+  .grid-container {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Estilos para los campos de fecha - nuevos */
+.mat-form-field-appearance-outline .mat-form-field-outline-thick {
+  color: #1976d2;
+}
+
+/* Nuevas propiedades para buscadores */
+.buscadores-superiores {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  overflow-x: auto;
+}
+
+.buscadores-superiores input {
+  flex: 1;
+  min-width: 150px;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+/* Nuevo estilo para mat-mdc-header-cell:last-child */
+.mat-mdc-header-cell:last-child {
+  border-right: none;
+}
+
+/* Nueva propiedad para celdas */
+.mat-mdc-cell {
+  white-space: nowrap;
+}
+
+/* Nuevo estilo para header sort arrow */
+::ng-deep .mat-sort-header-arrow {
+  color: white !important;
+}
+
+/* Nuevo ajuste responsive */
+.buscadores-superiores input {
+  flex-basis: calc(50% - 5px);
+}
+
+/* Estilos comunes para campo corto */
+.campo-corto {
+  max-width: 120px;
+}
+
+/* Contenedores comunes de flexbox */
+.fila {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 15px;
+}
+
+/* Contenedores de checkbox */
+.checkbox-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+/* Estilos comunes de textarea */
+textarea {
+  min-height: 100px;
+}
+
+/* Estilos comunes de botones de acción */
+.botones-accion {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.botones-derecha {
+  display: flex;
+  gap: 10px;
+}
+
+/* Estilos base para Mat-radio-button */
+mat-radio-button {
+  font-size: 14px;
+}
+
+/* Estilos para datepicker */
+.mat-datepicker-toggle {
+  color: var(--primary-blue);
+}
+
+/* Estilos comunes para campo ancho completo */
+.full-width {
+  width: 100%;
+}
+
+/* Contenedores específicos de ancho */
+.numero-anio {
+  flex: 0 0 100px;
+}
+
+.anio {
+  flex: 0 0 80px;
+}
+
+/* Radio group container */
+.radio-group-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.radio-group-container label {
+  margin-bottom: 5px;
+}
+
+/* Estilos comunes de botones adicionales */
+.botones-accion button {
+  min-width: 120px;
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-weight: 500;
+  text-transform: uppercase;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.botones-accion button:hover {
+  opacity: 0.9;
+}
+
+/* Media queries adicionales */
+@media (max-width: 480px) {
+  .checkbox-container {
+    grid-template-columns: 1fr;
+  }
+  
+  .botones-derecha {
+    flex-direction: column;
+  }
+}
+
+
+/* Estilo del contenedor de filtros */
+.contenedor-filtros {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+  cursor: pointer;
+  color: var(--primary-dark);
+  font-size: 16px;
+  gap: 8px;
+  padding: 8px 0;
+}
+
+.contenedor-filtros mat-icon {
+  margin-right: 5px;
+  font-size: 24px;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.contenedor-filtros span {
+  font-weight: 500;
+}
+
+.contenedor-filtros:hover {
+  opacity: 0.8;
+}
   
