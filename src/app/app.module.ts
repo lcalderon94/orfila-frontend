@@ -65,6 +65,8 @@ import { MatStepperModule } from '@angular/material/stepper';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatNativeDateModule } from '@angular/material/core';
+import { MatExpansionModule } from '@angular/material/expansion';
+
 
 
 
@@ -132,7 +134,8 @@ import { MatNativeDateModule } from '@angular/material/core';
     MatStepperModule,
     MatAutocompleteModule,
     MatChipsModule,
-    MatNativeDateModule
+    MatNativeDateModule,
+    MatExpansionModule
     // Agrega otros módulos de Angular Material según sea necesario
   ],
   providers: [],
