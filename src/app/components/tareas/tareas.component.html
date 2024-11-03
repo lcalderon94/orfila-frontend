@@ -38,14 +38,6 @@
 
   <!-- Barra de acciones -->
   <div class="barra-acciones">
-    <div class="selector-registros">
-      <span>Mostrando</span>
-      <select [(ngModel)]="itemsPorPagina" (ngModelChange)="cambiarItemsPorPagina($event)">
-        <option [value]="10">10</option>
-        <option [value]="20">20</option>
-        <option [value]="50">50</option>
-      </select>
-    </div>
 
     <div class="iconos-exportar">
       <button mat-icon-button (click)="exportarWord()">

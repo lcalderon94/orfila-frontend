@@ -1,0 +1,8 @@
+// proxy.conf.json
+{
+  "/api": {
+    "target": "https://es.mjusticia.gob.es",
+    "secure": true,
+    "changeOrigin": true
+  }
+}

@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
@@ -13,16 +14,15 @@ export class ConsultaAntecedentesComponent implements OnInit {
   mostrarFiltros = false;
   itemsPorPagina = 10;
   dataSource: MatTableDataSource<any>;
-
-  filtros = {
-    numExpediente: '',
-    tipoIdentificacion: '',
-    numIdentificacion: '',
-    nombre: '',
-    apellido1: '',
-    apellido2: '',
-    fechaNacimiento: null
-  };
+  filtrosForm: FormGroup = this.fb.group({  // Inicializado aquí
+    numExpediente: [''],
+    tipoIdentificacion: [''],
+    numIdentificacion: [''],
+    nombre: [''],
+    apellido1: [''],
+    apellido2: [''],
+    fechaNacimiento: [null]
+  });
 
   columnasVisibles = [
     'iml',
@@ -39,23 +39,28 @@ export class ConsultaAntecedentesComponent implements OnInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
-  constructor(private snackBar: MatSnackBar) {
+  constructor(
+    private fb: FormBuilder,
+    private snackBar: MatSnackBar
+  ) {
     this.dataSource = new MatTableDataSource();
+  }
+
+  inicializarFormulario() {
+    this.filtrosForm = this.fb.group({
+      numExpediente: [''],
+      tipoIdentificacion: [''],
+      numIdentificacion: [''],
+      nombre: [''],
+      apellido1: [''],
+      apellido2: [''],
+      fechaNacimiento: [null]
+    });
   }
 
   ngOnInit() {
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
-
-    // Configurar el filtrado personalizado
-    this.dataSource.filterPredicate = (data: any, filter: string) => {
-      const searchTerms = JSON.parse(filter);
-      
-      return Object.keys(searchTerms).every(key => {
-        const value = searchTerms[key].toLowerCase();
-        return String(data[key]).toLowerCase().includes(value);
-      });
-    };
   }
 
   ngAfterViewInit() {
@@ -63,41 +68,24 @@ export class ConsultaAntecedentesComponent implements OnInit {
     this.dataSource.sort = this.sort;
   }
 
+  cambiarItemsPorPagina() {
+    if (this.paginator) {
+      this.paginator.pageSize = this.itemsPorPagina;
+      this.paginator.pageIndex = 0;
+    }
+  }
+
   limpiarFiltros() {
-    this.filtros = {
-      numExpediente: '',
-      tipoIdentificacion: '',
-      numIdentificacion: '',
-      nombre: '',
-      apellido1: '',
-      apellido2: '',
-      fechaNacimiento: null
-    };
-    this.aplicarFiltros();
-  }
-
-  buscar() {
-    this.aplicarFiltros();
-  }
-
-  aplicarFiltros() {
-    this.dataSource.filter = JSON.stringify(this.filtros);
-
+    this.filtrosForm.reset();
+    this.dataSource.filter = '';
     if (this.dataSource.paginator) {
       this.dataSource.paginator.firstPage();
     }
   }
 
-  verDetalle(elemento: any) {
-    console.log('Ver detalle:', elemento);
-  }
-
-  crearEpisodio(elemento: any) {
-    console.log('Crear episodio:', elemento);
-  }
-
-  anadirSujeto(elemento: any) {
-    console.log('Añadir sujeto:', elemento);
+  buscar() {
+    // Implementar lógica de búsqueda
+    console.log(this.filtrosForm.value);
   }
 
   exportarWord() {
@@ -119,9 +107,20 @@ export class ConsultaAntecedentesComponent implements OnInit {
   }
 
   cargarDatos() {
-    // Aquí iría la carga desde el servicio
     this.snackBar.open('Actualizando datos...', 'Cerrar', {
       duration: 3000
     });
+  }
+
+  verDetalle(row: any) {
+    console.log('Ver detalle:', row);
+  }
+
+  crearEpisodio(row: any) {
+    console.log('Crear episodio:', row);
+  }
+
+  anadirSujeto(row: any) {
+    console.log('Añadir sujeto:', row);
   }
 }

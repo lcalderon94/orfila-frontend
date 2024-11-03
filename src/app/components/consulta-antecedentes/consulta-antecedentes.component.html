@@ -1,168 +1,165 @@
 <div class="contenedor-pagina">
-    <h1>Consulta Antecedentes</h1>
-  
-    <!-- Filtros -->
-    <div class="contenedor-filtros" (click)="mostrarFiltros = !mostrarFiltros">
-      <mat-icon>filter_list</mat-icon>
-      Filtros
-    </div>
-  
-    <div class="filtros-panel" *ngIf="mostrarFiltros">
-      <mat-form-field class="full-width">
+  <h1>Consulta Antecedentes</h1>
+
+  <div class="contenedor-filtros" (click)="mostrarFiltros = !mostrarFiltros">
+    <mat-icon>filter_list</mat-icon>
+    <span>Filtros</span>
+  </div>
+
+  <div class="filtros-panel" *ngIf="mostrarFiltros">
+    <form [formGroup]="filtrosForm" class="grid-container">
+      <mat-form-field>
         <mat-label>Nº Expediente</mat-label>
-        <input matInput [(ngModel)]="filtros.numExpediente">
+        <input matInput formControlName="numExpediente">
       </mat-form-field>
-  
-      <mat-form-field class="full-width">
+
+      <mat-form-field>
         <mat-label>Tipo Identificación</mat-label>
-        <mat-select [(ngModel)]="filtros.tipoIdentificacion">
-          <mat-option value="">Seleccione una opción...</mat-option>
+        <mat-select formControlName="tipoIdentificacion">
+          <mat-option>Seleccione una opción...</mat-option>
         </mat-select>
       </mat-form-field>
-  
-      <mat-form-field class="full-width">
+
+      <mat-form-field>
         <mat-label>Nº Identificación</mat-label>
-        <input matInput [(ngModel)]="filtros.numIdentificacion">
+        <input matInput formControlName="numIdentificacion">
       </mat-form-field>
-  
-      <mat-form-field class="full-width">
+
+      <mat-form-field>
         <mat-label>Nombre</mat-label>
-        <input matInput [(ngModel)]="filtros.nombre">
+        <input matInput formControlName="nombre">
       </mat-form-field>
-  
-      <mat-form-field class="full-width">
+
+      <mat-form-field>
         <mat-label>Apellido 1</mat-label>
-        <input matInput [(ngModel)]="filtros.apellido1">
+        <input matInput formControlName="apellido1">
       </mat-form-field>
-  
-      <mat-form-field class="full-width">
+
+      <mat-form-field>
         <mat-label>Apellido 2</mat-label>
-        <input matInput [(ngModel)]="filtros.apellido2">
+        <input matInput formControlName="apellido2">
       </mat-form-field>
-  
-      <mat-form-field class="full-width">
+
+      <mat-form-field>
         <mat-label>Fecha nacimiento</mat-label>
-        <input matInput [matDatepicker]="picker" [(ngModel)]="filtros.fechaNacimiento">
+        <input matInput [matDatepicker]="picker" formControlName="fechaNacimiento">
         <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
         <mat-datepicker #picker></mat-datepicker>
       </mat-form-field>
-  
-      <div class="botones-filtro">
-        <button mat-raised-button (click)="limpiarFiltros()">LIMPIAR</button>
-        <button mat-raised-button color="primary" (click)="buscar()">BUSCAR</button>
-      </div>
+    </form>
+
+    <div class="botones-filtro">
+      <button mat-stroked-button color="primary" (click)="limpiarFiltros()">
+        LIMPIAR
+      </button>
+      <button mat-raised-button color="primary" (click)="buscar()">
+        BUSCAR
+      </button>
     </div>
-  
-    <!-- Listado -->
-    <h2>Listado Sujetos</h2>
-  
-    <!-- Barra de acciones -->
-    <div class="barra-acciones">
-      <div>
-        Mostrando
-        <select [(ngModel)]="itemsPorPagina">
-          <option [value]="10">10</option>
-          <option [value]="20">20</option>
-          <option [value]="50">50</option>
-        </select>
-      </div>
-  
-      <div class="iconos-exportar">
-        <button mat-icon-button>
-          <mat-icon>description</mat-icon>
-        </button>
-        <button mat-icon-button>
-          <mat-icon>picture_as_pdf</mat-icon>
-        </button>
-        <button mat-icon-button>
-          <mat-icon>table_chart</mat-icon>
-        </button>
-        <button mat-icon-button>
-          <mat-icon>search</mat-icon>
-        </button>
-        <button mat-icon-button>
-          <mat-icon>link</mat-icon>
-        </button>
-      </div>
-    </div>
-  
-    <!-- Filtros de columnas -->
-    <div class="buscadores-superiores">
-      <input placeholder="IML">
-      <input placeholder="Nº Expediente">
-      <input placeholder="Nombre">
-      <input placeholder="Apellido 1">
-      <input placeholder="Apellido 2">
-      <input placeholder="Fecha nacimiento">
-    </div>
-  
-    <!-- Tabla -->
-    <div class="contenedor-tabla mat-elevation-z8">
-      <table mat-table [dataSource]="dataSource" matSort>
-  
-        <ng-container matColumnDef="iml">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>IML</th>
-          <td mat-cell *matCellDef="let row">{{row.iml}}</td>
-        </ng-container>
-  
-        <ng-container matColumnDef="numExpediente">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>Nº EXPEDIENTE</th>
-          <td mat-cell *matCellDef="let row">{{row.numExpediente}}</td>
-        </ng-container>
-  
-        <ng-container matColumnDef="tipoIdentificacion">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>TIPO IDENTIFICACIÓN</th>
-          <td mat-cell *matCellDef="let row">{{row.tipoIdentificacion}}</td>
-        </ng-container>
-  
-        <ng-container matColumnDef="numIdentificacion">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>Nº IDENTIFICACIÓN</th>
-          <td mat-cell *matCellDef="let row">{{row.numIdentificacion}}</td>
-        </ng-container>
-  
-        <ng-container matColumnDef="nombre">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>NOMBRE</th>
-          <td mat-cell *matCellDef="let row">{{row.nombre}}</td>
-        </ng-container>
-  
-        <ng-container matColumnDef="apellido1">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>APELLIDO 1</th>
-          <td mat-cell *matCellDef="let row">{{row.apellido1}}</td>
-        </ng-container>
-  
-        <ng-container matColumnDef="apellido2">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>APELLIDO 2</th>
-          <td mat-cell *matCellDef="let row">{{row.apellido2}}</td>
-        </ng-container>
-  
-        <ng-container matColumnDef="fechaNacimiento">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>FECHA NACIMIENTO</th>
-          <td mat-cell *matCellDef="let row">{{row.fechaNacimiento}}</td>
-        </ng-container>
-  
-        <ng-container matColumnDef="opciones">
-          <th mat-header-cell *matHeaderCellDef>OPCIONES</th>
-          <td mat-cell *matCellDef="let row">
-            <button mat-icon-button>
-              <mat-icon>visibility</mat-icon>
-            </button>
-            <button mat-icon-button>
-              <mat-icon>add_circle</mat-icon>
-            </button>
-            <button mat-icon-button>
-              <mat-icon>person_add</mat-icon>
-            </button>
-          </td>
-        </ng-container>
-  
-        <tr mat-header-row *matHeaderRowDef="columnasVisibles"></tr>
-        <tr mat-row *matRowDef="let row; columns: columnasVisibles;"></tr>
-  
-      </table>
-  
-      <mat-paginator [pageSizeOptions]="[10, 20, 50]" 
-                     [pageSize]="itemsPorPagina">
-      </mat-paginator>
-    </div>
-  
   </div>
+
+  <div class="barra-acciones">
+
+    <div class="iconos-exportar">
+      <button mat-icon-button (click)="exportarWord()" matTooltip="Exportar a Word">
+        <mat-icon>description</mat-icon>
+      </button>
+      <button mat-icon-button (click)="exportarPDF()" matTooltip="Exportar a PDF">
+        <mat-icon>picture_as_pdf</mat-icon>
+      </button>
+      <button mat-icon-button (click)="exportarExcel()" matTooltip="Exportar a Excel">
+        <mat-icon>table_chart</mat-icon>
+      </button>
+    </div>
+
+    <div class="acciones-derecha">
+      <button mat-icon-button (click)="cargarDatos()" matTooltip="Actualizar">
+        <mat-icon>refresh</mat-icon>
+      </button>
+      <button mat-icon-button (click)="buscar()" matTooltip="Buscar">
+        <mat-icon>search</mat-icon>
+      </button>
+    </div>
+  </div>
+
+  <div class="buscadores-superiores">
+    <input matInput placeholder="IML">
+    <input matInput placeholder="Nº Expediente">
+    <input matInput placeholder="TIPO IDENTIFICACIÓN">
+    <input matInput placeholder="Nº IDENTIFICACIÓN">
+    <input matInput placeholder="NOMBRE">
+    <input matInput placeholder="APELLIDO 1">
+    <input matInput placeholder="APELLIDO 2">
+    <input matInput placeholder="FECHA NACIMIENTO">
+    <input matInput placeholder="OPCIONES">
+</div>
+
+  <div class="contenedor-tabla">
+    <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
+      <ng-container matColumnDef="iml">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>IML</th>
+        <td mat-cell *matCellDef="let row">{{row.iml}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="numExpediente">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Nº EXPEDIENTE</th>
+        <td mat-cell *matCellDef="let row">{{row.numExpediente}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="tipoIdentificacion">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>TIPO IDENTIFICACIÓN</th>
+        <td mat-cell *matCellDef="let row">{{row.tipoIdentificacion}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="numIdentificacion">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Nº IDENTIFICACIÓN</th>
+        <td mat-cell *matCellDef="let row">{{row.numIdentificacion}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="nombre">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>NOMBRE</th>
+        <td mat-cell *matCellDef="let row">{{row.nombre}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="apellido1">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>APELLIDO 1</th>
+        <td mat-cell *matCellDef="let row">{{row.apellido1}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="apellido2">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>APELLIDO 2</th>
+        <td mat-cell *matCellDef="let row">{{row.apellido2}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="fechaNacimiento">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>FECHA NACIMIENTO</th>
+        <td mat-cell *matCellDef="let row">{{row.fechaNacimiento | date}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="opciones">
+        <th mat-header-cell *matHeaderCellDef>OPCIONES</th>
+        <td mat-cell *matCellDef="let row">
+          <button mat-icon-button (click)="verDetalle(row)" matTooltip="Ver detalle">
+            <mat-icon>visibility</mat-icon>
+          </button>
+          <button mat-icon-button (click)="crearEpisodio(row)" matTooltip="Crear episodio">
+            <mat-icon>add_circle</mat-icon>
+          </button>
+          <button mat-icon-button (click)="anadirSujeto(row)" matTooltip="Añadir sujeto">
+            <mat-icon>person_add</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="columnasVisibles"></tr>
+      <tr mat-row *matRowDef="let row; columns: columnasVisibles;"></tr>
+    </table>
+
+    <mat-paginator 
+      [pageSize]="itemsPorPagina"
+      [pageSizeOptions]="[10, 20, 50]"
+      showFirstLastButtons
+      aria-label="Seleccionar página">
+    </mat-paginator>
+  </div>
+</div>
