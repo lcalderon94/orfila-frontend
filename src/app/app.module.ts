@@ -29,6 +29,7 @@ import { CargaCodigosComponent } from './components/gestion-muestras/carga-codig
 import { MuestrasListComponent } from './components/gestion-muestras/muestras-list/muestras-list.component';
 import { CargasSistemaComponent } from './components/gestion-muestras/cargas-sistema/cargas-sistema.component';
 import { AdministracionSujetosComponent } from './components/administracion-sujetos/administracion-sujetos.component';
+import { PortafirmasListadoComponent } from './components/portafirmas/portafirmas-listado/portafirmas-listado.component';
 
 
 import { HeaderComponent } from './header/header.component';
@@ -100,7 +101,8 @@ import { MatExpansionModule } from '@angular/material/expansion';
     AdministracionSujetosComponent,
     HeaderComponent,
     SidebarComponent,
-    FooterComponent
+    FooterComponent,
+    PortafirmasListadoComponent
   ],
   imports: [
     BrowserModule,

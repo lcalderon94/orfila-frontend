@@ -1,1 +1,28 @@
-<p>portafirmas works!</p>
+<div class="contenedor-pagina">
+    <ng-container *ngIf="!mostrarListado">
+      <div class="portafirmas-intro">
+        <div class="portafirmas-logo">
+          <img src="https://www.kno-sys.com/sites/default/files/2020-10/portafirma.jpg" alt="Portafirmas Logo"/>
+        </div>
+        <div class="portafirmas-info">
+          <h2>Portal Portafirmas</h2>
+          <p>Para acceder a las distintas posibilidades que ofrece el sistema, pulse en las pestañas que componen el menú.</p>
+          <p>La aplicación dispone de ayudas que pueden facilitar la cumplimentación de los distintos campos de datos.</p>
+          <p>Los distintos enlaces y botones de navegación tienen un significado y resultado normalizado.</p>
+          <p>Este Portal web permite a los usuarios gestionar la configuración de las aplicaciones integradoras en la plataforma, asegurando:</p>
+          <ul>
+            <li>Un proceso seguro, donde un usuario podrá realizar únicamente acciones acordes a su perfil sobre los documentos a él asignados.</li>
+            <li>Un proceso trazable, identificando las actividades realizadas por cada usuario y manteniendo un registro de acciones auditadas por el aplicativo.</li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="portafirmas-acceso">
+        <button mat-raised-button color="primary" (click)="abrirPortafirmas()">
+          Acceder al Portafirmas
+        </button>
+      </div>
+    </ng-container>
+  
+    <app-portafirmas-listado *ngIf="mostrarListado"></app-portafirmas-listado>
+  </div>

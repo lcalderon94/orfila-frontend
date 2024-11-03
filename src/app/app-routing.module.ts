@@ -26,6 +26,8 @@ import { CargaCodigosComponent } from './components/gestion-muestras/carga-codig
 import { MuestrasListComponent } from './components/gestion-muestras/muestras-list/muestras-list.component';
 import { CargasSistemaComponent } from './components/gestion-muestras/cargas-sistema/cargas-sistema.component';
 import { AdministracionSujetosComponent } from './components/administracion-sujetos/administracion-sujetos.component';
+import { PortafirmasListadoComponent } from './components/portafirmas/portafirmas-listado/portafirmas-listado.component';
+
 
 const routes: Routes = [
   { path: '', redirectTo: '/tareas', pathMatch: 'full' },
@@ -49,7 +51,14 @@ const routes: Routes = [
   { path: 'muestras', component: MuestrasComponent },
   { path: 'consulta-antecedentes', component: ConsultaAntecedentesComponent },
   { path: 'consulta-documentos', component: ConsultaDocumentosComponent },
-  { path: 'portafirmas', component: PortafirmasComponent },
+  { 
+    path: 'portafirmas', 
+    component: PortafirmasComponent,
+    children: [
+      { path: '', component: PortafirmasComponent },
+      { path: 'listado', component: PortafirmasListadoComponent }
+    ]
+  },
   
   // LexNET routes
   { 

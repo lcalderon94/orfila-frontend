@@ -1,1 +1,179 @@
-<p>consulta-documentos works!</p>
+<div class="contenedor-pagina">
+    <h1>Consulta Documentos</h1>
+  
+    <div class="contenedor-filtros" (click)="mostrarFiltros = !mostrarFiltros">
+      <mat-icon>filter_list</mat-icon>
+      <span>Filtros</span>
+    </div>
+  
+    <div class="filtros-panel" *ngIf="mostrarFiltros">
+      <form [formGroup]="filtrosForm" class="grid-container">
+        <mat-form-field>
+          <mat-label>Fecha Desde</mat-label>
+          <input matInput [matDatepicker]="pickerDesde" formControlName="fechaDesde">
+          <mat-datepicker-toggle matSuffix [for]="pickerDesde"></mat-datepicker-toggle>
+          <mat-datepicker #pickerDesde></mat-datepicker>
+        </mat-form-field>
+  
+        <mat-form-field>
+          <mat-label>Fecha Hasta</mat-label>
+          <input matInput [matDatepicker]="pickerHasta" formControlName="fechaHasta">
+          <mat-datepicker-toggle matSuffix [for]="pickerHasta"></mat-datepicker-toggle>
+          <mat-datepicker #pickerHasta></mat-datepicker>
+        </mat-form-field>
+  
+        <mat-form-field>
+          <mat-label>Estado</mat-label>
+          <mat-select formControlName="estado">
+            <mat-option>Seleccione una opción...</mat-option>
+            <mat-option value="completado">Completado</mat-option>
+            <mat-option value="firmado">Firmado</mat-option>
+            <mat-option value="preparacion">En preparación</mat-option>
+          </mat-select>
+        </mat-form-field>
+  
+        <mat-form-field>
+          <mat-label>Tipo Perito</mat-label>
+          <mat-select formControlName="tipoPerito">
+            <mat-option>Seleccione una opción...</mat-option>
+            <mat-option value="medico">Médico Forense</mat-option>
+            <!-- Otros tipos de perito -->
+          </mat-select>
+        </mat-form-field>
+  
+        <mat-form-field>
+          <mat-label>Autor del Informe</mat-label>
+          <mat-select formControlName="autorInforme">
+            <mat-option>Seleccione una opción...</mat-option>
+            <!-- Opciones de autores -->
+          </mat-select>
+        </mat-form-field>
+  
+        <mat-form-field>
+          <mat-label>Fecha Responsable Actualización</mat-label>
+          <mat-select formControlName="fechaResponsable">
+            <mat-option>Seleccione una opción...</mat-option>
+            <!-- Opciones de fechas -->
+          </mat-select>
+        </mat-form-field>
+  
+        <mat-form-field class="full-width">
+          <mat-label>Texto a buscar</mat-label>
+          <textarea matInput formControlName="textoBuscar" rows="3"></textarea>
+          <mat-icon matSuffix matTooltip="El texto se buscará en la descripción del documento">info</mat-icon>
+        </mat-form-field>
+  
+        <mat-form-field>
+          <mat-label>Nº/Año</mat-label>
+          <input matInput formControlName="numAnio">
+        </mat-form-field>
+      </form>
+  
+      <div class="botones-filtro">
+        <button mat-stroked-button color="primary" (click)="limpiarFiltros()">
+          LIMPIAR
+        </button>
+        <button mat-raised-button color="primary" (click)="buscar()">
+          BUSCAR
+        </button>
+      </div>
+    </div>
+  
+    <div class="barra-acciones">
+  
+      <div class="iconos-exportar">
+        <button mat-icon-button (click)="exportarWord()" matTooltip="Exportar a Word">
+          <mat-icon>description</mat-icon>
+        </button>
+        <button mat-icon-button (click)="exportarPDF()" matTooltip="Exportar a PDF">
+          <mat-icon>picture_as_pdf</mat-icon>
+        </button>
+        <button mat-icon-button (click)="exportarExcel()" matTooltip="Exportar a Excel">
+          <mat-icon>table_chart</mat-icon>
+        </button>
+      </div>
+  
+      <div class="acciones-derecha">
+        <button mat-icon-button (click)="cargarDatos()" matTooltip="Actualizar">
+          <mat-icon>refresh</mat-icon>
+        </button>
+        <button mat-icon-button (click)="buscar()" matTooltip="Buscar">
+          <mat-icon>search</mat-icon>
+        </button>
+      </div>
+    </div>
+  
+    <div class="buscadores-superiores">
+      <input matInput placeholder="F. CREACIÓN">
+      <input matInput placeholder="TIPO">
+      <input matInput placeholder="NOMBRE">
+      <input matInput placeholder="DESC. LEXNET">
+      <input matInput placeholder="Nº/AÑO">
+      <input matInput placeholder="Nº EPISODIO">
+      <input matInput placeholder="AUTOR INFORME">
+      <input matInput placeholder="ESTADO">
+    </div>
+  
+    <div class="contenedor-tabla">
+      <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
+        <ng-container matColumnDef="fechaCreacion">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>F. CREACIÓN</th>
+          <td mat-cell *matCellDef="let row">{{row.fechaCreacion | date}}</td>
+        </ng-container>
+  
+        <ng-container matColumnDef="tipo">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>TIPO</th>
+          <td mat-cell *matCellDef="let row">{{row.tipo}}</td>
+        </ng-container>
+  
+        <ng-container matColumnDef="nombre">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>NOMBRE</th>
+          <td mat-cell *matCellDef="let row">{{row.nombre}}</td>
+        </ng-container>
+  
+        <ng-container matColumnDef="descLexnet">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>DESC. LEXNET</th>
+          <td mat-cell *matCellDef="let row">{{row.descLexnet}}</td>
+        </ng-container>
+  
+        <ng-container matColumnDef="numAnio">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Nº/AÑO</th>
+          <td mat-cell *matCellDef="let row">{{row.numAnio}}</td>
+        </ng-container>
+  
+        <ng-container matColumnDef="numEpisodio">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Nº EPISODIO</th>
+          <td mat-cell *matCellDef="let row">{{row.numEpisodio}}</td>
+        </ng-container>
+  
+        <ng-container matColumnDef="autorInforme">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>AUTOR INFORME</th>
+          <td mat-cell *matCellDef="let row">{{row.autorInforme}}</td>
+        </ng-container>
+  
+        <ng-container matColumnDef="estado">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>ESTADO</th>
+          <td mat-cell *matCellDef="let row">{{row.estado}}</td>
+        </ng-container>
+  
+        <ng-container matColumnDef="opciones">
+          <th mat-header-cell *matHeaderCellDef>OPCIONES</th>
+          <td mat-cell *matCellDef="let row">
+            <button mat-icon-button (click)="verDetalle(row)" matTooltip="Ver detalle">
+              <mat-icon>visibility</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+  
+        <tr mat-header-row *matHeaderRowDef="columnasVisibles"></tr>
+        <tr mat-row *matRowDef="let row; columns: columnasVisibles;"></tr>
+      </table>
+  
+      <mat-paginator 
+        [pageSize]="itemsPorPagina"
+        [pageSizeOptions]="[10, 20, 50]"
+        showFirstLastButtons
+        aria-label="Seleccionar página">
+      </mat-paginator>
+    </div>
+  </div>

@@ -1,0 +1,84 @@
+.portafirmas-container {
+    padding: 20px;
+  }
+  
+  .barra-filtros {
+    background-color: #f5f5f5;
+    padding: 10px;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .filtros-izquierda {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+  
+  .filtro-mostrar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .select-items {
+    width: 70px;
+  }
+  
+  .navegacion-paginas {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  
+  .portafirmas-table {
+    width: 100%;
+  }
+  
+  .mat-header-row {
+    background-color: #003366 !important;
+  }
+  
+  .mat-header-cell {
+    color: white !important;
+    font-weight: bold;
+    padding: 12px !important;
+  }
+  
+  .columna-imlz {
+    color: #0066cc;
+    font-weight: 500;
+  }
+  
+  .estado-cell {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .estado-icon {
+    color: #4CAF50;
+    font-size: 18px;
+  }
+  
+  .estado-texto {
+    color: #4CAF50;
+  }
+  
+  .columna-progreso {
+    background-color: #f5f5f5;
+    padding: 4px 8px;
+    border-radius: 4px;
+  }
+  
+  .columna-acciones {
+    display: flex;
+    gap: 8px;
+  }
+  
+  .accion-editar mat-icon, 
+  .accion-descargar mat-icon {
+    color: #0066cc;
+  }

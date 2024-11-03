@@ -6,5 +6,9 @@ import { Component } from '@angular/core';
   styleUrls: ['./portafirmas.component.css']
 })
 export class PortafirmasComponent {
+  mostrarListado: boolean = false;
 
+  abrirPortafirmas(): void {
+    this.mostrarListado = true;
+  }
 }

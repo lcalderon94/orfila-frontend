@@ -1,0 +1,36 @@
+.contenedor-pagina {
+    padding: 20px;
+  }
+  
+  .portafirmas-intro {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 30px;
+  }
+  
+  .portafirmas-logo {
+    flex-shrink: 0;
+  }
+  
+  .portafirmas-info {
+    flex-grow: 1;
+  }
+  
+  .portafirmas-info h2 {
+    margin-bottom: 20px;
+  }
+  
+  .portafirmas-info p {
+    margin-bottom: 10px;
+  }
+  
+  .portafirmas-acceso {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+  }
+  
+  button {
+    padding: 10px 20px;
+    font-size: 16px;
+  }
