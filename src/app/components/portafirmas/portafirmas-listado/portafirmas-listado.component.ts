@@ -1,8 +1,7 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
-import { MatPaginator } from '@angular/material/paginator';
-import { MatSort } from '@angular/material/sort';
 import { SelectionModel } from '@angular/cdk/collections';
+import { MatDialogRef } from '@angular/material/dialog';
 
 interface DocumentoFirma {
   aplicacion: string;
@@ -11,6 +10,7 @@ interface DocumentoFirma {
   estado: string;
   progreso: string;
   fechaAlta: Date;
+  hasIcon?: boolean;
 }
 
 @Component({
@@ -26,24 +26,24 @@ export class PortafirmasListadoComponent implements OnInit {
   columnasVisibles = [
     'select',
     'aplicacion',
-    'titulo',
+    'titulo', 
     'tramitador',
     'estado',
     'progreso',
     'fechaAlta',
+    'mark',
+    'done',
     'acciones'
   ];
 
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
-  @ViewChild(MatSort) sort!: MatSort;
-
-  constructor() {
+  constructor(public dialogRef: MatDialogRef<PortafirmasListadoComponent>) {
     this.dataSource = new MatTableDataSource<DocumentoFirma>(this.getDatosIniciales());
   }
 
-  ngOnInit() {
-    this.dataSource.paginator = this.paginator;
-    this.dataSource.sort = this.sort;
+  ngOnInit() {}
+
+  cerrarDialog(): void {
+    this.dialogRef.close();
   }
 
   private getDatosIniciales(): DocumentoFirma[] {
@@ -123,8 +123,8 @@ export class PortafirmasListadoComponent implements OnInit {
     ];
   }
 
-  /** Si todos los elementos están seleccionados */
-  isAllSelected() {
+   /** Si todos los elementos están seleccionados */
+   isAllSelected() {
     const numSelected = this.selection.selected.length;
     const numRows = this.dataSource.data.length;
     return numSelected === numRows;
@@ -136,7 +136,6 @@ export class PortafirmasListadoComponent implements OnInit {
       this.selection.clear();
       return;
     }
-
     this.selection.select(...this.dataSource.data);
   }
 
@@ -152,17 +151,5 @@ export class PortafirmasListadoComponent implements OnInit {
   aplicarFiltro(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
-
-    if (this.dataSource.paginator) {
-      this.dataSource.paginator.firstPage();
-    }
-  }
-
-  /** Cambia los items por página */
-  cambiarItemsPorPagina() {
-    if (this.paginator) {
-      this.paginator.pageSize = this.itemsPorPagina;
-      this.paginator.pageIndex = 0;
-    }
   }
 }

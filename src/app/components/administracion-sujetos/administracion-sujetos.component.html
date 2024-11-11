@@ -1,1 +1,164 @@
-<p>administracion-sujetos works!</p>
+<!-- src/app/components/administracion-sujetos/administracion-sujetos.component.html -->
+<div class="contenedor-pagina">
+  <h1>Administración de Sujetos</h1>
+
+  <!-- Filtros -->
+  <div class="contenedor-filtros" (click)="toggleFiltros()">
+    <mat-icon>filter_list</mat-icon>
+    <span>Filtros</span>
+  </div>
+
+  <div class="filtros-panel" *ngIf="mostrarFiltros">
+    <div class="grid-container">
+      <mat-form-field>
+        <mat-label>Nº Expediente</mat-label>
+        <input matInput [(ngModel)]="filtros.numExpediente">
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Nº Identificación</mat-label>
+        <input matInput [(ngModel)]="filtros.numIdentificacion">
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Nombre</mat-label>
+        <input matInput [(ngModel)]="filtros.nombre">
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Apellido 1</mat-label>
+        <input matInput [(ngModel)]="filtros.apellido1">
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Apellido 2</mat-label>
+        <input matInput [(ngModel)]="filtros.apellido2">
+      </mat-form-field>
+    </div>
+
+    <div class="fila">
+      <!-- Solo indocumentados -->
+      <div class="radio-group-container">
+        <label>Solo indocumentados</label>
+        <mat-radio-group [(ngModel)]="filtros.soloIndocumentados">
+          <mat-radio-button [value]="true">Sí</mat-radio-button>
+          <mat-radio-button [value]="false">No</mat-radio-button>
+        </mat-radio-group>
+      </div>
+
+      <!-- Solo mi IML -->
+      <div class="radio-group-container">
+        <label>Solo mi IML</label>
+        <mat-radio-group [(ngModel)]="filtros.soloMiIml">
+          <mat-radio-button [value]="true">Sí</mat-radio-button>
+          <mat-radio-button [value]="false">No</mat-radio-button>
+        </mat-radio-group>
+      </div>
+    </div>
+
+    <div class="botones-filtro">
+      <button mat-stroked-button (click)="limpiarFiltros()">LIMPIAR</button>
+      <button mat-raised-button color="primary" (click)="buscar()">BUSCAR</button>
+    </div>
+  </div>
+
+  <!-- Barra de acciones -->
+  <div class="barra-acciones">
+    <div class="iconos-exportar">
+      <button mat-icon-button (click)="exportarWord()" matTooltip="Exportar a Word">
+        <mat-icon>description</mat-icon>
+      </button>
+      <button mat-icon-button (click)="exportarPDF()" matTooltip="Exportar a PDF">
+        <mat-icon>picture_as_pdf</mat-icon>
+      </button>
+      <button mat-icon-button (click)="exportarExcel()" matTooltip="Exportar a Excel">
+        <mat-icon>table_chart</mat-icon>
+      </button>
+    </div>
+
+    <div class="acciones-derecha">
+      <button mat-icon-button (click)="cargarDatos()" matTooltip="Actualizar">
+        <mat-icon>refresh</mat-icon>
+      </button>
+      <button mat-icon-button (click)="buscar()" matTooltip="Buscar">
+        <mat-icon>search</mat-icon>
+      </button>
+    </div>
+  </div>
+
+  <!-- Buscadores superiores -->
+  <div class="buscadores-superiores">
+    <input type="text" placeholder="Nombre IML">
+    <input type="text" placeholder="Nº Expediente">
+    <input type="text" placeholder="Tipo Identificación">
+    <input type="text" placeholder="Nº Identificación">
+    <input type="text" placeholder="Nombre">
+    <input type="text" placeholder="Apellido 1"> 
+    <input type="text" placeholder="Apellido 2">
+    <input type="text" placeholder="Fecha Nacimiento">
+  </div>
+
+  <!-- Tabla -->
+  <div class="contenedor-tabla">
+    <table mat-table [dataSource]="dataSource" matSort>
+      <ng-container matColumnDef="nombreIml">
+        <th mat-header-cell *matHeaderCellDef>NOMBRE IML</th>
+        <td mat-cell *matCellDef="let elemento">{{elemento.nombreIml}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="numExpediente">
+        <th mat-header-cell *matHeaderCellDef>Nº EXPEDIENTE</th>
+        <td mat-cell *matCellDef="let elemento">{{elemento.numExpediente}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="tipoIdentificacion">
+        <th mat-header-cell *matHeaderCellDef>TIPO IDENTIFICACIÓN</th>
+        <td mat-cell *matCellDef="let elemento">{{elemento.tipoIdentificacion}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="numIdentificacion">
+        <th mat-header-cell *matHeaderCellDef>Nº IDENTIFICACIÓN</th>
+        <td mat-cell *matCellDef="let elemento">{{elemento.numIdentificacion}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="nombre">
+        <th mat-header-cell *matHeaderCellDef>NOMBRE</th>
+        <td mat-cell *matCellDef="let elemento">{{elemento.nombre}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="apellido1">
+        <th mat-header-cell *matHeaderCellDef>APELLIDO 1</th>
+        <td mat-cell *matCellDef="let elemento">{{elemento.apellido1}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="apellido2">
+        <th mat-header-cell *matHeaderCellDef>APELLIDO 2</th>
+        <td mat-cell *matCellDef="let elemento">{{elemento.apellido2}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="fechaNacimiento">
+        <th mat-header-cell *matHeaderCellDef>FECHA NACIMIENTO</th>
+        <td mat-cell *matCellDef="let elemento">{{elemento.fechaNacimiento | date}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="opciones">
+        <th mat-header-cell *matHeaderCellDef>OPCIONES</th>
+        <td mat-cell *matCellDef="let row">
+          <button mat-icon-button matTooltip="Ver detalle">
+            <mat-icon>visibility</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="columnasVisibles"></tr>
+      <tr mat-row *matRowDef="let row; columns: columnasVisibles;"></tr>
+    </table>
+  </div>
+
+  <!-- Paginador -->
+  <mat-paginator 
+    [pageSizeOptions]="[10, 20, 50]"
+    [pageSize]="itemsPorPagina"
+    showFirstLastButtons>
+  </mat-paginator>
+</div>

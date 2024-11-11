@@ -1,1 +1,175 @@
-<p>estado-envios works!</p>
+<!-- estado-envios.component.html -->
+<div class="contenedor-pagina">
+    <h1>Estado Envíos</h1>
+  
+    <!-- Panel de filtros -->
+    <div class="filtros-panel">
+      <form [formGroup]="filtrosForm">
+        <div class="grid-container">
+          <!-- Fecha desde -->
+          <mat-form-field>
+            <mat-label>Fecha desde</mat-label>
+            <input matInput [matDatepicker]="pickerDesde" formControlName="fechaDesde">
+            <mat-datepicker-toggle matSuffix [for]="pickerDesde"></mat-datepicker-toggle>
+            <mat-datepicker #pickerDesde></mat-datepicker>
+          </mat-form-field>
+  
+          <!-- Fecha hasta -->
+          <mat-form-field>
+            <mat-label>Fecha hasta</mat-label>
+            <input matInput [matDatepicker]="pickerHasta" formControlName="fechaHasta">
+            <mat-datepicker-toggle matSuffix [for]="pickerHasta"></mat-datepicker-toggle>
+            <mat-datepicker #pickerHasta></mat-datepicker>
+          </mat-form-field>
+        </div>
+  
+        <!-- Botones de acción -->
+        <div class="botones-filtro">
+          <button mat-raised-button color="primary" (click)="buscar()">
+            BUSCAR
+          </button>
+          <button mat-stroked-button (click)="limpiarFiltros()">
+            LIMPIAR
+          </button>
+        </div>
+      </form>
+    </div>
+  
+    <!-- Barra de acciones -->
+    <div class="barra-acciones">
+      <!-- Selector de items por página -->
+      <div class="controles-izquierda">
+    
+  
+        <!-- Iconos de exportación -->
+        <div class="iconos-exportar">
+          <button mat-icon-button matTooltip="Exportar a Word">
+            <mat-icon>description</mat-icon>
+          </button>
+          <button mat-icon-button matTooltip="Exportar a PDF">
+            <mat-icon>picture_as_pdf</mat-icon>
+          </button>
+          <button mat-icon-button matTooltip="Exportar a Excel">
+            <mat-icon>table_chart</mat-icon>
+          </button>
+        </div>
+      </div>
+  
+      <!-- Botón de refresh -->
+      <div class="acciones-derecha">
+        <button mat-icon-button matTooltip="Actualizar" (click)="cargarDatos()">
+          <mat-icon>refresh</mat-icon>
+        </button>
+      </div>
+    </div>
+  
+    <!-- Filtros de columnas -->
+    <div class="buscadores-superiores">
+      <input placeholder="F. Envío" [(ngModel)]="filtrosColumnas.fEnvio" (keyup)="aplicarFiltrosColumnas()">
+      <input placeholder="N. Envío" [(ngModel)]="filtrosColumnas.nEnvio" (keyup)="aplicarFiltrosColumnas()">
+      <input placeholder="Episodio" [(ngModel)]="filtrosColumnas.episodio" (keyup)="aplicarFiltrosColumnas()">
+      <input placeholder="Tipo procedimiento" [(ngModel)]="filtrosColumnas.tipoProcedimiento" (keyup)="aplicarFiltrosColumnas()">
+      <input placeholder="Nº/Año" [(ngModel)]="filtrosColumnas.nAnio" (keyup)="aplicarFiltrosColumnas()">
+      <input placeholder="Tipo Doc. Principal" [(ngModel)]="filtrosColumnas.tipoDocPrincipal" (keyup)="aplicarFiltrosColumnas()">
+      <input placeholder="Usuario" [(ngModel)]="filtrosColumnas.usuario" (keyup)="aplicarFiltrosColumnas()">
+      <input placeholder="Estado" [(ngModel)]="filtrosColumnas.estado" (keyup)="aplicarFiltrosColumnas()">
+    </div>
+  
+    <!-- Tabla de envíos -->
+    <div class="contenedor-tabla">
+      <table mat-table [dataSource]="dataSource" matSort>
+        <!-- F. Envío Column -->
+        <ng-container matColumnDef="fEnvio">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            {{ obtenerTituloColumna('fEnvio') }}
+          </th>
+          <td mat-cell *matCellDef="let row">{{row.fEnvio}}</td>
+        </ng-container>
+  
+        <!-- N. Envío Column -->
+        <ng-container matColumnDef="nEnvio">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            {{ obtenerTituloColumna('nEnvio') }}
+          </th>
+          <td mat-cell *matCellDef="let row">{{row.nEnvio}}</td>
+        </ng-container>
+  
+        <!-- Episodio Column -->
+        <ng-container matColumnDef="episodio">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            {{ obtenerTituloColumna('episodio') }}
+          </th>
+          <td mat-cell *matCellDef="let row">{{row.episodio}}</td>
+        </ng-container>
+  
+        <!-- Tipo Procedimiento Column -->
+        <ng-container matColumnDef="tipoProcedimiento">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            {{ obtenerTituloColumna('tipoProcedimiento') }}
+          </th>
+          <td mat-cell *matCellDef="let row">{{row.tipoProcedimiento}}</td>
+        </ng-container>
+  
+        <!-- Nº/Año Column -->
+        <ng-container matColumnDef="nAnio">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            {{ obtenerTituloColumna('nAnio') }}
+          </th>
+          <td mat-cell *matCellDef="let row">{{row.nAnio}}</td>
+        </ng-container>
+  
+        <!-- Tipo Doc. Principal Column -->
+        <ng-container matColumnDef="tipoDocPrincipal">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            {{ obtenerTituloColumna('tipoDocPrincipal') }}
+          </th>
+          <td mat-cell *matCellDef="let row">{{row.tipoDocPrincipal}}</td>
+        </ng-container>
+  
+        <!-- Usuario Column -->
+        <ng-container matColumnDef="usuario">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            {{ obtenerTituloColumna('usuario') }}
+          </th>
+          <td mat-cell *matCellDef="let row">{{row.usuario}}</td>
+        </ng-container>
+  
+        <!-- Estado Column -->
+        <ng-container matColumnDef="estado">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            {{ obtenerTituloColumna('estado') }}
+          </th>
+          <td mat-cell *matCellDef="let row">{{row.estado}}</td>
+        </ng-container>
+  
+        <!-- Opciones Column -->
+        <ng-container matColumnDef="opciones">
+          <th mat-header-cell *matHeaderCellDef>{{ obtenerTituloColumna('opciones') }}</th>
+          <td mat-cell *matCellDef="let row">
+            <button mat-icon-button (click)="verDetalle(row)" matTooltip="Ver detalle">
+              <mat-icon>visibility</mat-icon>
+            </button>
+            <button mat-icon-button (click)="verAcuse(row)" matTooltip="Ver acuse">
+              <mat-icon>done</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+  
+        <tr mat-header-row *matHeaderRowDef="columnasVisibles"></tr>
+        <tr mat-row *matRowDef="let row; columns: columnasVisibles;"></tr>
+      </table>
+    </div>
+  
+    <!-- Paginador -->
+    <mat-paginator 
+      [pageSizeOptions]="[10, 20, 50]"
+      showFirstLastButtons
+    ></mat-paginator>
+  
+    <!-- Botón actualizar estado mensajes -->
+    <div class="actualizar-estado">
+      <button mat-raised-button color="primary" (click)="actualizarEstadoMensajes()">
+        ACTUALIZAR ESTADO MENSAJES
+      </button>
+    </div>
+  </div>

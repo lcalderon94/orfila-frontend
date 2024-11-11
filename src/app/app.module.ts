@@ -1,5 +1,3 @@
-// src/app/app.module.ts
-
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
@@ -30,7 +28,6 @@ import { MuestrasListComponent } from './components/gestion-muestras/muestras-li
 import { CargasSistemaComponent } from './components/gestion-muestras/cargas-sistema/cargas-sistema.component';
 import { AdministracionSujetosComponent } from './components/administracion-sujetos/administracion-sujetos.component';
 import { PortafirmasListadoComponent } from './components/portafirmas/portafirmas-listado/portafirmas-listado.component';
-
 
 import { HeaderComponent } from './header/header.component';
 import { SidebarComponent } from './sidebar/sidebar.component';
@@ -68,10 +65,6 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatExpansionModule } from '@angular/material/expansion';
 
-
-
-
-
 @NgModule({
   declarations: [
     AppComponent,
@@ -107,7 +100,7 @@ import { MatExpansionModule } from '@angular/material/expansion';
   imports: [
     BrowserModule,
     AppRoutingModule,
-    BrowserAnimationsModule, // Necesario para Angular Material
+    BrowserAnimationsModule,
     MatIconModule,
     MatButtonModule,
     MatTableModule,
@@ -138,7 +131,6 @@ import { MatExpansionModule } from '@angular/material/expansion';
     MatChipsModule,
     MatNativeDateModule,
     MatExpansionModule
-    // Agrega otros módulos de Angular Material según sea necesario
   ],
   providers: [],
   bootstrap: [AppComponent]

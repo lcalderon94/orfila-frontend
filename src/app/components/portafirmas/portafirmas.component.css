@@ -1,36 +1,66 @@
 .contenedor-pagina {
-    padding: 20px;
-  }
-  
-  .portafirmas-intro {
-    display: flex;
-    gap: 20px;
-    margin-bottom: 30px;
-  }
-  
-  .portafirmas-logo {
-    flex-shrink: 0;
-  }
-  
-  .portafirmas-info {
-    flex-grow: 1;
-  }
-  
-  .portafirmas-info h2 {
-    margin-bottom: 20px;
-  }
-  
-  .portafirmas-info p {
-    margin-bottom: 10px;
-  }
-  
-  .portafirmas-acceso {
-    display: flex;
-    justify-content: center;
-    margin-top: 20px;
-  }
-  
-  button {
-    padding: 10px 20px;
-    font-size: 16px;
-  }
+  padding: 20px;
+}
+
+/* Estilo para el logo principal */
+.portafirmas-header {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 40px;
+  padding: 20px;
+}
+
+.portafirmas-header img {
+  max-width: 5000px;
+  height: auto;
+}
+
+/* Estilos para el contenido principal */
+.portafirmas-intro {
+  display: flex;
+  gap: 40px;
+  margin-bottom: 30px;
+  align-items: flex-start;
+  padding: 20px;
+}
+
+.portafirmas-base {
+  flex: 0 0 300px;
+}
+
+.portafirmas-base img {
+  width: 100%;
+  height: auto;
+}
+
+.portafirmas-info {
+  flex: 1;
+}
+
+.portafirmas-info h2 {
+  font-size: 32px;
+  color: #333;
+  margin-bottom: 30px;
+}
+
+.portafirmas-info p {
+  font-size: 18px;
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+.portafirmas-info ul {
+  font-size: 18px;
+  line-height: 1.6;
+}
+
+.portafirmas-acceso {
+  display: flex;
+  justify-content: center;
+  margin-top: 40px;
+}
+
+.portafirmas-acceso button {
+  padding: 15px 30px;
+  font-size: 18px;
+}

@@ -280,15 +280,15 @@ mat-paginator {
   display: flex;
   gap: 10px;
   margin-bottom: 20px;
-  overflow-x: auto;
 }
 
 .buscadores-superiores input {
-  flex: 1;
-  min-width: 150px;
-  padding: 8px;
+  width: 180px;  /* Tu ancho deseado */
+  height: 24px;
+  font-size: 12px;
+  padding: 2px 8px;
   border: 1px solid #ddd;
-  border-radius: 4px;
+  border-radius: 2px;
 }
 
 /* Nuevo estilo para mat-mdc-header-cell:last-child */
@@ -304,11 +304,6 @@ mat-paginator {
 /* Nuevo estilo para header sort arrow */
 ::ng-deep .mat-sort-header-arrow {
   color: white !important;
-}
-
-/* Nuevo ajuste responsive */
-.buscadores-superiores input {
-  flex-basis: calc(50% - 5px);
 }
 
 /* Estilos comunes para campo corto */
@@ -439,3 +434,10 @@ mat-radio-button {
   opacity: 0.8;
 }
   
+.portafirmas-dialog .mat-mdc-dialog-container {
+  padding: 0;
+}
+
+.portafirmas-dialog .mat-mdc-dialog-surface {
+  border-radius: 8px;
+}

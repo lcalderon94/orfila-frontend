@@ -1,1 +1,109 @@
-<p>mensajes-recibidos works!</p>
+<!-- mensajes-recibidos.component.html -->
+<div class="contenedor-pagina">
+    <h1>Mensajes Recibidos</h1>
+  
+    <!-- Filtros -->
+    <div class="contenedor-filtros" (click)="toggleFiltros()">
+      <mat-icon>filter_list</mat-icon>
+      <span>Filtros</span>
+    </div>
+  
+    <div class="filtros-panel" *ngIf="mostrarFiltros">
+      <div class="filtro-seccion">
+        <h3>Estado</h3>
+        <mat-radio-group [(ngModel)]="filtros.estado">
+          <mat-radio-button value="todos">Todos</mat-radio-button>
+          <mat-radio-button value="leido">Leído</mat-radio-button>
+          <mat-radio-button value="noLeido">No leído</mat-radio-button>
+        </mat-radio-group>
+      </div>
+  
+      <div class="filtro-seccion">
+        <div class="grid-container">
+          <mat-form-field>
+            <mat-label>Fecha Consulta Desde</mat-label>
+            <input matInput [matDatepicker]="pickerDesde" [(ngModel)]="filtros.fechaConsultaDesde">
+            <mat-datepicker-toggle matSuffix [for]="pickerDesde"></mat-datepicker-toggle>
+            <mat-datepicker #pickerDesde></mat-datepicker>
+          </mat-form-field>
+  
+          <mat-form-field>
+            <mat-label>Fecha Consulta Hasta</mat-label>
+            <input matInput [matDatepicker]="pickerHasta" [(ngModel)]="filtros.fechaConsultaHasta">
+            <mat-datepicker-toggle matSuffix [for]="pickerHasta"></mat-datepicker-toggle>
+            <mat-datepicker #pickerHasta></mat-datepicker>
+          </mat-form-field>
+        </div>
+      </div>
+  
+      <div class="botones-filtro">
+        <button mat-stroked-button (click)="limpiarFiltros()">LIMPIAR</button>
+        <button mat-raised-button color="primary" (click)="buscar()">BUSCAR</button>
+      </div>
+    </div>
+  
+    <!-- Barra de acciones -->
+    <div class="barra-acciones">
+      <div class="iconos-exportar">
+        <button mat-icon-button (click)="exportarWord()" matTooltip="Exportar a Word">
+          <mat-icon>description</mat-icon>
+        </button>
+        <button mat-icon-button (click)="exportarPDF()" matTooltip="Exportar a PDF">
+          <mat-icon>picture_as_pdf</mat-icon>
+        </button>
+        <button mat-icon-button (click)="exportarExcel()" matTooltip="Exportar a Excel">
+          <mat-icon>table_chart</mat-icon>
+        </button>
+      </div>
+  
+      <div class="acciones-derecha">
+        <button mat-icon-button (click)="buscar()" matTooltip="Buscar">
+          <mat-icon>search</mat-icon>
+        </button>
+        <button mat-icon-button (click)="buscar()" matTooltip="Actualizar">
+          <mat-icon>refresh</mat-icon>
+        </button>
+      </div>
+    </div>
+  
+    <!-- Buscadores superiores -->
+    <div class="buscadores-superiores">
+      <input type="text" placeholder="Nº Mensaje">
+      <input type="text" placeholder="Remitente">
+      <input type="text" placeholder="Asunto">
+      <input type="text" placeholder="Nº/AÑO">
+      <input type="text" placeholder="Tipo Proc.">
+      <input type="text" placeholder="Fecha Notificación">
+    </div>
+  
+    <!-- Tabla -->
+    <div class="contenedor-tabla">
+      <table mat-table [dataSource]="dataSource" matSort>
+  
+        <!-- Generar columnas dinámicamente, excepto la columna 'opciones' -->
+        <ng-container *ngFor="let columna of columnasSinOpciones" [matColumnDef]="columna">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ columna | uppercase }}</th>
+          <td mat-cell *matCellDef="let elemento">{{ elemento[columna] }}</td>
+        </ng-container>
+  
+        <!-- Definir la columna 'opciones' manualmente -->
+        <ng-container matColumnDef="opciones">
+          <th mat-header-cell *matHeaderCellDef>OPCIONES</th>
+          <td mat-cell *matCellDef="let row">
+            <button mat-icon-button matTooltip="Ver detalle" (click)="verDetalle(row)">
+              <mat-icon>visibility</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+  
+        <!-- Filas de la tabla -->
+        <tr mat-header-row *matHeaderRowDef="columnasVisibles"></tr>
+        <tr mat-row *matRowDef="let row; columns: columnasVisibles;"></tr>
+      </table>
+    </div>
+  
+    <!-- Paginador -->
+    <mat-paginator [pageSizeOptions]="[10, 20, 50]" [pageSize]="itemsPorPagina" showFirstLastButtons>
+    </mat-paginator>
+  </div>
+  

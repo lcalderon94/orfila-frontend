@@ -1,1 +1,95 @@
-<p>sujetos works!</p>
+<!-- src/app/components/sujetos/sujetos.component.html -->
+
+<div class="contenedor-pagina">
+    <h1>Administración de Sujetos</h1>
+  
+    <div class="contenedor-filtros" (click)="toggleFiltros()">
+      <mat-icon>filter_list</mat-icon>
+      <span>Filtros</span>
+    </div>
+  
+    <div class="filtros-panel" *ngIf="mostrarFiltros">
+      <div class="grid-container">
+        <mat-form-field>
+          <mat-label>Nº Expediente</mat-label>
+          <input matInput [(ngModel)]="filtros.numExpediente">
+        </mat-form-field>
+  
+        <mat-form-field>
+          <mat-label>Nº Identificación</mat-label>
+          <input matInput [(ngModel)]="filtros.numIdentificacion">
+        </mat-form-field>
+  
+        <mat-form-field>
+          <mat-label>Nombre</mat-label>
+          <input matInput [(ngModel)]="filtros.nombre">
+        </mat-form-field>
+  
+        <mat-form-field>
+          <mat-label>Apellido 1</mat-label>
+          <input matInput [(ngModel)]="filtros.apellido1">
+        </mat-form-field>
+  
+        <mat-form-field>
+          <mat-label>Apellido 2</mat-label>
+          <input matInput [(ngModel)]="filtros.apellido2">
+        </mat-form-field>
+      </div>
+  
+      <div class="fila">
+        <mat-radio-group [(ngModel)]="filtros.soloIndocumentados">
+          <mat-radio-button [value]="true">Sí</mat-radio-button>
+          <mat-radio-button [value]="false">No</mat-radio-button>
+        </mat-radio-group>
+  
+        <mat-radio-group [(ngModel)]="filtros.soloMiIml">
+          <mat-radio-button [value]="true">Sí</mat-radio-button>
+          <mat-radio-button [value]="false">No</mat-radio-button>
+        </mat-radio-group>
+      </div>
+  
+      <div class="botones-filtro">
+        <button mat-stroked-button (click)="limpiarFiltros()">LIMPIAR</button>
+        <button mat-raised-button color="primary" (click)="buscar()">BUSCAR</button>
+      </div>
+    </div>
+  
+    <div class="barra-acciones">
+      <div class="iconos-exportar">
+        <button mat-icon-button><mat-icon>description</mat-icon></button>
+        <button mat-icon-button><mat-icon>picture_as_pdf</mat-icon></button>
+        <button mat-icon-button><mat-icon>table_chart</mat-icon></button>
+      </div>
+  
+      <div class="acciones-derecha">
+        <button mat-icon-button><mat-icon>refresh</mat-icon></button>
+        <button mat-icon-button><mat-icon>search</mat-icon></button>
+      </div>
+    </div>
+  
+    <div class="buscadores-superiores">
+      <input type="text" placeholder="Nombre IML">
+      <input type="text" placeholder="Nº Expediente">
+      <input type="text" placeholder="Tipo Identificación">
+      <input type="text" placeholder="Nº Identificación">
+      <input type="text" placeholder="Nombre">
+      <input type="text" placeholder="Apellido 1">
+      <input type="text" placeholder="Apellido 2">
+      <input type="text" placeholder="Fecha Nacimiento">
+    </div>
+  
+    <div class="contenedor-tabla">
+      <table mat-table [dataSource]="dataSource" matSort>
+        <ng-container *ngFor="let columna of columnasVisibles" [matColumnDef]="columna">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>{{columna | uppercase}}</th>
+          <td mat-cell *matCellDef="let elemento">{{elemento[columna]}}</td>
+        </ng-container>
+  
+        <tr mat-header-row *matHeaderRowDef="columnasVisibles"></tr>
+        <tr mat-row *matRowDef="let row; columns: columnasVisibles;"></tr>
+      </table>
+    </div>
+  
+    <mat-paginator [pageSizeOptions]="[10, 20, 50]" showFirstLastButtons>
+    </mat-paginator>
+  </div>
