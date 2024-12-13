@@ -136,13 +136,24 @@
           <ng-container [ngSwitch]="columna">
             <!-- Columna de opciones -->
             <ng-container *ngSwitchCase="'opciones'">
-              <button mat-icon-button [routerLink]="['/episodios/modificar', elemento.nEpisodio]">
+              <button mat-icon-button 
+                      [routerLink]="['/episodios/modificar', elemento.nEpisodio]"
+                      matTooltip="Modificar episodio" 
+                      matTooltipPosition="above">
                 <mat-icon>edit</mat-icon>
               </button>
-              <button mat-icon-button (click)="eliminarEpisodio(elemento.nEpisodio)">
+            
+              <button mat-icon-button 
+                      (click)="eliminarEpisodio(elemento.nEpisodio)"
+                      matTooltip="Eliminar episodio"
+                      matTooltipPosition="above">
                 <mat-icon>delete</mat-icon>
               </button>
-              <button mat-icon-button (click)="verSujetos(elemento.nEpisodio)">
+            
+              <button mat-icon-button 
+                      (click)="verSujetos(elemento.nEpisodio)"
+                      matTooltip="Ver sujetos asociados"
+                      matTooltipPosition="above">
                 <mat-icon>people</mat-icon>
               </button>
             </ng-container>

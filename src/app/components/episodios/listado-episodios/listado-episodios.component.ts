@@ -177,25 +177,30 @@ export class ListadoEpisodiosComponent implements OnInit, AfterViewInit {
   }
 
   eliminarEpisodio(nEpisodio: string) {
-    // Implementar lógica para eliminar episodio
-    console.log('Eliminar episodio:', nEpisodio);
-    // Ejemplo:
-    // this.episodiosService.eliminarEpisodio(nEpisodio).subscribe(
-    //   () => {
-    //     this.snackBar.open('Episodio eliminado con éxito', 'Cerrar', { duration: 3000 });
-    //     this.cargarEpisodios(); // Recargar la lista
-    //   },
-    //   error => {
-    //     console.error('Error al eliminar episodio', error);
-    //     this.snackBar.open('Error al eliminar episodio', 'Cerrar', { duration: 3000 });
-    //   }
-    // );
+    const confirmacion = window.confirm('¿Está seguro de que desea eliminar este episodio?');
+    
+    if (confirmacion) {
+      this.episodiosService.eliminarEpisodio(nEpisodio).subscribe(
+        () => {
+          this.snackBar.open('Episodio eliminado con éxito', 'Cerrar', { 
+            duration: 3000 
+          });
+          this.cargarEpisodios();
+        },
+        error => {
+          console.error('Error al eliminar episodio', error);
+          this.snackBar.open('Error al eliminar episodio', 'Cerrar', { 
+            duration: 3000 
+          });
+        }
+      );
+    }
   }
 
   verSujetos(nEpisodio: string) {
-    // Implementar lógica para ver sujetos
     console.log('Ver sujetos del episodio:', nEpisodio);
-    // Ejemplo:
-    // this.router.navigate(['/episodios', nEpisodio, 'sujetos']);
+    this.router.navigate(['/administracion-sujetos'], { 
+      queryParams: { episodio: nEpisodio }
+    });
   }
 }

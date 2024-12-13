@@ -1,17 +1,40 @@
-<mat-toolbar color="primary">
-    <button mat-icon-button (click)="onToggleSidebar()">
-      <mat-icon>menu</mat-icon>
-    </button>
-    <span>ORFILA 2.0</span>
-    <span class="spacer"></span>
-    <span>TODO ALVAREZ CÓRDOBA</span>
-    <button mat-icon-button>
-      <mat-icon>notifications</mat-icon>
-    </button>
-    <button mat-icon-button>
-      <mat-icon>help</mat-icon>
-    </button>
-    <button mat-icon-button>
-      <mat-icon>language</mat-icon>
-    </button>
-  </mat-toolbar>
+<!-- src/app/components/header/header.component.html -->
+<mat-toolbar>
+  <button mat-icon-button (click)="onToggleSidebar()">
+    <mat-icon>menu</mat-icon>
+  </button>
+
+  <span>ORFILA 2.0</span>
+  <span class="spacer"></span>
+
+  <div class="user-profile" *ngIf="currentProfile">
+    <!-- Selector de usuario para desarrollo -->
+    <mat-form-field>
+      <mat-select 
+        [value]="currentProfile.id"
+        (selectionChange)="onUserChange($event.value)"
+        placeholder="Cambiar usuario">
+        <mat-option *ngFor="let user of availableUsers" [value]="user.id">
+          {{user.nombre}} {{user.apellidos}} ({{user.rol}})
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <span class="user-info">
+      <div>{{currentProfile.nombre}} {{currentProfile.apellidos}}</div>
+      <div class="user-role">{{currentProfile.rol}} - {{currentProfile.iml}}</div>
+    </span>
+  </div>
+
+  <button mat-icon-button>
+    <mat-icon>notifications</mat-icon>
+  </button>
+  
+  <button mat-icon-button>
+    <mat-icon>help</mat-icon>
+  </button>
+  
+  <button mat-icon-button>
+    <mat-icon>language</mat-icon>
+  </button>
+</mat-toolbar>

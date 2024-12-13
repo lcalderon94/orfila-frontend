@@ -29,6 +29,18 @@ export interface Episodio {
   sujeto: string;
 }
 
+export interface Sujeto {
+  nombreIml: string;
+  numExpediente: string;
+  tipoIdentificacion: string;  
+  numIdentificacion: string;
+  nombre: string;
+  apellido1: string;
+  apellido2: string;
+  fechaNacimiento?: string | Date;
+  unificado?: boolean;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -171,6 +183,53 @@ export class EpisodiosService {
     ];
     
     this.episodiosSubject = new BehaviorSubject<Episodio[]>(episodiosIniciales);
+  }
+
+  private sujetosMap: Map<string, Sujeto[]> = new Map([
+    ['EP81180', [
+      {
+        nombreIml: 'IML y CCrF de Palencia, Salamanca y Valladolid',
+        numExpediente: 'EX2013550',
+        tipoIdentificacion: 'DNI',
+        numIdentificacion: '12345678A',
+        nombre: 'Juan',
+        apellido1: 'Pérez',
+        apellido2: 'García',
+        fechaNacimiento: '1980-01-01'
+      }
+    ]],
+    ['EP81175', [
+      {
+        nombreIml: 'Sección 1ª de la A. Prov. Ciudad Real',
+        numExpediente: 'EX2013547',
+        tipoIdentificacion: 'DNI',
+        numIdentificacion: '87654321B',
+        nombre: 'Amadorrr',
+        apellido1: 'Rivas',
+        apellido2: 'Merengue',
+        fechaNacimiento: '1990-12-25'
+      }
+    ]],
+    ['EP81173', [
+      {
+        nombreIml: 'Sección 1ª de la A. Prov. Ciudad Real',
+        numExpediente: 'EX2013546',
+        tipoIdentificacion: 'DNI',
+        numIdentificacion: '11111111C',
+        nombre: 'Antonio',
+        apellido1: 'Sanche',
+        apellido2: 'Trolas',
+        fechaNacimiento: '1985-06-15'
+      }
+    ]]
+  ]);
+
+  getSujetosEpisodio(nEpisodio: string): Observable<Sujeto[]> {
+    return new Observable(observer => {
+      const sujetos = this.sujetosMap.get(nEpisodio) || [];
+      observer.next(sujetos);
+      observer.complete();
+    });
   }
 
   getEpisodios(): Observable<Episodio[]> {

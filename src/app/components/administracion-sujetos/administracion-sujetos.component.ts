@@ -5,24 +5,15 @@ import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatSnackBar } from '@angular/material/snack-bar';
-
-export interface Sujeto {
- nombreIml: string;
- numExpediente: string;
- tipoIdentificacion: string;
- numIdentificacion: string;
- nombre: string;
- apellido1: string;
- apellido2: string;
- fechaNacimiento?: Date;
- unificado?: boolean;
-}
+import { ActivatedRoute } from '@angular/router';
+import { EpisodiosService, Sujeto } from '../../services/episodio.service';
 
 @Component({
- selector: 'app-administracion-sujetos',
- templateUrl: './administracion-sujetos.component.html',
- styleUrls: ['./administracion-sujetos.component.css']
+  selector: 'app-administracion-sujetos',
+  templateUrl: './administracion-sujetos.component.html',
+  styleUrls: ['./administracion-sujetos.component.css']
 })
+
 export class AdministracionSujetosComponent implements OnInit {
  mostrarFiltros = false;
  dataSource: MatTableDataSource<Sujeto>;
@@ -77,13 +68,30 @@ export class AdministracionSujetosComponent implements OnInit {
  @ViewChild(MatPaginator) paginator!: MatPaginator;
  @ViewChild(MatSort) sort!: MatSort;
 
- constructor(private snackBar: MatSnackBar) {
-   this.dataSource = new MatTableDataSource(this.mockData);
- }
+ constructor(
+  private snackBar: MatSnackBar,
+  private route: ActivatedRoute,
+  private episodiosService: EpisodiosService
+) {
+  this.dataSource = new MatTableDataSource(this.mockData);
+}
 
- ngOnInit() {
-   this.cargarDatos();
- }
+ngOnInit() {
+  this.route.queryParams.subscribe((params: { [key: string]: string }) => {
+    const episodioId = params['episodio'];
+    if (episodioId) {
+      // Si venimos desde un episodio específico, mostrar solo sus sujetos
+      this.episodiosService.getSujetosEpisodio(episodioId).subscribe(
+        (sujetos: Sujeto[]) => {
+          this.dataSource.data = sujetos;
+        }
+      );
+    } else {
+      // Si no hay episodio específico, mostrar todos los sujetos como antes
+      this.cargarDatos();
+    }
+  });
+}
 
  ngAfterViewInit() {
    this.dataSource.paginator = this.paginator;
