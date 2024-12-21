@@ -64,6 +64,7 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatExpansionModule } from '@angular/material/expansion';
+import { NotasEpisodioComponent } from './components/episodios/notas-episodio/notas-episodio.component';
 
 @NgModule({
   declarations: [
@@ -95,7 +96,8 @@ import { MatExpansionModule } from '@angular/material/expansion';
     HeaderComponent,
     SidebarComponent,
     FooterComponent,
-    PortafirmasListadoComponent
+    PortafirmasListadoComponent,
+    NotasEpisodioComponent
   ],
   imports: [
     BrowserModule,

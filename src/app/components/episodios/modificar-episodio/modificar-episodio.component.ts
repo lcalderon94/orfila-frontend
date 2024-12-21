@@ -1,12 +1,12 @@
-// src/app/components/episodios/modificar-episodio/modificar-episodio.component.ts
-
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, Validators, FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatDialog } from '@angular/material/dialog';
 import { EpisodiosService, Episodio } from 'src/app/services/episodio.service';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
+import { NotasEpisodioComponent } from '../notas-episodio/notas-episodio.component';
 
 @Component({
   selector: 'app-modificar-episodio',
@@ -26,9 +26,9 @@ export class ModificarEpisodioComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private snackBar: MatSnackBar,
-    private episodiosService: EpisodiosService
+    private episodiosService: EpisodiosService,
+    private dialog: MatDialog
   ) {
-    // Inicialización del formulario
     this.episodioForm = this.fb.group({
       tipoSolicitante: ['', Validators.required],
       direccionSubdireccion: ['', Validators.required],
@@ -160,13 +160,28 @@ export class ModificarEpisodioComponent implements OnInit {
   }
 
   nuevoSujeto(): void {
-    // Implementar lógica para crear nuevo sujeto
     this.snackBar.open('Funcionalidad de nuevo sujeto no implementada', 'Cerrar', { duration: 2000 });
   }
 
   notasEpisodio(): void {
-    // Implementar lógica para mostrar/editar notas del episodio
-    this.snackBar.open('Funcionalidad de notas del episodio no implementada', 'Cerrar', { duration: 2000 });
+    const dialogRef = this.dialog.open(NotasEpisodioComponent, {
+      width: '600px',
+      height: '400px',
+      data: { 
+        episodioId: this.episodioId,
+        tipoOrganismo: this.episodioForm.get('tipoOrganismo')?.value,
+        nAnio: this.episodioForm.get('nAnio')?.value
+      },
+      disableClose: true
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.snackBar.open('Notas actualizadas correctamente', 'Cerrar', {
+          duration: 3000
+        });
+      }
+    });
   }
 
   guardar(): void {

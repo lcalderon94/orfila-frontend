@@ -4,6 +4,8 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { ESTADOS_ENVIO_MOCK } from '../../../mock-data/lexnet.mock';
+
 
 export interface EstadoEnvio {
   fEnvio: string;
@@ -61,89 +63,6 @@ export class EstadoEnviosComponent implements OnInit {
     estado: ''
   };
 
-  private datosIniciales: EstadoEnvio[] = [
-    {
-      fEnvio: '15/07/2022',
-      nEnvio: '12022101955915536',
-      episodio: 'EP81175',
-      tipoProcedimiento: 'Abstención / Recusación Jueces',
-      nAnio: '1234591/2022',
-      tipoDocPrincipal: 'INFORME',
-      usuario: '46888715H',
-      estado: 'Enviado'
-    },
-    {
-      fEnvio: '15/07/2022',
-      nEnvio: '12022101955915535',
-      episodio: 'EP81173',
-      tipoProcedimiento: 'Abstención / Recusación Jueces',
-      nAnio: '1234599/2022',
-      tipoDocPrincipal: 'INFORME',
-      usuario: '46888715H',
-      estado: 'Enviado'
-    },
-    {
-      fEnvio: '14/07/2022',
-      nEnvio: '12022101955915525',
-      episodio: 'EP81172',
-      tipoProcedimiento: 'Abstención / Recusación Jueces',
-      nAnio: '1234567/2022',
-      tipoDocPrincipal: 'INFORME',
-      usuario: '46888715H',
-      estado: 'Enviado'
-    },
-    {
-      fEnvio: '14/07/2022',
-      nEnvio: '12022101955915523',
-      episodio: 'EP81172',
-      tipoProcedimiento: 'Abstención / Recusación Jueces',
-      nAnio: '1234567/2022',
-      tipoDocPrincipal: 'INFORME',
-      usuario: '46888715H',
-      estado: 'Enviado'
-    },
-    {
-      fEnvio: '06/07/2022',
-      nEnvio: '12022101955591334',
-      episodio: 'EP81158',
-      tipoProcedimiento: 'Abstención / Recusación Jueces',
-      nAnio: '9870876/2022',
-      tipoDocPrincipal: 'INFORME',
-      usuario: '02460888A',
-      estado: 'Enviado'
-    },
-    {
-      fEnvio: '17/06/2022',
-      nEnvio: '12022101955590847',
-      episodio: 'EP81158',
-      tipoProcedimiento: 'Abstención / Recusación Jueces',
-      nAnio: '9870876/2022',
-      tipoDocPrincipal: 'INFORME',
-      usuario: '02460888A',
-      estado: 'Enviado'
-    },
-    {
-      fEnvio: '17/06/2022',
-      nEnvio: '12022101955590842',
-      episodio: 'EP81154',
-      tipoProcedimiento: 'ABSTENCION SECRETARIOS JUDICIALES',
-      nAnio: '0221133/2022',
-      tipoDocPrincipal: 'INFORME',
-      usuario: '02460888A',
-      estado: 'Enviado'
-    },
-    {
-      fEnvio: '17/06/2022',
-      nEnvio: '12022101955590841',
-      episodio: 'EP81154',
-      tipoProcedimiento: 'ABSTENCION SECRETARIOS JUDICIALES',
-      nAnio: '0221133/2022',
-      tipoDocPrincipal: 'INFORME',
-      usuario: '02460888A',
-      estado: 'Enviado'
-    }
-];
-
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
@@ -151,7 +70,7 @@ export class EstadoEnviosComponent implements OnInit {
     private fb: FormBuilder,
     private snackBar: MatSnackBar
   ) {
-    this.dataSource = new MatTableDataSource<EstadoEnvio>(this.datosIniciales);
+    this.dataSource = new MatTableDataSource<EstadoEnvio>(ESTADOS_ENVIO_MOCK);
   }
 
   ngOnInit() {
@@ -184,7 +103,7 @@ export class EstadoEnviosComponent implements OnInit {
   }
 
   cargarDatos() {
-    this.dataSource.data = this.datosIniciales;
+    this.dataSource.data = ESTADOS_ENVIO_MOCK;
   }
 
   aplicarFiltrosColumnas() {

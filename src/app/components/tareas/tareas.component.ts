@@ -3,6 +3,8 @@ import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator, MatPaginatorIntl } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { MOCK_TAREAS } from '../../mock-data/tareas.mock';
+
 
 export interface Tarea {
   organo: string;
@@ -12,7 +14,7 @@ export interface Tarea {
   tipoAsistencia: string;
   numExpediente: string;
   sujeto: string;
-  responsable: string;
+  responsable: string[];  // Ahora es un array de strings
   prioridad?: boolean;
   nuevoDocumento?: boolean;
   grupal?: boolean;
@@ -80,82 +82,47 @@ export class TareasComponent implements OnInit {
     }
   }
 
-  private obtenerDatosEjemplo(): Tarea[] {
-    return [
-      {
-        organo: 'Jdo. de lo Penal Nº 1 de Salamanca',
-        numEpisodio: '81329',
-        tipoProcedimiento: 'ASISTENCIAS SECRETARIOS JUDICIALES',
-        numAnio: '000025/2022',
-        tipoAsistencia: 'Análisis Genético',
-        numExpediente: 'EX2017586',
-        sujeto: 'Maria Isabel Rodriguez Alvarez',
-        responsable: '30000332C',
-        prioridad: true
-      },
-      {
-        organo: 'Sección 2ª de la A. Prov. Valladolid',
-        numEpisodio: '81136',
-        tipoProcedimiento: 'ASISTENCIAS SECRETARIOS JUDICIALES',
-        numAnio: '000002/2022',
-        tipoAsistencia: 'Análisis Genético',
-        numExpediente: 'EX2013527',
-        sujeto: '-',
-        responsable: 'Asignar',
-        grupal: true
-      },
-      {
-        organo: 'Abog. CCAA de CASTILLA Y LEON',
-        numEpisodio: '81336',
-        tipoProcedimiento: 'ASISTENCIAS SECRETARIOS JUDICIALES',
-        numAnio: '000001/2022',
-        tipoAsistencia: 'Informe social genérico',
-        numExpediente: 'EX2013607',
-        sujeto: 'Antonio Orozco',
-        responsable: '30000332C'
-      },
-      {
-        organo: 'Jdo. de lo Penal Nº 1 de Salamanca',
-        numEpisodio: '81320',
-        tipoProcedimiento: 'ASISTENCIAS SECRETARIOS JUDICIALES',
-        numAnio: '000001/2022',
-        tipoAsistencia: 'Autopsia',
-        numExpediente: 'EX2013586',
-        sujeto: 'Maria Isabel Rodriguez Alvarez',
-        responsable: 'Asignar',
-        nuevoDocumento: true
-      },
-      {
-        organo: 'Jdo. de lo Penal Nº 1 de Salamanca',
-        numEpisodio: '81305',
-        tipoProcedimiento: 'ASISTENCIAS SECRETARIOS JUDICIALES',
-        numAnio: '000002/2022',
-        tipoAsistencia: 'Valoración psicológica general',
-        numExpediente: 'EX2013585',
-        sujeto: 'Maria Isabel Rodriguez Alvarez',
-        responsable: '30000328W'
-      }
-    ];
+  obtenerTituloColumna(columna: string): string {
+    const titulos: { [key: string]: string } = {
+      'iconos': '',
+      'organo': 'ÓRGANO',
+      'numEpisodio': 'Nº EPISODIO',
+      'tipoProcedimiento': 'TIPO PROCEDIMIENTO',
+      'numAnio': 'Nº/AÑO',
+      'tipoAsistencia': 'TIPO ASISTENCIA',
+      'numExpediente': 'Nº EXPEDIENTE',
+      'sujeto': 'SUJETO',
+      'responsable': 'RESPONSABLE'
+    };
+    return titulos[columna] || columna;
+  }
+
+  verDetalle(tarea: Tarea): void {
+    this.mostrarMensaje(`Viendo detalle de tarea ${tarea.numEpisodio}`);
+    console.log('Detalle de tarea:', tarea);
+  }
+
+  hasSujetosMultiples(responsable: string[]): boolean {
+    return responsable && responsable.length > 1;
+  }
+
+  private obtenerDatosEjemplo() {
+    return MOCK_TAREAS;
   }
 
   private configurarFiltrado() {
     this.dataSource.filterPredicate = (data: Tarea, filter: string) => {
       const searchTerms = JSON.parse(filter);
-      
-      // Aplicar filtros generales
       let cumpleFiltros = true;
       
       if (!searchTerms.incluirFinalizadas && this.filtros.incluirFinalizadas === false) {
-        // Lógica para filtrar finalizadas según necesidad
         return false;
       }
       
       if (searchTerms.soloMiIml && this.filtros.soloMiIml === true) {
-        // Lógica para filtrar por IML según necesidad
         return false;
       }
 
-      // Aplicar filtros de columnas
       Object.keys(searchTerms.columnas).forEach(key => {
         const valor = searchTerms.columnas[key].toLowerCase();
         if (valor && data[key as keyof Tarea]) {
@@ -225,17 +192,14 @@ export class TareasComponent implements OnInit {
 
   exportarWord() {
     this.mostrarMensaje('Exportando a Word...');
-    // Implementar exportación
   }
 
   exportarPDF() {
     this.mostrarMensaje('Exportando a PDF...');
-    // Implementar exportación
   }
 
   exportarExcel() {
     this.mostrarMensaje('Exportando a Excel...');
-    // Implementar exportación
   }
 
   private configurarPaginadorEspanol() {
@@ -264,4 +228,14 @@ export class TareasComponent implements OnInit {
       verticalPosition: 'top',
     });
   }
+
+  // En el ts modificamos la condición de mostrar el icono
+  verifyUnassigned(responsable: string[]): boolean {
+    return !responsable || responsable.length === 0;
+  }
+
+// Y en la columna responsable, antes de mostrar el valor hacemos la transformación
+transformResponsable(responsable: string[]): string {
+  return !responsable || responsable.length === 0 ? 'Sin asignar' : responsable.join(', ');
+}
 }

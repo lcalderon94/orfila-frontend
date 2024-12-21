@@ -23,13 +23,19 @@
         <mat-form-field>
           <mat-label>Dirección/Subdirección</mat-label>
           <mat-select formControlName="direccionSubdireccion">
-            <mat-option value="iml">IML y CCrF de Palencia, Salamanca y Valladolid</mat-option>
+            <mat-option value="IML1">IML y CCrF de Palencia, Salamanca y Valladolid</mat-option>
+            <mat-option value="IML2">IML y CCrF de Ciudad Real y Toledo</mat-option>
+            <mat-option value="IML3">Sección 1ª de la A. Prov. Ciudad Real</mat-option>
+            <mat-option value="IML4">Sección 1ª de la A. Prov. Albacete</mat-option>
+            <mat-option value="IML5">Sección 2ª de la A. Prov. Valladolid</mat-option>
           </mat-select>
         </mat-form-field>
         <mat-form-field>
           <mat-label>Adm. Responsable</mat-label>
           <mat-select formControlName="admResponsable">
-            <mat-option value="">Seleccione una opción...</mat-option>
+            <mat-option value="02460888A">02460888A</mat-option>
+            <mat-option value="46888715H">46888715H</mat-option>
+            <mat-option value="02468888H">02468888H</mat-option>
           </mat-select>
         </mat-form-field>
       </div>
@@ -44,19 +50,40 @@
         <mat-form-field>
           <mat-label>Tipo Organismo</mat-label>
           <mat-select formControlName="tipoOrganismo">
-            <mat-option value="">Seleccione una opción...</mat-option>
+            <mat-option value="penal">Juzgado de lo Penal</mat-option>
+            <mat-option value="seccion">Sección de la Audiencia Provincial</mat-option>
+            <mat-option value="juzgado">Juzgado</mat-option>
+            <mat-option value="aseguradora">Aseguradora</mat-option>
+            <mat-option value="abogacia">Abogacía</mat-option>
           </mat-select>
         </mat-form-field>
         <mat-form-field>
           <mat-label>Organismo</mat-label>
           <mat-select formControlName="organismo">
-            <mat-option value="">Seleccione una opción...</mat-option>
+            <mat-option value="penal1">Jdo. de lo Penal Nº 1 de Avila (Ávila)</mat-option>
+            <mat-option value="penal2">Jdo. de lo Penal Nº 1 de Burgos</mat-option>
+            <mat-option value="penal3">Jdo. de lo Penal Nº 1 de Salamanca</mat-option>
+            <mat-option value="seccion1">Sección 1ª de la A. Prov. Ciudad Real</mat-option>
+            <mat-option value="seccion2">Sección 2ª de la A. Prov. Valladolid</mat-option>
+            <mat-option value="seccion3">Sección 1ª de la A. Prov. Albacete</mat-option>
+            <mat-option value="zurich">ZURICH INSURANCE PLC. - VIA AUGUSTA, 200 08021 BARCELONA</mat-option>
+            <mat-option value="abogacia">Abog. CCAA de CASTILLA Y LEON</mat-option>
+            <mat-option value="intcf">INTCF. Departamento de Madrid</mat-option>
+            <mat-option value="intcf-sevilla">INTCF. Departamento de Sevilla</mat-option>
           </mat-select>
         </mat-form-field>
         <mat-form-field>
           <mat-label>Tipo Procedimiento</mat-label>
           <mat-select formControlName="tipoProcedimiento">
-            <mat-option value="">Seleccione una opción...</mat-option>
+            <mat-option value="ABS">ABS - Abstención / Recusación Jueces</mat-option>
+            <mat-option value="ASS">ASS - Abstención Secretarios Judiciales</mat-option>
+            <mat-option value="CUA">CUA - Causa con Preso</mat-option>
+            <mat-option value="PA">PA - Procedimiento Abreviado</mat-option>
+            <mat-option value="DLS">DLS - Delitos contra la Libertad Sexual</mat-option>
+            <mat-option value="VG">VG - Violencia de Género</mat-option>
+            <mat-option value="VD">VD - Violencia Doméstica</mat-option>
+            <mat-option value="LC">LC - Levantamiento de Cadáver</mat-option>
+            <mat-option value="AP">AP - Autopsia</mat-option>
           </mat-select>
         </mat-form-field>
       </div>
@@ -66,8 +93,10 @@
         </mat-form-field>
         <mat-form-field class="anio">
           <mat-select formControlName="anio">
-            <mat-option [value]="2022">2022</mat-option>
-            <mat-option [value]="2023">2023</mat-option>
+            <mat-option value="2024">2024</mat-option>
+            <mat-option value="2023">2023</mat-option>
+            <mat-option value="2022">2022</mat-option>
+            <mat-option value="2021">2021</mat-option>
           </mat-select>
         </mat-form-field>
         <mat-form-field class="numero-anio">
@@ -75,8 +104,10 @@
         </mat-form-field>
         <mat-form-field class="anio">
           <mat-select formControlName="anioAtestado">
-            <mat-option [value]="2022">2022</mat-option>
-            <mat-option [value]="2023">2023</mat-option>
+            <mat-option value="2024">2024</mat-option>
+            <mat-option value="2023">2023</mat-option>
+            <mat-option value="2022">2022</mat-option>
+            <mat-option value="2021">2021</mat-option>
           </mat-select>
         </mat-form-field>
         <mat-form-field>
@@ -93,6 +124,7 @@
           <mat-icon>content_copy</mat-icon>
         </button>
       </div>
+
       <div class="checkbox-container">
         <div class="radio-group-container">
           <label>Juzgado de Guardia</label>

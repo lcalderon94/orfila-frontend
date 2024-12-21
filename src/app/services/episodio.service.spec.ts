@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { EpisodioService } from './episodio.service';
+import { EpisodiosService } from './episodio.service';  // Cambiado a EpisodiosService
 
-describe('EpisodioService', () => {
-  let service: EpisodioService;
+describe('EpisodiosService', () => {  // Cambiado a EpisodiosService
+  let service: EpisodiosService;  // Cambiado a EpisodiosService
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(EpisodioService);
+    service = TestBed.inject(EpisodiosService);  // Cambiado a EpisodiosService
   });
 
   it('should be created', () => {

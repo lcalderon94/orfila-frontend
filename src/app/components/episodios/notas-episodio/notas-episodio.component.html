@@ -1,0 +1,47 @@
+<div class="notas-dialog">
+  <div class="notas-header">
+    <h2>Nota del Episodio</h2>
+    <button mat-icon-button (click)="cerrarDialog()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <mat-dialog-content>
+    <!-- Lista de Notas Existentes -->
+    <div class="notas-list">
+      <div *ngFor="let nota of notas" class="nota-item">
+        <div class="nota-timestamp">{{nota.fechaCreacion | date:'dd/MM/yyyy HH:mm'}}</div>
+        <div class="nota-content">
+          <div class="nota-user">{{nota.usuario}}</div>
+          <div class="nota-text">{{nota.contenido}}</div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Formulario Nueva Nota -->
+    <div class="nueva-nota-container" *ngIf="mostrarFormulario">
+      <form [formGroup]="notaForm" (ngSubmit)="guardarNota()" class="nueva-nota-form">
+        <mat-form-field class="nota-field">
+          <textarea 
+            matInput 
+            formControlName="nota" 
+            rows="4" 
+            placeholder="Escriba aquí su nota...">
+          </textarea>
+        </mat-form-field>
+        <div class="form-actions">
+          <button mat-button (click)="cancelarNuevaNota()">ATRÁS</button>
+          <button mat-raised-button color="primary" [disabled]="!notaForm.valid">
+            GUARDAR
+          </button>
+        </div>
+      </form>
+    </div>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end" *ngIf="!mostrarFormulario">
+    <button mat-raised-button color="primary" (click)="mostrarFormularioNuevaNota()">
+      NUEVA ENTRADA
+    </button>
+  </mat-dialog-actions>
+</div>

@@ -1,0 +1,60 @@
+
+.notas-dialog {
+  padding: 0;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.notas-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  background-color: #f5f5f5;
+  border-bottom: 1px solid #ddd;
+}
+
+.notas-header h2 {
+  margin: 0;
+}
+
+mat-dialog-content {
+  flex: 1;
+  min-height: 200px;
+  overflow-y: auto;
+  padding: 16px;
+}
+
+.nota-item {
+  margin-bottom: 20px;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 10px;
+}
+
+.nota-timestamp {
+  color: #666;
+  font-size: 0.9em;
+  margin-bottom: 5px;
+}
+
+.nota-user {
+  font-weight: 500;
+  margin-bottom: 5px;
+}
+
+.nota-field {
+  width: 100%;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+mat-dialog-actions {
+  padding: 16px;
+  border-top: 1px solid #ddd;
+}
