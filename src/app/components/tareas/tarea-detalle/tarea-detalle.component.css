@@ -1,0 +1,107 @@
+/* tarea-detalle.component.css */
+.contenedor-tarea {
+    padding: 20px;
+  }
+  
+  .seccion {
+    margin-bottom: 20px;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+  }
+  
+  .seccion h2 {
+    background-color: #f5f5f5;
+    margin: 0;
+    padding: 15px 20px;
+    font-size: 16px;
+    border-bottom: 1px solid #e0e0e0;
+  }
+  
+  .seccion-contenido {
+    padding: 20px;
+  }
+  
+  .campo-formulario {
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+  }
+  
+  .campo-formulario label {
+    width: 150px;
+    font-weight: 500;
+  }
+  
+  .campo-formulario input {
+    flex: 1;
+    padding: 8px;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    background-color: #f9f9f9;
+    cursor: not-allowed;
+  }
+  
+  .tabla-sujetos {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .tabla-sujetos th,
+  .tabla-sujetos td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #e0e0e0;
+  }
+  
+  .tabla-sujetos th {
+    background-color: #f5f5f5;
+    font-weight: 500;
+  }
+  
+  .acciones {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+  }
+  
+  .acciones-derecha {
+    display: flex;
+    gap: 10px;
+  }
+  
+  .btn-primario {
+    background-color: #1976d2;
+    color: white;
+  }
+  
+  .btn-secundario {
+    background-color: #f5f5f5;
+  }
+  
+  .paginacion {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+  }
+  
+  .controles-paginacion {
+    display: flex;
+    gap: 5px;
+  }
+  
+  .btn-paginacion {
+    padding: 5px;
+    border: none;
+    background: none;
+    cursor: pointer;
+  }
+  
+  .tabla-controles {
+    margin-bottom: 10px;
+  }
+  
+  .tabla-controles select {
+    margin-left: 10px;
+    padding: 5px;
+  }

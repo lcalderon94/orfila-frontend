@@ -4,6 +4,8 @@ import { MatPaginator, MatPaginatorIntl } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MOCK_TAREAS } from '../../mock-data/tareas.mock';
+import { Router } from '@angular/router'; // Añadir esta importación
+
 
 
 export interface Tarea {
@@ -13,8 +15,8 @@ export interface Tarea {
   numAnio: string;
   tipoAsistencia: string;
   numExpediente: string;
-  sujeto: string;
-  responsable: string[];  // Ahora es un array de strings
+  sujetos: string[];  // Array de sujetos
+  responsable: string;  // String único
   prioridad?: boolean;
   nuevoDocumento?: boolean;
   grupal?: boolean;
@@ -42,7 +44,8 @@ export class TareasComponent implements OnInit {
     'tipoAsistencia',
     'numExpediente',
     'sujeto',
-    'responsable'
+    'responsable',
+    'acciones'  // Añadir esta línea
   ];
 
   filtros = {
@@ -63,7 +66,8 @@ export class TareasComponent implements OnInit {
 
   constructor(
     private snackBar: MatSnackBar,
-    private paginatorIntl: MatPaginatorIntl
+    private paginatorIntl: MatPaginatorIntl,
+    private router: Router  // Añadimos el router
   ) {
     this.dataSource = new MatTableDataSource(this.obtenerDatosEjemplo());
   }
@@ -98,12 +102,12 @@ export class TareasComponent implements OnInit {
   }
 
   verDetalle(tarea: Tarea): void {
-    this.mostrarMensaje(`Viendo detalle de tarea ${tarea.numEpisodio}`);
-    console.log('Detalle de tarea:', tarea);
+    console.log('Navegando a:', tarea.numEpisodio);
+    this.router.navigate(['/tareas', tarea.numEpisodio]);
   }
 
-  hasSujetosMultiples(responsable: string[]): boolean {
-    return responsable && responsable.length > 1;
+  hasSujetosMultiples(tarea: Tarea): boolean {
+    return tarea.sujetos && tarea.sujetos.length > 1;
   }
 
   private obtenerDatosEjemplo() {
@@ -229,13 +233,8 @@ export class TareasComponent implements OnInit {
     });
   }
 
-  // En el ts modificamos la condición de mostrar el icono
-  verifyUnassigned(responsable: string[]): boolean {
-    return !responsable || responsable.length === 0;
+  transformSujetos(sujetos: string[]): string {
+    return sujetos ? sujetos.join(', ') : '';
   }
 
-// Y en la columna responsable, antes de mostrar el valor hacemos la transformación
-transformResponsable(responsable: string[]): string {
-  return !responsable || responsable.length === 0 ? 'Sin asignar' : responsable.join(', ');
-}
 }

@@ -1,0 +1,129 @@
+<div class="contenedor-tarea">
+  <!-- SECCIÓN Episodio -->
+  <div class="seccion">
+    <h2>Episodio</h2>
+    <div class="seccion-contenido">
+      <div class="campo-formulario">
+        <label>Órgano Judicial:</label>
+        <input type="text" [value]="tareaSeleccionada?.organo" readonly>
+      </div>
+      <div class="campo-formulario">
+        <label>Nº Episodio:</label>
+        <input type="text" [value]="tareaSeleccionada?.numEpisodio" readonly>
+      </div>
+      <div class="campo-formulario">
+        <label>Tipo Procedimiento:</label>
+        <input type="text" [value]="tareaSeleccionada?.tipoProcedimiento" readonly>
+      </div>
+      <div class="campo-formulario">
+        <label>Nº/Año:</label>
+        <input type="text" [value]="tareaSeleccionada?.numAnio" readonly>
+      </div>
+      <div class="campo-formulario">
+        <label>Tipo Asistencia:</label>
+        <input type="text" [value]="tareaSeleccionada?.tipoAsistencia" readonly>
+      </div>
+      <div class="campo-formulario">
+        <label>Nº Expediente:</label>
+        <input type="text" [value]="tareaSeleccionada?.numExpediente" readonly>
+      </div>
+      <div class="campo-formulario">
+        <label>Responsable:</label>
+        <input type="text" [value]="tareaSeleccionada?.responsable" readonly>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECCIÓN Sujetos -->
+  <div class="seccion">
+    <h2>Sujetos</h2>
+    <div class="seccion-contenido">
+      <div class="tabla-container">
+        <table class="tabla-sujetos">
+          <thead>
+            <tr>
+              <th>Tipo Identificación</th>
+              <th>Nº Identificación</th>
+              <th>Nombre</th>
+              <th>Apellido 1</th>
+              <th>Apellido 2</th>
+              <th>Fecha Nacimiento</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let s of sujetosAsociados">
+              <td>{{ s.tipoIdentificacion }}</td>
+              <td>{{ s.numIdentificacion }}</td>
+              <td>{{ s.nombre }}</td>
+              <td>{{ s.apellido1 }}</td>
+              <td>{{ s.apellido2 || '-' }}</td>
+              <td>{{ s.fechaNacimiento | date:'dd/MM/yyyy' }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECCIÓN Actuación -->
+  <div class="seccion">
+    <h2>Actuación</h2>
+    <div class="seccion-contenido">
+      <div class="grupo-actuacion" *ngIf="actuacionAsociada">
+        <div class="campo-formulario">
+          <label>Nº Actuación:</label>
+          <input type="text" [value]="actuacionAsociada.nActuacion" readonly>
+        </div>
+        
+        <div class="campo-formulario">
+          <label>Tipo Perito:</label>
+          <input type="text" [value]="actuacionAsociada.tipoPerito" readonly>
+        </div>
+
+        <div class="campo-formulario">
+          <label>Perito:</label>
+          <input type="text" [value]="tareaSeleccionada?.responsable" readonly>
+        </div>
+        
+        <div class="campo-formulario">
+          <label>Tipo Asistencia:</label>
+          <input type="text" [value]="actuacionAsociada.tipoAsistencia" readonly>
+        </div>
+
+        <div class="campo-formulario">
+          <label>Fecha Inicio:</label>
+          <input type="text" [value]="actuacionAsociada.fechaRegistro | date:'dd/MM/yyyy'" readonly>
+        </div>
+
+        <!-- Campos condicionales -->
+        <div class="campo-formulario" *ngIf="actuacionAsociada.nAutopsia">
+          <label>Nº Autopsia:</label>
+          <input type="text" [value]="actuacionAsociada.nAutopsia" readonly>
+        </div>
+
+        <div class="campo-formulario" *ngIf="actuacionAsociada.observacionActuacion">
+          <label>Observaciones:</label>
+          <textarea [value]="actuacionAsociada.observacionActuacion" readonly></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sección ACCIONES, con el botón ATRÁS a la izquierda -->
+  <div class="acciones">
+    <button class="btn-secundario" mat-button (click)="irAtras()">
+      ATRÁS
+    </button>
+    
+    <div class="acciones-derecha">
+      <button class="btn-primario" mat-button (click)="openHojaEvolucion()">
+        HOJA EVOLUCIÓN
+      </button>
+      <button class="btn-primario" mat-button (click)="verDocumentosAsociados()">
+        DOCUMENTOS ASOCIADOS
+      </button>
+      <button class="btn-primario" mat-button>IR A HORUS</button>
+      <button class="btn-primario" mat-button>FINALIZAR</button>
+    </div>
+  </div>
+</div>

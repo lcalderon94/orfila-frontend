@@ -7,7 +7,7 @@ import { MatSort } from '@angular/material/sort';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
 import { EpisodiosService, Sujeto } from '../../services/episodio.service';
-
+import { SUJETOS_MOCK } from '../../mock-data/sujetos.mock';
 @Component({
   selector: 'app-administracion-sujetos',
   templateUrl: './administracion-sujetos.component.html',
@@ -73,7 +73,7 @@ export class AdministracionSujetosComponent implements OnInit {
   private route: ActivatedRoute,
   private episodiosService: EpisodiosService
 ) {
-  this.dataSource = new MatTableDataSource(this.mockData);
+  this.dataSource = new MatTableDataSource<Sujeto>(SUJETOS_MOCK);
 }
 
 ngOnInit() {
@@ -136,9 +136,8 @@ ngOnInit() {
  }
 
  cargarDatos() {
-   // Aquí se cargarían los datos del servicio
-   this.dataSource.data = this.mockData;
- }
+  this.dataSource.data = SUJETOS_MOCK;
+}
 
  aplicarFiltroBuscadores(event: Event, columna: string) {
    const filterValue = (event.target as HTMLInputElement).value;

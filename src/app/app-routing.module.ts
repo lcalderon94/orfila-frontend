@@ -27,11 +27,21 @@ import { MuestrasListComponent } from './components/gestion-muestras/muestras-li
 import { CargasSistemaComponent } from './components/gestion-muestras/cargas-sistema/cargas-sistema.component';
 import { AdministracionSujetosComponent } from './components/administracion-sujetos/administracion-sujetos.component';
 import { PortafirmasListadoComponent } from './components/portafirmas/portafirmas-listado/portafirmas-listado.component';
+import { TareaDetalleComponent } from './components/tareas/tarea-detalle/tarea-detalle.component';
+import { NuevoDocumentoComponent } from './components/consulta-documentos/nuevo-documento/nuevo-documento.component';
+
+
 
 
 const routes: Routes = [
   { path: '', redirectTo: '/tareas', pathMatch: 'full' },
-  { path: 'tareas', component: TareasComponent },
+  {
+    path: 'tareas',
+    children: [
+      { path: '', component: TareasComponent },
+      { path: ':numEpisodio', component: TareaDetalleComponent } // <-- renombrado
+    ]
+  },
   
   { 
     path: 'episodios', 
@@ -50,7 +60,13 @@ const routes: Routes = [
   { path: 'documentos', component: DocumentosComponent },
   { path: 'muestras', component: MuestrasComponent },
   { path: 'consulta-antecedentes', component: ConsultaAntecedentesComponent },
-  { path: 'consulta-documentos', component: ConsultaDocumentosComponent },
+  {
+    path: 'consulta-documentos',
+    children: [
+      { path: '', component: ConsultaDocumentosComponent },
+      { path: 'nuevo', component: NuevoDocumentoComponent }
+    ]
+  },
   { 
     path: 'portafirmas', 
     component: PortafirmasComponent,

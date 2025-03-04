@@ -4,18 +4,24 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { MOCK_DOCUMENTOS } from '../../mock-data/documentos.mock';
+import { ActivatedRoute } from '@angular/router';
+import { TAREAS_COMPLETAS } from '../../mock-data/tareas.mock';
+import { Router } from '@angular/router';
+import { SelectionModel } from '@angular/cdk/collections';
 
 
-interface Documento {
+
+export interface Documento {
+  id?: string;
   fechaCreacion: Date;
   tipo: string;
   nombre: string;
-  descLexnet: string;
-  numAnio: string;
-  numEpisodio: string;
-  autorInforme: string;
   estado: string;
+  autor: string;
+  descLexnet?: string;
+  numAnio?: string;
+  numEpisodio?: string;
+  autorInforme?: string;
 }
 
 @Component({
@@ -28,8 +34,13 @@ export class ConsultaDocumentosComponent implements OnInit {
   itemsPorPagina = 10;
   dataSource: MatTableDataSource<Documento>;
   filtrosForm!: FormGroup;
+  selection = new SelectionModel<Documento>(true, []);
+  episodioId: string | null = null;
+  episodioDetalle: any = null;
+  actuacionDetalle: any = null;
 
   columnasVisibles = [
+    'select',
     'fechaCreacion',
     'tipo',
     'nombre',
@@ -57,16 +68,30 @@ export class ConsultaDocumentosComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private route: ActivatedRoute,
+    private router: Router  // Añade esta línea
   ) {
-    this.dataSource = new MatTableDataSource<Documento>(MOCK_DOCUMENTOS);
+    this.dataSource = new MatTableDataSource<Documento>([]);
     this.inicializarFormulario();
   }
 
   ngOnInit() {
-    this.dataSource.paginator = this.paginator;
-    this.dataSource.sort = this.sort;
-    this.configurarFiltrado();
+    this.route.queryParams.subscribe((params: { [key: string]: string }) => {
+      this.episodioId = params['numEpisodio'];
+      if (this.episodioId) {
+        // Si tenemos episodioId, estamos accediendo desde tareas
+        const tareaCompleta = TAREAS_COMPLETAS[this.episodioId];
+        if (tareaCompleta) {
+          this.episodioDetalle = tareaCompleta.episodio;
+          this.actuacionDetalle = tareaCompleta.actuacion;
+          this.dataSource.data = tareaCompleta.actuacion.documentosAsociados || [];
+        }
+      } else {
+        // Si no hay episodioId, cargamos todos los documentos
+        this.cargarDatos();
+      }
+    });
   }
 
   ngAfterViewInit() {
@@ -85,6 +110,20 @@ export class ConsultaDocumentosComponent implements OnInit {
       textoBuscar: [''],
       numAnio: ['']
     });
+  }
+
+  isAllSelected() {
+    const numSelected = this.selection.selected.length;
+    const numRows = this.dataSource.data.length;
+    return numSelected === numRows;
+  }
+
+  toggleAllRows() {
+    if (this.isAllSelected()) {
+      this.selection.clear();
+      return;
+    }
+    this.selection.select(...this.dataSource.data);
   }
 
   configurarFiltrado() {
@@ -167,14 +206,76 @@ export class ConsultaDocumentosComponent implements OnInit {
   }
 
   cargarDatos() {
-    // Aquí iría la llamada al servicio para recargar datos
-    this.snackBar.open('Actualizando datos...', 'Cerrar', {
+    // Cargar documentos del primer episodio como ejemplo
+    const documentos = TAREAS_COMPLETAS['81329']?.actuacion?.documentosAsociados || [];
+    this.dataSource.data = documentos as Documento[];
+    this.snackBar.open('Datos actualizados', 'Cerrar', {
       duration: 3000
     });
   }
 
-  verDetalle(row: Documento) {
-    console.log('Ver detalle del documento:', row);
-    // Implementar lógica para ver detalle
+ // Agregar estos métodos al componente
+
+editarDocumento(row: Documento) {
+ this.snackBar.open('Funcionalidad no implementada', 'Cerrar', { duration: 3000 });
+}
+
+nuevaVersion(row: Documento) {
+ this.snackBar.open('Funcionalidad no implementada', 'Cerrar', { duration: 3000 });
+}
+
+eliminarDocumento(row: Documento) {
+ this.snackBar.open('Funcionalidad no implementada', 'Cerrar', { duration: 3000 });
+}
+
+firmarDocumento(row: Documento) {
+ this.snackBar.open('Funcionalidad no implementada', 'Cerrar', { duration: 3000 });
+}
+
+puedeEditar(row: Documento): boolean {
+ return ['preparacion', 'completado'].includes(row.estado);
+}
+
+puedeFirmar(row: Documento): boolean {
+ return row.estado === 'completado';
+}
+
+esDocumentoManual(row: Documento): boolean {
+ return row.tipo === 'manual';
+}
+
+verDocumento(row: Documento) {
+ this.snackBar.open('Funcionalidad no implementada', 'Cerrar', { duration: 3000 });
+}
+
+verInfo(row: Documento) {
+  this.snackBar.open('Funcionalidad no implementada', 'Cerrar', { duration: 3000 });
+}
+
+asociarDocLexnet() {
+  this.snackBar.open('Funcionalidad no implementada', 'Cerrar', { duration: 3000 });
+}
+
+nuevo() {
+  this.router.navigate(['consulta-documentos/nuevo']);
+}
+
+subirFichero() {
+  this.snackBar.open('Funcionalidad no implementada', 'Cerrar', { duration: 3000 });
+}
+
+descargarSeleccionados() {
+  const seleccionados = this.selection.selected;
+  if (seleccionados.length === 0) {
+    this.snackBar.open('No hay documentos seleccionados', 'Cerrar', { duration: 3000 });
+    return;
   }
+  this.snackBar.open(`Descargando ${seleccionados.length} documentos...`, 'Cerrar', { duration: 3000 });
+}
+
+irAtras() {
+  this.router.navigate(['..'], { relativeTo: this.route });
+}
+
+
 }

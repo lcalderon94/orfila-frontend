@@ -77,14 +77,13 @@
   <!-- Tabla -->
   <div class="contenedor-tabla">
     <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
-      <!-- Solo una definición de columna de iconos -->
+      <!-- Iconos -->
       <ng-container matColumnDef="iconos">
         <th mat-header-cell *matHeaderCellDef></th>
         <td mat-cell *matCellDef="let tarea">
           <mat-icon *ngIf="tarea.prioridad" class="icono-prioritario" matTooltip="Tarea prioritaria">error</mat-icon>
           <mat-icon *ngIf="tarea.nuevoDocumento" class="icono-nuevo" matTooltip="Nuevo documento">new_releases</mat-icon>
-          <mat-icon *ngIf="tarea.grupal" class="icono-grupal" matTooltip="Tarea de grupo">group</mat-icon>
-          <mat-icon *ngIf="!tarea.prioridad && !tarea.nuevoDocumento && !tarea.grupal" matTooltip="Tarea individual">person</mat-icon>
+          <mat-icon *ngIf="!tarea.prioridad && !tarea.nuevoDocumento" matTooltip="Tarea individual">person</mat-icon>
         </td>
       </ng-container>
   
@@ -125,16 +124,16 @@
       </ng-container>
   
       <!-- Sujeto -->
-      <ng-container matColumnDef="sujeto">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>SUJETO</th>
-        <td mat-cell *matCellDef="let tarea">{{tarea.sujeto}}</td>
-      </ng-container>
+    <ng-container matColumnDef="sujeto">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>SUJETO</th>
+      <td mat-cell *matCellDef="let tarea">{{transformSujetos(tarea.sujetos)}}</td>
+    </ng-container>
   
       <!-- Responsable -->
-      <ng-container matColumnDef="responsable">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>RESPONSABLE</th>
-        <td mat-cell *matCellDef="let tarea">{{transformResponsable(tarea.responsable)}}</td>
-      </ng-container>
+    <ng-container matColumnDef="responsable">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>RESPONSABLE</th>
+      <td mat-cell *matCellDef="let tarea">{{tarea.responsable || 'Sin asignar'}}</td>
+    </ng-container>
   
       <!-- Acciones -->
       <ng-container matColumnDef="acciones">
@@ -143,16 +142,15 @@
           <button mat-icon-button (click)="verDetalle(tarea)" matTooltip="Acceder / modificar tarea">
             <mat-icon>edit</mat-icon>
           </button>
-          <button mat-icon-button *ngIf="hasSujetosMultiples(tarea.responsable)" 
-                  matTooltip="Tarea con sujetos múltiples">
-            <mat-icon>people</mat-icon>
+          <button mat-icon-button *ngIf="hasSujetosMultiples(tarea)" matTooltip="Múltiples sujetos">
+            <mat-icon>group</mat-icon>
           </button>
         </td>
       </ng-container>
   
-      <tr mat-header-row *matHeaderRowDef="columnasVisibles.concat(['acciones'])"></tr>
-      <tr mat-row *matRowDef="let row; columns: columnasVisibles.concat(['acciones']);"></tr>
-    </table>
+      <tr mat-header-row *matHeaderRowDef="columnasVisibles"></tr>
+      <tr mat-row *matRowDef="let row; columns: columnasVisibles;"></tr>
+  </table>
 
     <!-- Paginador -->
     <mat-paginator 

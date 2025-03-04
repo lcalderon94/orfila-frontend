@@ -65,6 +65,9 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { NotasEpisodioComponent } from './components/episodios/notas-episodio/notas-episodio.component';
+import { TareaDetalleComponent } from './components/tareas/tarea-detalle/tarea-detalle.component';
+import { HojaEvolucionComponent } from './components/tareas/hoja-evolucion/hoja-evolucion.component';
+import { NuevoDocumentoComponent } from './components/consulta-documentos/nuevo-documento/nuevo-documento.component';
 
 @NgModule({
   declarations: [
@@ -97,7 +100,10 @@ import { NotasEpisodioComponent } from './components/episodios/notas-episodio/no
     SidebarComponent,
     FooterComponent,
     PortafirmasListadoComponent,
-    NotasEpisodioComponent
+    NotasEpisodioComponent,
+    TareaDetalleComponent,
+    HojaEvolucionComponent,
+    NuevoDocumentoComponent
   ],
   imports: [
     BrowserModule,

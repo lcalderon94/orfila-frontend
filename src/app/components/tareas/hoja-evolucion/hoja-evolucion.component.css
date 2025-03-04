@@ -1,0 +1,94 @@
+/* hoja-evolucion.component.css */
+.hojas-dialog {
+    padding: 0;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .hojas-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px;
+    background-color: #f5f5f5;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .hojas-header h2 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 500;
+  }
+  
+  .close-button {
+    margin-left: auto;
+  }
+  
+  .hojas-list {
+    padding: 16px;
+  }
+  
+  .hoja-item {
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #eee;
+    position: relative;
+  }
+  
+  .hoja-info {
+    margin-bottom: 8px;
+    display: flex;
+    gap: 16px;
+    align-items: center;
+  }
+  
+  .hoja-fecha {
+    color: #666;
+    font-size: 0.9em;
+  }
+  
+  .hoja-usuario {
+    font-weight: 500;
+    color: #333;
+  }
+  
+  .hoja-detalle {
+    color: #444;
+    line-height: 1.4;
+    margin-right: 40px;
+  }
+  
+  .delete-button {
+    position: absolute;
+    top: 0;
+    right: 0;
+  }
+  
+  .nueva-hoja-form {
+    padding: 16px;
+    background-color: #f9f9f9;
+    border-radius: 4px;
+    margin: 16px;
+  }
+  
+  .full-width {
+    width: 100%;
+  }
+  
+  .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 16px;
+  }
+  
+  mat-dialog-actions {
+    padding: 8px 16px 16px;
+    border-top: 1px solid #eee;
+  }
+  
+  textarea {
+    resize: vertical;
+    min-height: 100px;
+  }

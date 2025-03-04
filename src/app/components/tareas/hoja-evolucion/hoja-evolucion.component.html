@@ -1,0 +1,68 @@
+<div class="hojas-dialog">
+    <div class="hojas-header">
+      <h2>Nota de evolución</h2>
+      <button mat-icon-button (click)="cerrarDialog()" class="close-button">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+  
+    <mat-dialog-content class="mat-typography">
+      <!-- Lista de Notas Existentes -->
+      <div class="hojas-list">
+        <div *ngFor="let hoja of hojas" class="hoja-item">
+          <div class="hoja-info">
+            <span class="hoja-fecha">{{ hoja.fecha | date:'dd/MM/yyyy HH:mm' }}</span>
+            <span class="hoja-usuario">{{ hoja.usuario }}</span>
+          </div>
+          <div class="hoja-detalle">{{ hoja.detalle }}</div>
+          <!-- Botón de eliminar solo si la hoja se puede editar -->
+          <button mat-icon-button 
+                  *ngIf="puedeEditar" 
+                  (click)="eliminarHoja(hoja)" 
+                  class="delete-button" 
+                  color="warn">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
+      </div>
+  
+      <!-- Formulario Nueva Entrada -->
+      <div class="nueva-hoja-form" *ngIf="mostrarFormulario">
+        <form [formGroup]="hojaForm" (ngSubmit)="guardarHoja()">
+          <mat-form-field class="full-width">
+            <mat-label>Escriba aquí la nota de evolución</mat-label>
+            <textarea matInput
+                      formControlName="detalle"
+                      rows="4"
+                      placeholder="Detalles de la evolución">
+            </textarea>
+            <mat-error *ngIf="hojaForm.get('detalle')?.invalid">
+              Es necesario incluir el detalle de la nota
+            </mat-error>
+          </mat-form-field>
+  
+          <div class="form-actions">
+            <button mat-button type="button" (click)="cancelarNuevaHoja()">
+              ATRÁS
+            </button>
+            <button mat-raised-button 
+                    color="primary" 
+                    type="submit"
+                    [disabled]="!hojaForm.valid">
+              GUARDAR
+            </button>
+          </div>
+        </form>
+      </div>
+    </mat-dialog-content>
+  
+    <!-- Botón Nueva Entrada -->
+    <mat-dialog-actions align="end" *ngIf="!mostrarFormulario && puedeEditar">
+      <button mat-raised-button 
+              color="primary" 
+              (click)="mostrarFormularioNuevaHoja()">
+        NUEVA ENTRADA
+      </button>
+    </mat-dialog-actions>
+  </div>
+  

@@ -1,5 +1,7 @@
 <div class="contenedor-pagina">
     <h1>Consulta Documentos</h1>
+
+    
   
     <div class="contenedor-filtros" (click)="mostrarFiltros = !mostrarFiltros">
       <mat-icon>filter_list</mat-icon>
@@ -78,6 +80,13 @@
         </button>
       </div>
     </div>
+
+    <div class="cabecera-documentos" *ngIf="episodioId">
+      <h2 class="titulo-documentos">
+        Documentos/Informes de la Actuación: {{actuacionDetalle?.tipoAsistencia}} para el Episodio {{episodioId}} 
+        ({{episodioDetalle?.organismo}} - {{episodioDetalle?.tipoProcedimiento}} - {{episodioDetalle?.nAnio}})
+      </h2>
+    </div>
   
     <div class="barra-acciones">
   
@@ -116,6 +125,21 @@
   
     <div class="contenedor-tabla">
       <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
+        <ng-container matColumnDef="select">
+          <th mat-header-cell *matHeaderCellDef>
+            <mat-checkbox (change)="$event ? toggleAllRows() : null"
+                         [checked]="selection.hasValue() && isAllSelected()"
+                         [indeterminate]="selection.hasValue() && !isAllSelected()">
+            </mat-checkbox>
+          </th>
+          <td mat-cell *matCellDef="let row">
+            <mat-checkbox (click)="$event.stopPropagation()"
+                         (change)="$event ? selection.toggle(row) : null"
+                         [checked]="selection.isSelected(row)">
+            </mat-checkbox>
+          </td>
+        </ng-container>
+
         <ng-container matColumnDef="fechaCreacion">
           <th mat-header-cell *matHeaderCellDef mat-sort-header>F. CREACIÓN</th>
           <td mat-cell *matCellDef="let row">{{row.fechaCreacion | date}}</td>
@@ -158,9 +182,30 @@
   
         <ng-container matColumnDef="opciones">
           <th mat-header-cell *matHeaderCellDef>OPCIONES</th>
+          // En el template, dentro de ng-container matColumnDef="opciones"
           <td mat-cell *matCellDef="let row">
-            <button mat-icon-button (click)="verDetalle(row)" matTooltip="Ver detalle">
+            <button mat-icon-button (click)="verDocumento(row)" matTooltip="Ver documento">
               <mat-icon>visibility</mat-icon>
+            </button>
+          
+            <button mat-icon-button (click)="editarDocumento(row)" matTooltip="Editar">
+              <mat-icon>edit</mat-icon>
+            </button>
+          
+            <button mat-icon-button (click)="nuevaVersion(row)" matTooltip="Nueva versión">
+              <mat-icon>file_copy</mat-icon>
+            </button>
+          
+            <button mat-icon-button (click)="eliminarDocumento(row)" matTooltip="Eliminar">
+              <mat-icon>delete</mat-icon>
+            </button>
+          
+            <button mat-icon-button (click)="firmarDocumento(row)" matTooltip="Firmar">
+              <mat-icon>edit_note</mat-icon>
+            </button>
+          
+            <button mat-icon-button (click)="verInfo(row)" matTooltip="Info documento">
+              <mat-icon>info</mat-icon>
             </button>
           </td>
         </ng-container>
@@ -175,5 +220,29 @@
         showFirstLastButtons
         aria-label="Seleccionar página">
       </mat-paginator>
+
+      
+      </div>
+
+      <!-- Barra de botones inferior -->
+      <div class="acciones">
+        <button class="btn-secundario" mat-button (click)="irAtras()">
+          ATRÁS
+        </button>
+        
+        <div class="acciones-derecha">
+          <button class="btn-primario" mat-button (click)="asociarDocLexnet()">
+            ASOCIAR DOC. LEXNET - ACTUACIÓN
+          </button>
+          <button class="btn-primario" mat-button (click)="nuevo()">
+            NUEVO  
+          </button>
+          <button class="btn-primario" mat-button (click)="subirFichero()">
+            SUBIR FICHERO
+          </button>
+          <button class="btn-primario" mat-button (click)="descargarSeleccionados()">
+            DESCARGAR FICHEROS SELECCIONADOS
+          </button>
+        </div>
+      </div>
     </div>
-  </div>

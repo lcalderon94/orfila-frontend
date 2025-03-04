@@ -1,0 +1,73 @@
+<div class="contenedor-pagina">
+    <h2>Datos básicos del Informe/Documento</h2>
+  
+    <form [formGroup]="documentoForm" (ngSubmit)="onSubmit()">
+      <div class="grid-container">
+        <!-- Categoría -->
+        <mat-form-field appearance="outline">
+          <mat-label>(*) Categoría</mat-label>
+          <mat-select formControlName="categoria">
+            <mat-option *ngFor="let cat of categoriasFiltradas" [value]="cat">
+              {{cat}}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="documentoForm.get('categoria')?.hasError('required')">
+            Campo requerido
+          </mat-error>
+        </mat-form-field>
+  
+        <!-- Tipo -->
+        <mat-form-field appearance="outline">
+          <mat-label>(*) Tipo</mat-label>
+          <mat-select formControlName="tipo">
+            <mat-option *ngFor="let tipo of tiposFiltrados" [value]="tipo">
+              {{tipo}}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="documentoForm.get('tipo')?.hasError('required')">
+            Campo requerido
+          </mat-error>
+        </mat-form-field>
+  
+        <!-- Nombre -->
+        <mat-form-field class="full-width" appearance="outline">
+          <mat-label>Nombre</mat-label>
+          <input matInput formControlName="nombre">
+          <mat-hint>El nombre se genera automáticamente sin espacios para compatibilidad con LexNET</mat-hint>
+        </mat-form-field>
+  
+        <!-- Sujeto -->
+        <mat-form-field appearance="outline">
+          <mat-label>Sujeto</mat-label>
+          <mat-select formControlName="sujeto">
+            <mat-option value="EX2013549-SantiagaLopez">
+              EX2013549 - Santiaga López
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+  
+        <!-- Observaciones -->
+        <mat-form-field class="full-width" appearance="outline">
+          <mat-label>Observaciones</mat-label>
+          <textarea matInput 
+                    formControlName="observaciones" 
+                    rows="4"
+                    [maxlength]="maxObservaciones">
+          </textarea>
+          <mat-hint align="end">{{caracteresRestantes}}/{{maxObservaciones}}</mat-hint>
+        </mat-form-field>
+      </div>
+  
+      <div class="botones-accion">
+        <button mat-button type="button" (click)="volver()">
+          ATRÁS
+        </button>
+        <button mat-raised-button 
+                color="primary" 
+                type="submit" 
+                [disabled]="!documentoForm.valid">
+          CONTINUAR
+        </button>
+      </div>
+    </form>
+  </div>
