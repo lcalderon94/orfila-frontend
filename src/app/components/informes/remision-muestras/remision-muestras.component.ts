@@ -2,6 +2,8 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { RemisionMuestrasService } from '../../../services/remision-muestras.service';
+import { DocumentoService } from '../../../services/documento.service';
+import { DocumentoAsociado, TAREAS_COMPLETAS } from '../../../mock-data/tareas.mock';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -25,6 +27,7 @@ export class RemisionMuestrasComponent implements OnInit, OnDestroy {
 
   constructor(
     private remisionService: RemisionMuestrasService,
+    private documentoService: DocumentoService,
     private router: Router,
     private snackBar: MatSnackBar
   ) {}
@@ -61,11 +64,30 @@ export class RemisionMuestrasComponent implements OnInit, OnDestroy {
     this.remisionService.generarInforme().subscribe(
       resultado => {
         if (resultado.success) {
+          // Crear documento simplificado
+          const nuevoDocumento: DocumentoAsociado = {
+            id: 'DOC' + Date.now(),
+            nombre: resultado.informe.nombre || 'Informe de remisión de muestras',
+            tipo: resultado.informe.tipo || 'Informe de remisión de muestras al INTCF',
+            estado: 'Completado',
+            fechaCreacion: new Date(),
+            autor: '30000332C',
+            numAnio: resultado.informe.numero || '',
+            numEpisodio: '',
+            autorInforme: '30000332C'
+          };
+          
+          // Agregar documento directamente
+          this.documentoService.agregarDocumento(nuevoDocumento);
+          
           this.snackBar.open('Informe generado correctamente', 'Cerrar', {
             duration: 3000
           });
           
-          // Navegar de vuelta a la lista de documentos
+          // Resetear datos
+          this.remisionService.reiniciarDatos();
+          
+          // Navegar a la lista de documentos
           this.router.navigate(['/consulta-documentos']);
         } else {
           this.snackBar.open('Error al generar el informe', 'Cerrar', {
@@ -80,7 +102,42 @@ export class RemisionMuestrasComponent implements OnInit, OnDestroy {
       }
     );
   }
-
+  
+  // Método para buscar el episodio adecuado según los datos del informe
+  private buscarEpisodioCoincidente(informe: any): string {
+    // Si tenemos una referencia directa, la usamos
+    if (informe.referenciaRemitente && this.existeEpisodio(informe.referenciaRemitente)) {
+      return informe.referenciaRemitente;
+    }
+    
+    // Buscar por órgano y número
+    if (informe.organo && informe.numero) {
+      for (const [key, tarea] of Object.entries(TAREAS_COMPLETAS)) {
+        if (tarea.episodio.organismo === informe.organo && 
+            tarea.episodio.nAnio === informe.numero) {
+          return key;
+        }
+      }
+    }
+    
+    // Buscar solo por órgano
+    if (informe.organo) {
+      for (const [key, tarea] of Object.entries(TAREAS_COMPLETAS)) {
+        if (tarea.episodio.organismo === informe.organo) {
+          return key;
+        }
+      }
+    }
+    
+    // Si no encontramos coincidencia, usar el primer episodio disponible
+    const primerKey = Object.keys(TAREAS_COMPLETAS)[0];
+    return primerKey;
+  }
+  
+  // Verificar si un episodio existe
+  private existeEpisodio(id: string): boolean {
+    return !!TAREAS_COMPLETAS[id];
+  }
   cancelar(): void {
     // Preguntar si está seguro de cancelar
     if (confirm('¿Está seguro de que desea cancelar? Se perderán todos los datos introducidos.')) {

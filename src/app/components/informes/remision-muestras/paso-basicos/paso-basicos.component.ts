@@ -19,12 +19,16 @@ interface SujetoDisponible {
 export class PasoBasicosComponent implements OnInit {
   basicosForm!: FormGroup;
   categoriasDisponibles = [
-    'Informes Medico-Legales', 
+    'Informes Médico-Legales', 
     'Informes Periciales', 
     'Remisión de Muestras'
   ];
   tiposDisponibles = [
-    'Informe de Remisión de Muestras al INTCF'
+    'Informe de remisión de muestras al INTCF',
+    'Informe de Previsión de Sanidad',
+    'Señalamiento de reconocimiento',
+    'Informe médico-forense',
+    'Informe de autopsia'
   ];
   // Corregir la definición con el tipo adecuado
   sujetosDisponibles: SujetoDisponible[] = []; 

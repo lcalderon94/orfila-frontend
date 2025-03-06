@@ -1,4 +1,5 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+// ConsultaDocumentosComponent.ts - COMPLETO
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
@@ -8,8 +9,8 @@ import { ActivatedRoute } from '@angular/router';
 import { TAREAS_COMPLETAS } from '../../mock-data/tareas.mock';
 import { Router } from '@angular/router';
 import { SelectionModel } from '@angular/cdk/collections';
-
-
+import { DocumentoService } from '../../services/documento.service';
+import { Subscription } from 'rxjs';
 
 export interface Documento {
   id?: string;
@@ -29,7 +30,7 @@ export interface Documento {
   templateUrl: './consulta-documentos.component.html',
   styleUrls: ['./consulta-documentos.component.css']
 })
-export class ConsultaDocumentosComponent implements OnInit {
+export class ConsultaDocumentosComponent implements OnInit, OnDestroy {
   mostrarFiltros = false;
   itemsPorPagina = 10;
   dataSource: MatTableDataSource<Documento>;
@@ -38,6 +39,7 @@ export class ConsultaDocumentosComponent implements OnInit {
   episodioId: string | null = null;
   episodioDetalle: any = null;
   actuacionDetalle: any = null;
+  private subscription = new Subscription();
 
   columnasVisibles = [
     'select',
@@ -70,33 +72,35 @@ export class ConsultaDocumentosComponent implements OnInit {
     private fb: FormBuilder,
     private snackBar: MatSnackBar,
     private route: ActivatedRoute,
-    private router: Router  // Añade esta línea
+    private router: Router,
+    private documentoService: DocumentoService
   ) {
     this.dataSource = new MatTableDataSource<Documento>([]);
     this.inicializarFormulario();
   }
 
   ngOnInit() {
+    // Suscribirse a actualizaciones de documentos
+    this.subscription.add(
+      this.documentoService.actualizaciones$.subscribe(() => {
+        console.log('Recibida notificación de actualización, recargando datos...');
+        this.cargarDatos();
+      })
+    );
+    
     this.route.queryParams.subscribe((params: { [key: string]: string }) => {
       this.episodioId = params['numEpisodio'];
-      if (this.episodioId) {
-        // Si tenemos episodioId, estamos accediendo desde tareas
-        const tareaCompleta = TAREAS_COMPLETAS[this.episodioId];
-        if (tareaCompleta) {
-          this.episodioDetalle = tareaCompleta.episodio;
-          this.actuacionDetalle = tareaCompleta.actuacion;
-          this.dataSource.data = tareaCompleta.actuacion.documentosAsociados || [];
-        }
-      } else {
-        // Si no hay episodioId, cargamos todos los documentos
-        this.cargarDatos();
-      }
+      this.cargarDatos();
     });
   }
 
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
+  }
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
   }
 
   inicializarFormulario() {
@@ -206,76 +210,79 @@ export class ConsultaDocumentosComponent implements OnInit {
   }
 
   cargarDatos() {
-    // Cargar documentos del primer episodio como ejemplo
-    const documentos = TAREAS_COMPLETAS['81329']?.actuacion?.documentosAsociados || [];
-    this.dataSource.data = documentos as Documento[];
-    this.snackBar.open('Datos actualizados', 'Cerrar', {
-      duration: 3000
-    });
+    if (this.episodioId) {
+      // Cargar documentos de un episodio específico
+      this.documentoService.getDocumentosByTarea(this.episodioId).subscribe(docs => {
+        console.log('Documentos cargados por episodio:', docs);
+        this.dataSource.data = docs as Documento[];
+      });
+    } else {
+      // Cargar todos los documentos
+      this.documentoService.getDocumentos().subscribe(docs => {
+        console.log('Todos los documentos cargados:', docs);
+        this.dataSource.data = docs as Documento[];
+      });
+    }
   }
 
- // Agregar estos métodos al componente
-
-editarDocumento(row: Documento) {
- this.snackBar.open('Funcionalidad no implementada', 'Cerrar', { duration: 3000 });
-}
-
-nuevaVersion(row: Documento) {
- this.snackBar.open('Funcionalidad no implementada', 'Cerrar', { duration: 3000 });
-}
-
-eliminarDocumento(row: Documento) {
- this.snackBar.open('Funcionalidad no implementada', 'Cerrar', { duration: 3000 });
-}
-
-firmarDocumento(row: Documento) {
- this.snackBar.open('Funcionalidad no implementada', 'Cerrar', { duration: 3000 });
-}
-
-puedeEditar(row: Documento): boolean {
- return ['preparacion', 'completado'].includes(row.estado);
-}
-
-puedeFirmar(row: Documento): boolean {
- return row.estado === 'completado';
-}
-
-esDocumentoManual(row: Documento): boolean {
- return row.tipo === 'manual';
-}
-
-verDocumento(row: Documento) {
- this.snackBar.open('Funcionalidad no implementada', 'Cerrar', { duration: 3000 });
-}
-
-verInfo(row: Documento) {
-  this.snackBar.open('Funcionalidad no implementada', 'Cerrar', { duration: 3000 });
-}
-
-asociarDocLexnet() {
-  this.snackBar.open('Funcionalidad no implementada', 'Cerrar', { duration: 3000 });
-}
-
-nuevo() {
-  this.router.navigate(['consulta-documentos/nuevo']);
-}
-
-subirFichero() {
-  this.snackBar.open('Funcionalidad no implementada', 'Cerrar', { duration: 3000 });
-}
-
-descargarSeleccionados() {
-  const seleccionados = this.selection.selected;
-  if (seleccionados.length === 0) {
-    this.snackBar.open('No hay documentos seleccionados', 'Cerrar', { duration: 3000 });
-    return;
+  editarDocumento(row: Documento) {
+    this.snackBar.open('Funcionalidad no implementada', 'Cerrar', { duration: 3000 });
   }
-  this.snackBar.open(`Descargando ${seleccionados.length} documentos...`, 'Cerrar', { duration: 3000 });
-}
 
-irAtras() {
-  this.router.navigate(['..'], { relativeTo: this.route });
-}
+  nuevaVersion(row: Documento) {
+    this.snackBar.open('Funcionalidad no implementada', 'Cerrar', { duration: 3000 });
+  }
 
+  eliminarDocumento(row: Documento) {
+    this.snackBar.open('Funcionalidad no implementada', 'Cerrar', { duration: 3000 });
+  }
 
+  firmarDocumento(row: Documento) {
+    this.snackBar.open('Funcionalidad no implementada', 'Cerrar', { duration: 3000 });
+  }
+
+  puedeEditar(row: Documento): boolean {
+    return ['preparacion', 'completado'].includes(row.estado);
+  }
+
+  puedeFirmar(row: Documento): boolean {
+    return row.estado === 'completado';
+  }
+
+  esDocumentoManual(row: Documento): boolean {
+    return row.tipo === 'manual';
+  }
+
+  verDocumento(row: Documento) {
+    this.snackBar.open('Funcionalidad no implementada', 'Cerrar', { duration: 3000 });
+  }
+
+  verInfo(row: Documento) {
+    this.snackBar.open('Funcionalidad no implementada', 'Cerrar', { duration: 3000 });
+  }
+
+  asociarDocLexnet() {
+    this.snackBar.open('Funcionalidad no implementada', 'Cerrar', { duration: 3000 });
+  }
+
+  nuevo() {
+    this.router.navigate(['consulta-documentos/nuevo']);
+  }
+
+  subirFichero() {
+    this.snackBar.open('Funcionalidad no implementada', 'Cerrar', { duration: 3000 });
+  }
+
+  descargarSeleccionados() {
+    const seleccionados = this.selection.selected;
+    if (seleccionados.length === 0) {
+      this.snackBar.open('No hay documentos seleccionados', 'Cerrar', { duration: 3000 });
+      return;
+    }
+    this.snackBar.open(`Descargando ${seleccionados.length} documentos...`, 'Cerrar', { duration: 3000 });
+  }
+
+  irAtras() {
+    this.router.navigate(['..'], { relativeTo: this.route });
+  }
 }
