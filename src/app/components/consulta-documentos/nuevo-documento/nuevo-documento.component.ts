@@ -38,21 +38,28 @@ export class NuevoDocumentoComponent implements OnInit {
       'Documentos genéricos',
       'Documentos internos',
       'Documentos Solicitud',
-      'Informes Periciales Clínica'
+      'Informes Periciales Clínica',
+      'Informes Medico-Legales',
+      'Informes Periciales',
+      'Remisión de Muestras'  // Nueva categoría añadida
     ],
     'Médico Forense': [
       'Documentos Citación',
       'Documentos Comunicación',
       'Documentos genéricos',
-      'Documentos Solicitud'
+      'Documentos Solicitud',
+      'Informes Medico-Legales',
+      'Informes Periciales',
+      'Remisión de Muestras'  // Nueva categoría añadida
     ],
     'Administrativo IML': [
       'Documentos Citación',
       'Documentos Comunicación',
-      'Documentos genéricos'
+      'Documentos genéricos',
+      'Remisión de Muestras'  // Nueva categoría añadida
     ]
   };
-
+  
   private tiposPermitidos: TiposPorCategoria = {
     'Documentos Citación': [
       'Informe de citación',
@@ -65,6 +72,18 @@ export class NuevoDocumentoComponent implements OnInit {
     'Documentos genéricos': [
       'Informe genérico',
       'Informe de estado'
+    ],
+    'Informes Medico-Legales': [
+      'Informe de previsión de sanidad',
+      'Informe de sanidad',
+      'Informe de autopsia'
+    ],
+    'Informes Periciales': [
+      'Informe pericial',
+      'Informe de valoración'
+    ],
+    'Remisión de Muestras': [
+      'Informe de Remisión de Muestras al INTCF'  // Nuevo tipo específico para remisión de muestras
     ]
   };
 
@@ -136,11 +155,30 @@ export class NuevoDocumentoComponent implements OnInit {
         ...this.documentoForm.value,
         estado: 'en preparación'
       };
-
+      
       console.log('Nuevo documento:', nuevoDocumento);
-      this.router.navigate(['/editor-documento'], { 
-        state: { documento: nuevoDocumento }
-      });
+      
+      // Lista de todos los tipos de informes que pueden acceder al flujo de remisión de muestras
+      const tiposRemisionMuestras = [
+        'Informe de Remisión de Muestras al INTCF',
+        'Informe genérico',
+        'Informe de autopsia',
+        'Informe toxicológico',
+        'Informe histopatológico',
+        'Informe pericial'
+      ];
+      
+      // Verificar si el tipo seleccionado está en la lista de informes compatibles
+      if (tiposRemisionMuestras.includes(nuevoDocumento.tipo)) {
+        console.log('Redirigiendo a generador de informe de remisión');
+        this.router.navigate(['/generar-informe-remision']);
+      } else {
+        // Para otros tipos de documentos, mostrar mensaje y redirigir
+        this.snackBar.open('Funcionalidad en desarrollo', 'Cerrar', {
+          duration: 3000
+        });
+        this.router.navigate(['/consulta-documentos']);
+      }
     }
   }
 

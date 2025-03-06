@@ -1,0 +1,28 @@
+.paso-container {
+    padding: 20px;
+  }
+  
+  .formulario-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+  
+  .full-width {
+    grid-column: span 2;
+  }
+  
+  .botones-accion {
+    margin-top: 20px;
+    margin-bottom: 30px;
+    display: flex;
+    justify-content: flex-end;
+  }
+  
+  .muestras-tabla {
+    margin-top: 20px;
+  }
+  
+  table {
+    width: 100%;
+  }

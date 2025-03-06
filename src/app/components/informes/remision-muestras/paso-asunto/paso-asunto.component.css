@@ -1,0 +1,13 @@
+.paso-container {
+    padding: 20px;
+  }
+  
+  .editor-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .full-width {
+    width: 100%;
+  }

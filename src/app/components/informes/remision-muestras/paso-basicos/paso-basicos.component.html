@@ -1,0 +1,48 @@
+<div class="paso-container">
+    <h2>Datos básicos del informe</h2>
+    
+    <form [formGroup]="basicosForm">
+      <div class="formulario-grid">
+        <mat-form-field appearance="outline">
+          <mat-label>Categoría</mat-label>
+          <mat-select formControlName="categoria">
+            <mat-option *ngFor="let cat of categoriasDisponibles" [value]="cat">
+              {{ cat }}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="basicosForm.get('categoria')?.hasError('required')">
+            La categoría es obligatoria
+          </mat-error>
+        </mat-form-field>
+        
+        <mat-form-field appearance="outline">
+          <mat-label>Tipo</mat-label>
+          <mat-select formControlName="tipo">
+            <mat-option *ngFor="let tipo of tiposDisponibles" [value]="tipo">
+              {{ tipo }}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="basicosForm.get('tipo')?.hasError('required')">
+            El tipo es obligatorio
+          </mat-error>
+        </mat-form-field>
+        
+        <mat-form-field appearance="outline">
+          <mat-label>Nombre</mat-label>
+          <input matInput formControlName="nombre">
+          <mat-error *ngIf="basicosForm.get('nombre')?.hasError('required')">
+            El nombre es obligatorio
+          </mat-error>
+        </mat-form-field>
+        
+        <mat-form-field appearance="outline">
+          <mat-label>Sujeto</mat-label>
+          <mat-select formControlName="sujeto">
+            <mat-option *ngFor="let sujeto of sujetosDisponibles" [value]="sujeto">
+              {{ sujeto.expediente }} - {{ sujeto.nombre }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </form>
+  </div>

@@ -1,0 +1,60 @@
+<div class="remision-muestras-container">
+    <h1>Informe de Remisión de Muestras</h1>
+    
+    <!-- Navegación lateral con pasos -->
+    <div class="contenedor-informe">
+      <div class="pasos-navegacion">
+        <div class="pasos-lista">
+          <div *ngFor="let titulo of pasoTitulos; let i = index" 
+               [class.paso-activo]="pasoActual === i+1"
+               [class.paso-completado]="esPasoCompletado(i+1)"
+               (click)="irAPaso(i+1)"
+               class="paso-item">
+            <div class="paso-numero">{{ i+1 }}</div>
+            <div class="paso-titulo">{{ titulo }}</div>
+            <mat-icon *ngIf="esPasoCompletado(i+1)" class="paso-check">check_circle</mat-icon>
+          </div>
+        </div>
+      </div>
+  
+      <!-- Contenido del paso actual -->
+      <div class="paso-contenido">
+        <ng-container [ngSwitch]="pasoActual">
+          <app-paso-basicos *ngSwitchCase="1"></app-paso-basicos>
+          <app-paso-solicitante *ngSwitchCase="2"></app-paso-solicitante>
+          <app-paso-asunto *ngSwitchCase="3"></app-paso-asunto>
+          <app-paso-estudios *ngSwitchCase="4"></app-paso-estudios>
+          <app-paso-sujetos *ngSwitchCase="5"></app-paso-sujetos>
+          <app-paso-muestras *ngSwitchCase="6"></app-paso-muestras>
+          <app-paso-custodia *ngSwitchCase="7"></app-paso-custodia>
+        </ng-container>
+  
+        <!-- Botones de navegación entre pasos -->
+        <div class="controles-navegacion">
+          <button mat-button (click)="cancelar()">CANCELAR</button>
+          
+          <div class="botones-derecha">
+            <button mat-button 
+                    *ngIf="pasoActual > 1" 
+                    (click)="pasoAnterior()">
+              PASO ANTERIOR
+            </button>
+            
+            <button mat-raised-button 
+                    color="primary" 
+                    *ngIf="pasoActual < totalPasos" 
+                    (click)="siguientePaso()">
+              SIGUIENTE SECCIÓN
+            </button>
+            
+            <button mat-raised-button 
+                    color="primary" 
+                    *ngIf="pasoActual === totalPasos" 
+                    (click)="finalizar()">
+              FINALIZAR
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

@@ -1,0 +1,86 @@
+<div class="paso-container">
+    <h2>Estudios solicitados</h2>
+    
+    <form [formGroup]="estudiosForm">
+      <div class="formulario-grid">
+        <div class="seleccion-grupo">
+          <mat-form-field appearance="outline">
+            <mat-label>Tipo de asunto</mat-label>
+            <mat-select formControlName="tipoAsunto">
+              <mat-option *ngFor="let tipo of tiposAsunto" [value]="tipo">
+                {{ tipo }}
+              </mat-option>
+            </mat-select>
+            <mat-error *ngIf="estudiosForm.get('tipoAsunto')?.hasError('required')">
+              El tipo de asunto es obligatorio
+            </mat-error>
+          </mat-form-field>
+          
+          <button mat-raised-button color="primary" (click)="agregarAsunto()">
+            <mat-icon>add</mat-icon> Añadir
+          </button>
+        </div>
+        
+        <div class="seleccion-grupo">
+          <mat-form-field appearance="outline">
+            <mat-label>Tipo de estudio</mat-label>
+            <mat-select formControlName="tipoEstudio">
+              <mat-option *ngFor="let tipo of tiposEstudio" [value]="tipo">
+                {{ tipo }}
+              </mat-option>
+            </mat-select>
+            <mat-error *ngIf="estudiosForm.get('tipoEstudio')?.hasError('required')">
+              El tipo de estudio es obligatorio
+            </mat-error>
+          </mat-form-field>
+          
+          <button mat-raised-button color="primary" (click)="agregarEstudio()">
+            <mat-icon>add</mat-icon> Añadir
+          </button>
+        </div>
+        
+        <mat-form-field appearance="outline">
+          <mat-label>Tipo de procedimiento</mat-label>
+          <mat-select formControlName="tipoProcedimiento">
+            <mat-option *ngFor="let tipo of tiposProcedimiento" [value]="tipo">
+              {{ tipo }}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="estudiosForm.get('tipoProcedimiento')?.hasError('required')">
+            El tipo de procedimiento es obligatorio
+          </mat-error>
+        </mat-form-field>
+      </div>
+      
+      <div class="listas-container">
+        <div class="lista-seleccionados">
+          <h3>Asuntos:</h3>
+          <div class="lista-seleccionados">
+            <h3>Asuntos:</h3>
+            <mat-chip-set>
+              <mat-chip *ngFor="let asunto of asuntosSeleccionados" 
+                        (removed)="removerAsunto(asunto)">
+                {{ asunto }}
+                <button matChipRemove>
+                  <mat-icon>cancel</mat-icon>
+                </button>
+              </mat-chip>
+            </mat-chip-set>
+          </div>
+        </div>
+        
+        <div class="lista-seleccionados">
+          <h3>Estudios:</h3>
+          <mat-chip-set>
+            <mat-chip *ngFor="let asunto of asuntosSeleccionados" 
+                     (removed)="removerAsunto(asunto)">
+              {{ asunto }}
+              <button matChipRemove>
+                <mat-icon>cancel</mat-icon>
+              </button>
+            </mat-chip>
+          </mat-chip-set>
+        </div>
+      </div>
+    </form>
+  </div>

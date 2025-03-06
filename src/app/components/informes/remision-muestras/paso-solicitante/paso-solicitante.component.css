@@ -1,0 +1,25 @@
+.paso-container {
+    padding: 20px;
+  }
+  
+  .formulario-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+  
+  .campo-radio {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  
+  mat-radio-group {
+    display: flex;
+    gap: 20px;
+  }
+  
+  mat-form-field {
+    width: 100%;
+  }

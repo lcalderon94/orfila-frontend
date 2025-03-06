@@ -1,0 +1,33 @@
+.paso-container {
+    padding: 20px;
+  }
+  
+  .formulario-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+  
+  .full-width {
+    grid-column: span 2;
+  }
+  
+  .campo-checkbox {
+    display: flex;
+    align-items: center;
+    height: 60px;
+  }
+  
+  .botones-accion {
+    margin-top: 20px;
+    display: flex;
+    justify-content: flex-end;
+  }
+  
+  .sujetos-lista {
+    margin-top: 30px;
+  }
+  
+  .sujeto-card {
+    margin-bottom: 20px;
+  }

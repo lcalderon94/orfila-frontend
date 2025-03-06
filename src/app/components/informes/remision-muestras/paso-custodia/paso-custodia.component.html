@@ -1,0 +1,84 @@
+<div class="paso-container">
+    <h2>Cadena de custodia</h2>
+    
+    <div class="informacion-adicional">
+      <p>
+        <strong>Nota importante:</strong> El apartado de la cadena de custodia no será posible rellenarlo en todos los casos, 
+        y es posible que se deba dejar en blanco, debido a que cuando se rellena este informe, puede ser que no se haya actuado 
+        aún sobre la muestra y se desconoce quién es la persona que la va a manipular y cuando.
+      </p>
+    </div>
+    
+    <form [formGroup]="custodiaForm">
+      <div class="formulario-grid">
+        <mat-form-field appearance="outline">
+          <mat-label>Nombre/Documento de identidad</mat-label>
+          <input matInput formControlName="nombreDocumento">
+          <mat-error *ngIf="custodiaForm.get('nombreDocumento')?.hasError('required')">
+            El nombre/documento es obligatorio
+          </mat-error>
+        </mat-form-field>
+        
+        <mat-form-field appearance="outline">
+          <mat-label>Organismo</mat-label>
+          <input matInput formControlName="organismoActividad">
+          <mat-error *ngIf="custodiaForm.get('organismoActividad')?.hasError('required')">
+            El organismo es obligatorio
+          </mat-error>
+        </mat-form-field>
+        
+        <mat-form-field appearance="outline">
+          <mat-label>Fecha</mat-label>
+          <input matInput [matDatepicker]="pickerFecha" formControlName="fecha">
+          <mat-datepicker-toggle matSuffix [for]="pickerFecha"></mat-datepicker-toggle>
+          <mat-datepicker #pickerFecha></mat-datepicker>
+          <mat-error *ngIf="custodiaForm.get('fecha')?.hasError('required')">
+            La fecha es obligatoria
+          </mat-error>
+        </mat-form-field>
+      </div>
+      
+      <div class="botones-accion">
+        <button mat-raised-button color="primary" [disabled]="!custodiaForm.valid" (click)="agregarRegistro()">
+          <mat-icon>add</mat-icon> Agregar registro
+        </button>
+      </div>
+    </form>
+    
+    <div class="custodia-tabla" *ngIf="registrosCustodia.length > 0">
+      <h3>Registros de cadena de custodia:</h3>
+      
+      <table mat-table [dataSource]="registrosCustodia" class="mat-elevation-z2">
+        <!-- Nombre/Documento -->
+        <ng-container matColumnDef="nombre">
+          <th mat-header-cell *matHeaderCellDef>Nombre/Documento</th>
+          <td mat-cell *matCellDef="let registro">{{ registro.nombreDocumento }}</td>
+        </ng-container>
+  
+        <!-- Actividad/Organismo -->
+        <ng-container matColumnDef="actividad">
+          <th mat-header-cell *matHeaderCellDef>Organismo</th>
+          <td mat-cell *matCellDef="let registro">{{ registro.organismoActividad }}</td>
+        </ng-container>
+  
+        <!-- Fecha -->
+        <ng-container matColumnDef="fecha">
+          <th mat-header-cell *matHeaderCellDef>Fecha</th>
+          <td mat-cell *matCellDef="let registro">{{ registro.fecha | date }}</td>
+        </ng-container>
+  
+        <!-- Acciones -->
+        <ng-container matColumnDef="acciones">
+          <th mat-header-cell *matHeaderCellDef>Acciones</th>
+          <td mat-cell *matCellDef="let registro; let i = index">
+            <button mat-icon-button color="warn" (click)="eliminarRegistro(i)">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+  
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+    </div>
+  </div>

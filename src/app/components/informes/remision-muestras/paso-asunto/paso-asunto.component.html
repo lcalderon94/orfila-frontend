@@ -1,0 +1,21 @@
+<div class="paso-container">
+    <h2>Datos del asunto</h2>
+    
+    <form [formGroup]="asuntoForm">
+      <div class="editor-container">
+        <!-- Para un entorno de producción, se integraría un editor como Quill o TinyMCE -->
+        <!-- Por ahora, usaremos un simple textarea -->
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Contenido del asunto</mat-label>
+          <textarea matInput formControlName="asuntoContenido" rows="10"></textarea>
+          <mat-error *ngIf="asuntoForm.get('asuntoContenido')?.hasError('required')">
+            El contenido es obligatorio
+          </mat-error>
+        </mat-form-field>
+        
+        <mat-checkbox formControlName="incluirSeccion">
+          Incluir sección en el informe
+        </mat-checkbox>
+      </div>
+    </form>
+  </div>

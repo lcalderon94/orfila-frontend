@@ -1,0 +1,121 @@
+<div class="paso-container">
+    <h2>Muestras para estudio</h2>
+    
+    <form [formGroup]="muestraForm">
+      <div class="formulario-grid">
+        <mat-form-field appearance="outline">
+          <mat-label>Identificación</mat-label>
+          <input matInput formControlName="identificacion">
+          <mat-error *ngIf="muestraForm.get('identificacion')?.hasError('required')">
+            La identificación es obligatoria
+          </mat-error>
+        </mat-form-field>
+        
+        <mat-form-field appearance="outline">
+          <mat-label>Conservante/aditivo</mat-label>
+          <input matInput formControlName="conservante">
+        </mat-form-field>
+        
+        <mat-form-field appearance="outline">
+          <mat-label>Fecha extracción</mat-label>
+          <input matInput [matDatepicker]="pickerExtraccion" formControlName="fechaExtraccion">
+          <mat-datepicker-toggle matSuffix [for]="pickerExtraccion"></mat-datepicker-toggle>
+          <mat-datepicker #pickerExtraccion></mat-datepicker>
+        </mat-form-field>
+        
+        <mat-form-field appearance="outline">
+          <mat-label>Fecha destrucción</mat-label>
+          <input matInput [matDatepicker]="pickerDestruccion" formControlName="fechaDestruccion">
+          <mat-datepicker-toggle matSuffix [for]="pickerDestruccion"></mat-datepicker-toggle>
+          <mat-datepicker #pickerDestruccion></mat-datepicker>
+        </mat-form-field>
+        
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Descripción</mat-label>
+          <textarea matInput formControlName="descripcion" rows="2"></textarea>
+        </mat-form-field>
+        
+        <mat-form-field appearance="outline">
+          <mat-label>Tipo muestra 1</mat-label>
+          <mat-select formControlName="tipoMuestra1">
+            <mat-option *ngFor="let tipo of tiposMuestra1" [value]="tipo">
+              {{ tipo }}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="muestraForm.get('tipoMuestra1')?.hasError('required')">
+            El tipo de muestra es obligatorio
+          </mat-error>
+        </mat-form-field>
+        
+        <mat-form-field appearance="outline" *ngIf="tiposMuestra2.length > 0">
+          <mat-label>Tipo muestra 2</mat-label>
+          <mat-select formControlName="tipoMuestra2">
+            <mat-option *ngFor="let tipo of tiposMuestra2" [value]="tipo">
+              {{ tipo }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        
+        <mat-form-field appearance="outline" *ngIf="tiposMuestra3.length > 0">
+          <mat-label>Tipo muestra 3</mat-label>
+          <mat-select formControlName="tipoMuestra3">
+            <mat-option *ngFor="let tipo of tiposMuestra3" [value]="tipo">
+              {{ tipo }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      
+      <div class="botones-accion">
+        <button mat-raised-button color="primary" [disabled]="!muestraForm.valid" (click)="agregarMuestra()">
+          <mat-icon>add</mat-icon> Agregar muestra
+        </button>
+      </div>
+    </form>
+    
+    <div class="muestras-tabla" *ngIf="muestras.length > 0">
+      <h3>Muestras incluidas:</h3>
+      
+      <table mat-table [dataSource]="muestras" class="mat-elevation-z2">
+        <!-- Identificación -->
+        <ng-container matColumnDef="identificacion">
+          <th mat-header-cell *matHeaderCellDef>Identificación</th>
+          <td mat-cell *matCellDef="let muestra">{{ muestra.identificacion }}</td>
+        </ng-container>
+  
+        <!-- Tipo -->
+        <ng-container matColumnDef="tipo">
+          <th mat-header-cell *matHeaderCellDef>Tipo de muestra</th>
+          <td mat-cell *matCellDef="let muestra">{{ obtenerDescripcionTipoMuestra(muestra) }}</td>
+        </ng-container>
+  
+        <!-- Conservante -->
+        <ng-container matColumnDef="conservante">
+          <th mat-header-cell *matHeaderCellDef>Conservante</th>
+          <td mat-cell *matCellDef="let muestra">{{ muestra.conservante || '-' }}</td>
+        </ng-container>
+  
+        <!-- Fechas -->
+        <ng-container matColumnDef="fechas">
+          <th mat-header-cell *matHeaderCellDef>Fechas</th>
+          <td mat-cell *matCellDef="let muestra">
+            <div>Extracción: {{ muestra.fechaExtraccion | date }}</div>
+            <div>Destrucción: {{ muestra.fechaDestruccion | date }}</div>
+          </td>
+        </ng-container>
+  
+        <!-- Acciones -->
+        <ng-container matColumnDef="acciones">
+          <th mat-header-cell *matHeaderCellDef>Acciones</th>
+          <td mat-cell *matCellDef="let muestra; let i = index">
+            <button mat-icon-button color="warn" (click)="eliminarMuestra(i)">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+  
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+    </div>
+  </div>

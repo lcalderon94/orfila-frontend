@@ -33,6 +33,7 @@ import { AgendaComponent } from './components/agenda/agenda.component';
 import { AgendaMensualComponent } from './components/agenda/agenda-mensual/agenda-mensual.component';
 import { AgendaSemanalComponent } from './components/agenda/agenda-semanal/agenda-semanal.component';
 import { AgendaHorariaComponent } from './components/agenda/agenda-horaria/agenda-horaria.component';
+import { RemisionMuestrasComponent } from './components/informes/remision-muestras/remision-muestras.component';
 
 
 
@@ -116,6 +117,11 @@ const routes: Routes = [
       { path: 'muestras', component: MuestrasListComponent },
       { path: 'cargas-sistema', component: CargasSistemaComponent }
     ]
+  },
+  // Ruta para el generador de informes de remisión de muestras
+  { 
+    path: 'generar-informe-remision', 
+    component: RemisionMuestrasComponent 
   },
   
   { path: 'administracion-sujetos', component: AdministracionSujetosComponent },

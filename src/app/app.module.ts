@@ -74,6 +74,16 @@ import { AgendaSemanalComponent } from './components/agenda/agenda-semanal/agend
 import { AgendaHorariaComponent } from './components/agenda/agenda-horaria/agenda-horaria.component';
 import { EventoDialogComponent } from './components/agenda/evento-dialog/evento-dialog.component';
 import { AgendaService } from './services/agenda.service';
+import { RemisionMuestrasComponent } from './components/informes/remision-muestras/remision-muestras.component';
+import { PasoBasicosComponent } from './components/informes/remision-muestras/paso-basicos/paso-basicos.component';
+import { PasoSolicitanteComponent } from './components/informes/remision-muestras/paso-solicitante/paso-solicitante.component';
+import { PasoAsuntoComponent } from './components/informes/remision-muestras/paso-asunto/paso-asunto.component';
+import { PasoEstudiosComponent } from './components/informes/remision-muestras/paso-estudios/paso-estudios.component';
+import { PasoSujetosComponent } from './components/informes/remision-muestras/paso-sujetos/paso-sujetos.component';
+import { PasoMuestrasComponent } from './components/informes/remision-muestras/paso-muestras/paso-muestras.component';
+import { PasoCustodiaComponent } from './components/informes/remision-muestras/paso-custodia/paso-custodia.component';
+
+
 
 
 
@@ -116,7 +126,15 @@ import { AgendaService } from './services/agenda.service';
     AgendaMensualComponent,
     AgendaSemanalComponent,
     AgendaHorariaComponent,
-    EventoDialogComponent
+    EventoDialogComponent,
+    RemisionMuestrasComponent,
+    PasoBasicosComponent,
+    PasoSolicitanteComponent,
+    PasoAsuntoComponent,
+    PasoEstudiosComponent,
+    PasoSujetosComponent,
+    PasoMuestrasComponent,
+    PasoCustodiaComponent,
   ],
   imports: [
     BrowserModule,

@@ -1,0 +1,36 @@
+.paso-container {
+    padding: 20px;
+  }
+  
+  .formulario-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+  
+  .seleccion-grupo {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  
+  mat-form-field {
+    flex-grow: 1;
+  }
+  
+  .listas-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    margin-top: 20px;
+  }
+  
+  .lista-seleccionados {
+    border: 1px solid #eee;
+    border-radius: 4px;
+    padding: 10px;
+  }
+  
+  mat-chip-list {
+    margin-top: 10px;
+  }

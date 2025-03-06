@@ -1,0 +1,126 @@
+<div class="paso-container">
+    <h2>Sujetos a estudio</h2>
+    
+    <form [formGroup]="sujetoForm">
+      <div class="formulario-grid">
+        <mat-form-field appearance="outline">
+          <mat-label>Seleccionar sujeto</mat-label>
+          <mat-select formControlName="sujeto">
+            <mat-option *ngFor="let sujeto of sujetos" [value]="sujeto.id">
+              {{ sujeto.expediente }} - {{ sujeto.nombre }}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="sujetoForm.get('sujeto')?.hasError('required')">
+            Debe seleccionar un sujeto
+          </mat-error>
+        </mat-form-field>
+        
+        <!-- Campos condicionales para accidente -->
+        <div class="campo-checkbox">
+          <mat-checkbox formControlName="esAccidente">
+            ¿Se trata de un accidente?
+          </mat-checkbox>
+        </div>
+        
+        <ng-container *ngIf="mostrarCampoAccidente">
+          <mat-form-field appearance="outline">
+            <mat-label>Lugar del accidente</mat-label>
+            <input matInput formControlName="lugarAccidente">
+          </mat-form-field>
+          
+          <mat-form-field appearance="outline">
+            <mat-label>Fecha del accidente</mat-label>
+            <input matInput [matDatepicker]="pickerAccidente" formControlName="fechaAccidente">
+            <mat-datepicker-toggle matSuffix [for]="pickerAccidente"></mat-datepicker-toggle>
+            <mat-datepicker #pickerAccidente></mat-datepicker>
+          </mat-form-field>
+        </ng-container>
+        
+        <!-- Campos condicionales para filiación -->
+        <div class="campo-checkbox">
+          <mat-checkbox formControlName="esFiliacion">
+            ¿Se trata de un caso de filiación?
+          </mat-checkbox>
+        </div>
+        
+        <ng-container *ngIf="mostrarCamposFiliacion">
+          <mat-form-field appearance="outline">
+            <mat-label>Objeto de la filiación</mat-label>
+            <input matInput formControlName="objetoFiliacion">
+          </mat-form-field>
+          
+          <mat-form-field appearance="outline">
+            <mat-label>Persona a filiar</mat-label>
+            <input matInput formControlName="personaFiliacion">
+          </mat-form-field>
+        </ng-container>
+        
+        <!-- Campos condicionales para delito contra la libertad sexual -->
+        <div class="campo-checkbox">
+          <mat-checkbox formControlName="esDelitoSexual">
+            ¿Se trata de un delito contra la libertad sexual?
+          </mat-checkbox>
+        </div>
+        
+        <ng-container *ngIf="mostrarCamposDelito">
+          <mat-form-field appearance="outline">
+            <mat-label>Fecha del delito</mat-label>
+            <input matInput [matDatepicker]="pickerDelito" formControlName="fechaDelito">
+            <mat-datepicker-toggle matSuffix [for]="pickerDelito"></mat-datepicker-toggle>
+            <mat-datepicker #pickerDelito></mat-datepicker>
+          </mat-form-field>
+          
+          <mat-form-field appearance="outline">
+            <mat-label>Lugar del delito</mat-label>
+            <input matInput formControlName="lugarDelito">
+          </mat-form-field>
+          
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Descripción del delito</mat-label>
+            <textarea matInput formControlName="descripcionDelito" rows="3"></textarea>
+          </mat-form-field>
+        </ng-container>
+      </div>
+      
+      <div class="botones-accion">
+        <button mat-raised-button color="primary" (click)="incluirSujeto()" [disabled]="!sujetoForm.valid">
+          Incluir Sujeto
+        </button>
+      </div>
+    </form>
+    
+    <div class="sujetos-lista" *ngIf="sujetosEstudioList.length > 0">
+      <h3>Sujetos incluidos:</h3>
+      
+      <mat-card *ngFor="let sujetoEstudio of sujetosEstudioList; let i = index" class="sujeto-card">
+        <mat-card-header>
+          <mat-card-title>{{ sujetoEstudio.sujeto.expediente }} - {{ sujetoEstudio.sujeto.nombre }}</mat-card-title>
+        </mat-card-header>
+        
+        <mat-card-content>
+          <div *ngIf="sujetoEstudio.datos.esAccidente">
+            <p><strong>Accidente:</strong> {{ sujetoEstudio.datos.lugarAccidente }}</p>
+            <p><strong>Fecha:</strong> {{ sujetoEstudio.datos.fechaAccidente | date }}</p>
+          </div>
+          
+          <div *ngIf="sujetoEstudio.datos.esFiliacion">
+            <p><strong>Filiación:</strong> {{ sujetoEstudio.datos.objetoFiliacion }}</p>
+            <p><strong>Persona:</strong> {{ sujetoEstudio.datos.personaFiliacion }}</p>
+          </div>
+          
+          <div *ngIf="sujetoEstudio.datos.esDelitoSexual">
+            <p><strong>Delito sexual</strong></p>
+            <p><strong>Fecha:</strong> {{ sujetoEstudio.datos.fechaDelito | date }}</p>
+            <p><strong>Lugar:</strong> {{ sujetoEstudio.datos.lugarDelito }}</p>
+            <p><strong>Descripción:</strong> {{ sujetoEstudio.datos.descripcionDelito }}</p>
+          </div>
+        </mat-card-content>
+        
+        <mat-card-actions align="end">
+          <button mat-button color="warn" (click)="eliminarSujeto(i)">
+            <mat-icon>delete</mat-icon> Eliminar
+          </button>
+        </mat-card-actions>
+      </mat-card>
+    </div>
+  </div>
