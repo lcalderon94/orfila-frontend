@@ -1,0 +1,41 @@
+<div class="calendario-mensual">
+    <div class="calendario-header">
+      <div class="navegacion-mes">
+        <button mat-icon-button (click)="mesAnterior()">
+          <mat-icon>chevron_left</mat-icon>
+        </button>
+        <h2>{{ meses[fechaActual.getMonth()] }} {{ fechaActual.getFullYear() }}</h2>
+        <button mat-icon-button (click)="mesSiguiente()">
+          <mat-icon>chevron_right</mat-icon>
+        </button>
+      </div>
+    </div>
+    
+    <div class="dias-semana">
+      <div class="dia-header" *ngFor="let dia of diasSemana">{{ dia }}</div>
+    </div>
+    
+    <div class="dias-grid">
+      <div 
+        *ngFor="let dia of diasCalendario" 
+        class="dia-celda" 
+        [ngClass]="{
+          'otro-mes': !dia.esDelMesActual,
+          'hoy': esHoy(dia.fecha)
+        }"
+        (contextmenu)="mostrarMenuContextual(dia, $event)">
+        
+        <div class="dia-numero">{{ dia.fecha.getDate() }}</div>
+        
+        <div class="eventos-dia">
+          <div 
+            *ngFor="let evento of dia.eventos" 
+            class="evento-item"
+            [style.background-color]="evento.color || '#3f51b5'"
+            (click)="actualizarEvento(evento, $event)">
+            {{ evento.titulo }} {{ evento.horaInicio ? '(' + evento.horaInicio + ')' : '' }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

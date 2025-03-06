@@ -24,3 +24,33 @@
 .buscadores-superiores input:nth-child(7) { width: 120px; }
 .buscadores-superiores input:nth-child(8) { width: 180px; }
 .buscadores-superiores input:nth-child(9) { width: 150px; }
+
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .agenda-link {
+    margin-right: 20px;
+  }
+  
+  .agenda-button {
+    display: flex;
+    align-items: center;
+    background-color: #3f51b5;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 4px;
+    text-decoration: none;
+    transition: background-color 0.3s;
+  }
+  
+  .agenda-button:hover {
+    background-color: #303f9f;
+  }
+  
+  .agenda-button mat-icon {
+    margin-right: 8px;
+  }

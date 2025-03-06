@@ -1,0 +1,92 @@
+<div class="evento-dialog">
+    <h2 mat-dialog-title>
+      {{ esNuevo ? 'Nuevo evento' : (modoEdicion ? 'Editar evento' : 'Detalles del evento') }}
+    </h2>
+    
+    <mat-dialog-content>
+      <form [formGroup]="eventoForm">
+        <!-- Campo Título -->
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Título</mat-label>
+          <input matInput formControlName="titulo" placeholder="Título del evento">
+          <mat-error *ngIf="eventoForm.get('titulo')?.hasError('required')">
+            El título es obligatorio
+          </mat-error>
+        </mat-form-field>
+        
+        <!-- Campo Fecha -->
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Fecha</mat-label>
+          <input matInput [matDatepicker]="picker" formControlName="fecha">
+          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+          <mat-error *ngIf="eventoForm.get('fecha')?.hasError('required')">
+            La fecha es obligatoria
+          </mat-error>
+        </mat-form-field>
+        
+        <!-- Campos Hora Inicio y Fin -->
+        <div class="row">
+          <mat-form-field appearance="outline" class="half-width">
+            <mat-label>Hora inicio</mat-label>
+            <input matInput type="time" formControlName="horaInicio">
+          </mat-form-field>
+          
+          <mat-form-field appearance="outline" class="half-width">
+            <mat-label>Hora fin</mat-label>
+            <input matInput type="time" formControlName="horaFin">
+          </mat-form-field>
+        </div>
+        
+        <!-- Descripción -->
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Descripción</mat-label>
+          <textarea matInput formControlName="descripcion" rows="3"></textarea>
+        </mat-form-field>
+        
+        <!-- Campos especiales para citación a juicio -->
+        <ng-container *ngIf="esCitacionJuicio">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Dirección del juzgado</mat-label>
+            <input matInput formControlName="direccionJuzgado">
+          </mat-form-field>
+          
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Observaciones</mat-label>
+            <textarea matInput formControlName="observaciones" rows="3"></textarea>
+          </mat-form-field>
+        </ng-container>
+        
+        <!-- Selector de color -->
+        <div class="color-selector" *ngIf="modoEdicion">
+          <label>Color:</label>
+          <div class="color-options">
+            <div 
+              *ngFor="let color of coloresDisponibles" 
+              class="color-option"
+              [style.background-color]="color"
+              [class.selected]="color === colorEventoSeleccionado"
+              (click)="seleccionarColor(color)">
+            </div>
+          </div>
+        </div>
+      </form>
+    </mat-dialog-content>
+    
+    <mat-dialog-actions align="end">
+      <!-- Botones en modo visualización -->
+      <ng-container *ngIf="!modoEdicion">
+        <button mat-button color="primary" (click)="editar()">EDITAR</button>
+        <button mat-button mat-dialog-close>CERRAR</button>
+      </ng-container>
+      
+      <!-- Botones en modo edición -->
+      <ng-container *ngIf="modoEdicion">
+        <button mat-button color="warn" *ngIf="!esNuevo" (click)="eliminar()">ELIMINAR</button>
+        <button mat-button (click)="cancelar()">CANCELAR</button>
+        <button mat-raised-button color="primary" (click)="guardar()" [disabled]="eventoForm.invalid">
+          {{ esNuevo ? 'CREAR' : 'GUARDAR' }}
+        </button>
+      </ng-container>
+    </mat-dialog-actions>
+  </div>

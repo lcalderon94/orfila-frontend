@@ -29,6 +29,11 @@ import { AdministracionSujetosComponent } from './components/administracion-suje
 import { PortafirmasListadoComponent } from './components/portafirmas/portafirmas-listado/portafirmas-listado.component';
 import { TareaDetalleComponent } from './components/tareas/tarea-detalle/tarea-detalle.component';
 import { NuevoDocumentoComponent } from './components/consulta-documentos/nuevo-documento/nuevo-documento.component';
+import { AgendaComponent } from './components/agenda/agenda.component';
+import { AgendaMensualComponent } from './components/agenda/agenda-mensual/agenda-mensual.component';
+import { AgendaSemanalComponent } from './components/agenda/agenda-semanal/agenda-semanal.component';
+import { AgendaHorariaComponent } from './components/agenda/agenda-horaria/agenda-horaria.component';
+
 
 
 
@@ -73,6 +78,16 @@ const routes: Routes = [
     children: [
       { path: '', component: PortafirmasComponent },
       { path: 'listado', component: PortafirmasListadoComponent }
+    ]
+  },
+  { 
+    path: 'agenda', 
+    component: AgendaComponent,
+    children: [
+      { path: '', redirectTo: 'mensual', pathMatch: 'full' },
+      { path: 'mensual', component: AgendaMensualComponent },
+      { path: 'semanal', component: AgendaSemanalComponent },
+      { path: 'horaria', component: AgendaHorariaComponent }
     ]
   },
   

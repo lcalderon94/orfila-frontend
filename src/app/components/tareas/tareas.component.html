@@ -1,6 +1,14 @@
 <div class="contenedor-tareas">
   <h1>BANDEJA DE TAREAS</h1>
 
+  <!-- Enlace a Agenda - AÑADIR AQUÍ -->
+  <div class="agenda-link">
+    <a routerLink="/agenda" class="agenda-button">
+      <mat-icon>calendar_today</mat-icon>
+      <span>Agenda</span>
+    </a>
+  </div>
+
   <!-- Panel de Filtros -->
   <div class="contenedor-filtros" (click)="mostrarFiltros = !mostrarFiltros">
     <mat-icon>filter_list</mat-icon>

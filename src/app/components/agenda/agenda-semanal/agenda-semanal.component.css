@@ -1,0 +1,116 @@
+.calendario-semanal {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: 16px;
+  }
+  
+  .calendario-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+  
+  .navegacion-semana {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  
+  .navegacion-semana h2 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 500;
+    color: #333;
+  }
+  
+  .semana-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    flex: 1;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  
+  .dia-columna {
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid #ddd;
+    min-height: 600px;
+  }
+  
+  .dia-columna:last-child {
+    border-right: none;
+  }
+  
+  .dia-header {
+    padding: 12px;
+    border-bottom: 1px solid #ddd;
+    background-color: #f0f0f0;
+    text-align: center;
+  }
+  
+  .dia-nombre {
+    font-weight: 500;
+  }
+  
+  .dia-fecha {
+    font-size: 0.9rem;
+    color: #666;
+  }
+  
+  .dia-contenido {
+    flex: 1;
+    padding: 8px;
+    overflow-y: auto;
+    background-color: #fff;
+    cursor: pointer;
+  }
+  
+  .hoy .dia-header {
+    background-color: #3f51b5;
+    color: white;
+  }
+  
+  .sin-eventos {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #aaa;
+    font-style: italic;
+  }
+  
+  .evento-item {
+    margin-bottom: 8px;
+    padding: 8px;
+    border-radius: 4px;
+    color: white;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  
+  .evento-item:hover {
+    filter: brightness(1.1);
+    transform: translateY(-2px);
+  }
+  
+  .evento-hora {
+    font-weight: 500;
+    font-size: 0.9rem;
+  }
+  
+  .evento-titulo {
+    font-weight: 500;
+    margin-top: 4px;
+  }
+  
+  .evento-descripcion {
+    font-size: 0.8rem;
+    margin-top: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }

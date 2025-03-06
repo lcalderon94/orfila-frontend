@@ -1,0 +1,44 @@
+<div class="agenda-horaria">
+    <div class="agenda-header">
+      <div class="navegacion-semana">
+        <button mat-icon-button (click)="semanaAnterior()">
+          <mat-icon>chevron_left</mat-icon>
+        </button>
+        <h2>{{ formatoSemana() }}</h2>
+        <button mat-icon-button (click)="semanaSiguiente()">
+          <mat-icon>chevron_right</mat-icon>
+        </button>
+      </div>
+    </div>
+    
+    <div class="agenda-grid">
+      <!-- Cabecera de días de la semana -->
+      <div class="hora-header"></div>
+      <div *ngFor="let fecha of diasSemana; let i = index" 
+           class="dia-header"
+           [ngClass]="{'hoy': esHoy(fecha)}">
+        <div class="dia-nombre">{{ nombresDias[i] }}</div>
+        <div class="dia-fecha">{{ formatoFecha(fecha) }}</div>
+      </div>
+      
+      <!-- Filas de horas -->
+      <ng-container *ngFor="let hora of horas">
+        <!-- Celda de hora -->
+        <div class="hora-celda">{{ hora.valor }}</div>
+        
+        <!-- Celdas de eventos por día -->
+        <div *ngFor="let dia of [0,1,2,3,4,5,6]" 
+             class="evento-celda"
+             [ngClass]="{'hoy': esHoy(diasSemana[dia])}"
+             (click)="crearEvento(diasSemana[dia], hora.valor)">
+          
+          <div *ngFor="let evento of hora.eventos[dia]" 
+               class="evento-item"
+               [style.background-color]="evento.color || '#3f51b5'"
+               (click)="verEvento(evento, $event)">
+            {{ evento.titulo }}
+          </div>
+        </div>
+      </ng-container>
+    </div>
+  </div>

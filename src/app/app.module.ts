@@ -68,6 +68,14 @@ import { NotasEpisodioComponent } from './components/episodios/notas-episodio/no
 import { TareaDetalleComponent } from './components/tareas/tarea-detalle/tarea-detalle.component';
 import { HojaEvolucionComponent } from './components/tareas/hoja-evolucion/hoja-evolucion.component';
 import { NuevoDocumentoComponent } from './components/consulta-documentos/nuevo-documento/nuevo-documento.component';
+import { AgendaComponent } from './components/agenda/agenda.component';
+import { AgendaMensualComponent } from './components/agenda/agenda-mensual/agenda-mensual.component';
+import { AgendaSemanalComponent } from './components/agenda/agenda-semanal/agenda-semanal.component';
+import { AgendaHorariaComponent } from './components/agenda/agenda-horaria/agenda-horaria.component';
+import { EventoDialogComponent } from './components/agenda/evento-dialog/evento-dialog.component';
+import { AgendaService } from './services/agenda.service';
+
+
 
 @NgModule({
   declarations: [
@@ -103,7 +111,12 @@ import { NuevoDocumentoComponent } from './components/consulta-documentos/nuevo-
     NotasEpisodioComponent,
     TareaDetalleComponent,
     HojaEvolucionComponent,
-    NuevoDocumentoComponent
+    NuevoDocumentoComponent,
+    AgendaComponent,
+    AgendaMensualComponent,
+    AgendaSemanalComponent,
+    AgendaHorariaComponent,
+    EventoDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -140,7 +153,9 @@ import { NuevoDocumentoComponent } from './components/consulta-documentos/nuevo-
     MatNativeDateModule,
     MatExpansionModule
   ],
-  providers: [],
+  providers: [
+    AgendaService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

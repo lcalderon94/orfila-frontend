@@ -1,0 +1,49 @@
+.evento-dialog {
+    min-width: 400px;
+  }
+  
+  .full-width {
+    width: 100%;
+  }
+  
+  .half-width {
+    width: 48%;
+  }
+  
+  .row {
+    display: flex;
+    gap: 4%;
+  }
+  
+  .color-selector {
+    margin: 16px 0;
+  }
+  
+  .color-selector label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+  }
+  
+  .color-options {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  
+  .color-option {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  
+  .color-option:hover {
+    transform: scale(1.1);
+  }
+  
+  .color-option.selected {
+    border: 2px solid #333;
+    transform: scale(1.1);
+  }
