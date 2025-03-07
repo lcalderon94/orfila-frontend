@@ -266,7 +266,9 @@ export class ConsultaDocumentosComponent implements OnInit, OnDestroy {
   }
 
   nuevo() {
-    this.router.navigate(['consulta-documentos/nuevo']);
+    this.router.navigate(['consulta-documentos/nuevo'], {
+      queryParams: { numEpisodio: this.episodioId }
+    });
   }
 
   subirFichero() {

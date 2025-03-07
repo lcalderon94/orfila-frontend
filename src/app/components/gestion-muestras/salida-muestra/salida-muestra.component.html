@@ -1,1 +1,118 @@
-<p>salida-muestra works!</p>
+<!-- salida-muestra.component.html -->
+<div class="contenedor-pagina">
+    <div class="header">
+      <button mat-icon-button class="back-button" (click)="volver()">
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+      <h1>Salida de Muestras</h1>
+    </div>
+  
+    <div class="registro-container">
+      <form [formGroup]="registroForm" class="registro-form">
+        <div class="form-section">
+          <h2>DATOS SALIDA</h2>
+          
+          <!-- Localización predeterminada -->
+          <div class="predeterminada-container">
+            <mat-checkbox [(ngModel)]="usarPredeterminada" [ngModelOptions]="{standalone: true}" 
+                        (change)="toggleUsarPredeterminada()">
+              Usar localización predeterminada
+            </mat-checkbox>
+          </div>
+          
+          <!-- Selector de localización -->
+          <div class="form-row">
+            <mat-form-field *ngIf="!usarPredeterminada">
+              <mat-label>Localización Externa (*)</mat-label>
+              <mat-select formControlName="localizacionId" (selectionChange)="onLocalizacionChange($event)">
+                <mat-option *ngFor="let loc of localizaciones" [value]="loc.id">
+                  {{loc.descripcionLocalizacion}} ({{loc.codigoBarras}})
+                </mat-option>
+              </mat-select>
+              <mat-error *ngIf="registroForm.get('localizacionId')?.hasError('required')">
+                La localización es obligatoria
+              </mat-error>
+            </mat-form-field>
+            
+            <div class="localizacion-seleccionada" *ngIf="usarPredeterminada && localizacionSeleccionada">
+              <span class="label">Localización seleccionada:</span>
+              <span class="value">{{localizacionSeleccionada.descripcionLocalizacion}} ({{localizacionSeleccionada.codigoBarras}})</span>
+            </div>
+          </div>
+          
+          <!-- Campo para código de barras de la muestra -->
+          <div class="form-row">
+            <mat-form-field class="full-width">
+              <mat-label>Código de barras de la muestra (*)</mat-label>
+              <input matInput id="codigoBarrasMuestraInput" formControlName="codigoBarrasMuestra" 
+                    placeholder="Escanee o ingrese el código de barras" autocomplete="off">
+              <mat-error *ngIf="registroForm.get('codigoBarrasMuestra')?.hasError('required')">
+                El código de barras es obligatorio
+              </mat-error>
+            </mat-form-field>
+            
+            <button mat-raised-button color="primary" (click)="registrarMuestra()" 
+                  [disabled]="registroForm.invalid || !localizacionSeleccionada">
+              REGISTRAR
+            </button>
+          </div>
+        </div>
+        
+        <!-- Tabla de muestras leídas -->
+        <div class="muestras-leidas-container" *ngIf="muestrasLeidas.length > 0">
+          <h2>MUESTRAS LEÍDAS</h2>
+          
+          <table mat-table [dataSource]="muestrasLeidas" class="muestras-table">
+            <!-- Código de Barras Localización Column -->
+            <ng-container matColumnDef="codigoBarrasLocalizacion">
+              <th mat-header-cell *matHeaderCellDef>C.B. LOCALIZACIÓN</th>
+              <td mat-cell *matCellDef="let muestra">{{muestra.codigoBarrasLocalizacion}}</td>
+            </ng-container>
+            
+            <!-- Descripción Localización Column -->
+            <ng-container matColumnDef="descripcionLocalizacion">
+              <th mat-header-cell *matHeaderCellDef>LOCALIZACIÓN</th>
+              <td mat-cell *matCellDef="let muestra">{{muestra.descripcionLocalizacion}}</td>
+            </ng-container>
+            
+            <!-- Fecha de Registro Column -->
+            <ng-container matColumnDef="fechaRegistro">
+              <th mat-header-cell *matHeaderCellDef>FECHA REGISTRO</th>
+              <td mat-cell *matCellDef="let muestra">
+                {{muestra.fechaRegistro | date:'dd/MM/yyyy HH:mm:ss'}}
+              </td>
+            </ng-container>
+            
+            <!-- Usuario Column -->
+            <ng-container matColumnDef="usuario">
+              <th mat-header-cell *matHeaderCellDef>USUARIO</th>
+              <td mat-cell *matCellDef="let muestra">{{muestra.usuario}}</td>
+            </ng-container>
+            
+            <!-- Código de Barras Muestra Column -->
+          <ng-container matColumnDef="codigoBarrasMuestra">
+            <th mat-header-cell *matHeaderCellDef>C.B. MUESTRA</th>
+            <td mat-cell *matCellDef="let muestra">{{muestra.codigoBarrasMuestra}}</td>
+          </ng-container>
+          
+          <!-- Opciones Column -->
+          <ng-container matColumnDef="opciones">
+            <th mat-header-cell *matHeaderCellDef>OPCIONES</th>
+            <td mat-cell *matCellDef="let muestra; let i = index">
+              <button mat-icon-button color="warn" (click)="eliminarRegistro(i)" matTooltip="Eliminar registro">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </td>
+          </ng-container>
+          
+          <tr mat-header-row *matHeaderRowDef="['codigoBarrasLocalizacion', 'descripcionLocalizacion', 'fechaRegistro', 'usuario', 'codigoBarrasMuestra', 'opciones']"></tr>
+          <tr mat-row *matRowDef="let row; columns: ['codigoBarrasLocalizacion', 'descripcionLocalizacion', 'fechaRegistro', 'usuario', 'codigoBarrasMuestra', 'opciones'];"></tr>
+        </table>
+        
+        <div class="botones-accion">
+          <button mat-raised-button color="primary" (click)="guardar()">GUARDAR</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

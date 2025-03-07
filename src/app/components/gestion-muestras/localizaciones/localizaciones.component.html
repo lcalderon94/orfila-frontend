@@ -1,169 +1,188 @@
 <!-- localizaciones.component.html -->
 <div class="contenedor-pagina">
+  <div class="header">
     <h1>Localizaciones</h1>
-   
-    <!-- Botón para mostrar/ocultar filtros -->
-    <div class="contenedor-filtros" (click)="toggleFiltros()">
-      <mat-icon>filter_list</mat-icon>
-      <span>Filtros</span>
+    <button mat-raised-button color="primary" (click)="crearNuevaLocalizacion()">
+      <mat-icon>add</mat-icon> NUEVA LOCALIZACIÓN
+    </button>
+  </div>
+  
+  <!-- Botón para mostrar/ocultar filtros -->
+  <div class="contenedor-filtros" (click)="toggleFiltros()">
+    <mat-icon>filter_list</mat-icon>
+    <span>Filtros</span>
+    <mat-icon>{{ mostrarFiltros ? 'keyboard_arrow_up' : 'keyboard_arrow_down' }}</mat-icon>
+  </div>
+  
+  <!-- Panel de filtros -->
+  <div class="filtros-panel" *ngIf="mostrarFiltros">
+    <!-- Tipo Localización -->
+    <div class="filtro-seccion">
+      <h3>TIPO LOCALIZACIÓN</h3>
+      <mat-radio-group [(ngModel)]="filtros.tipoLocalizacion" class="radio-group">
+        <mat-radio-button value="local">Local</mat-radio-button>
+        <mat-radio-button value="externa">Externa</mat-radio-button>
+        <mat-radio-button value="todos">Todas</mat-radio-button>
+      </mat-radio-group>
     </div>
-   
-    <!-- Panel de filtros -->
-    <div class="filtros-panel" *ngIf="mostrarFiltros">
-      <!-- Tipo Localización -->
-      <div class="filtro-seccion">
-        <h3>TIPO LOCALIZACIÓN</h3>
-        <mat-radio-group [(ngModel)]="filtros.tipoLocalizacion">
-          <mat-radio-button value="local">Local</mat-radio-button>
-          <mat-radio-button value="externo">Externo</mat-radio-button>
-          <mat-radio-button value="todos">Todas</mat-radio-button>
-        </mat-radio-group>
-      </div>
-   
-      <!-- Resto de filtros -->
-      <div class="filtro-seccion">
-        <div class="grid-container">
-          <mat-form-field>
-            <mat-label>Sede C.P</mat-label>
-            <input matInput [(ngModel)]="filtros.sedeCP">
-          </mat-form-field>
-   
-          <mat-form-field>
-            <mat-label>Planta del Edificio</mat-label>
-            <input matInput [(ngModel)]="filtros.plantaEdificio">
-          </mat-form-field>
-   
-          <mat-form-field>
-            <mat-label>Descripción de la Localización</mat-label>
-            <input matInput [(ngModel)]="filtros.descripcionLocalizacion">
-          </mat-form-field>
-   
-          <mat-form-field>
-            <mat-label>Código de barras</mat-label>
-            <input matInput [(ngModel)]="filtros.codigoBarras">
-          </mat-form-field>
-        </div>
-      </div>
-   
-      <!-- Botones de acción de los filtros -->
-      <div class="botones-filtro">
-        <button mat-raised-button color="primary" (click)="aplicarFiltros()">BUSCAR</button>
-        <button mat-stroked-button (click)="limpiarFiltros()">LIMPIAR</button>
+    
+    <!-- Resto de filtros -->
+    <div class="filtro-seccion">
+      <div class="grid-container">
+        <mat-form-field>
+          <mat-label>Sede C.P</mat-label>
+          <input matInput [(ngModel)]="filtros.sedeCP">
+        </mat-form-field>
+        
+        <mat-form-field>
+          <mat-label>Planta del Edificio</mat-label>
+          <input matInput [(ngModel)]="filtros.plantaEdificio">
+        </mat-form-field>
+        
+        <mat-form-field>
+          <mat-label>Descripción de la Localización</mat-label>
+          <input matInput [(ngModel)]="filtros.descripcionLocalizacion">
+        </mat-form-field>
+        
+        <mat-form-field>
+          <mat-label>Código de barras</mat-label>
+          <input matInput [(ngModel)]="filtros.codigoBarras">
+        </mat-form-field>
       </div>
     </div>
-   
-    <!-- Barra de acciones -->
-    <div class="barra-acciones">
-      <div class="controles-izquierda">
-   
-        <div class="iconos-exportar">
-          <button mat-icon-button matTooltip="Exportar a Word">
-            <mat-icon>description</mat-icon>
-          </button>
-          <button mat-icon-button matTooltip="Exportar a PDF">
-            <mat-icon>picture_as_pdf</mat-icon>
-          </button>
-          <button mat-icon-button matTooltip="Exportar a Excel">
-            <mat-icon>table_chart</mat-icon>
-          </button>
-        </div>
-      </div>
-   
-      <div class="acciones-derecha">
-        <button mat-icon-button matTooltip="Actualizar" (click)="cargarDatos()">
-          <mat-icon>refresh</mat-icon>
+    
+    <!-- Botones de acción de los filtros -->
+    <div class="botones-filtro">
+      <button mat-raised-button color="primary" (click)="aplicarFiltros()">BUSCAR</button>
+      <button mat-stroked-button (click)="limpiarFiltros()">LIMPIAR</button>
+    </div>
+  </div>
+  
+  <!-- Barra de acciones -->
+  <div class="barra-acciones">
+    <div class="controles-izquierda">
+      <button mat-raised-button color="primary" [disabled]="selection.selected.length === 0" 
+              (click)="imprimirEtiquetas()">
+        IMPRIMIR ETIQUETAS
+      </button>
+      
+      <button mat-raised-button [disabled]="selection.selected.length === 0" 
+              (click)="imprimirListado()">
+        IMPRIMIR LISTADO
+      </button>
+      
+      <div class="separator"></div>
+      
+      <div class="iconos-exportar">
+        <button mat-icon-button matTooltip="Exportar a Word" (click)="exportarWord()">
+          <mat-icon>description</mat-icon>
+        </button>
+        <button mat-icon-button matTooltip="Exportar a PDF" (click)="exportarPDF()">
+          <mat-icon>picture_as_pdf</mat-icon>
+        </button>
+        <button mat-icon-button matTooltip="Exportar a Excel" (click)="exportarExcel()">
+          <mat-icon>table_chart</mat-icon>
         </button>
       </div>
     </div>
-   
-    <!-- Buscadores superiores -->
-    <div class="buscadores-superiores">
-      <input placeholder="Tipo Localización">
-      <input placeholder="Sede C.P">
-      <input placeholder="Planta del Edificio">
-      <input placeholder="Descripción">
-      <input placeholder="Código de barras">
+    
+    <div class="acciones-derecha">
+      <button mat-icon-button matTooltip="Actualizar" (click)="cargarDatos()">
+        <mat-icon>refresh</mat-icon>
+      </button>
     </div>
-   
-    <!-- Tabla de localizaciones -->
-    <div class="contenedor-tabla">
-      <table mat-table [dataSource]="dataSource" matSort>
-        <!-- Checkbox Column -->
-        <ng-container matColumnDef="select">
-          <th mat-header-cell *matHeaderCellDef>
-            <mat-checkbox (change)="$event ? masterToggle() : null"
-                         [checked]="selection.hasValue() && isAllSelected()"
-                         [indeterminate]="selection.hasValue() && !isAllSelected()">
-            </mat-checkbox>
-          </th>
-          <td mat-cell *matCellDef="let row">
-            <mat-checkbox (click)="$event.stopPropagation()"
-                         (change)="$event ? selection.toggle(row) : null"
-                         [checked]="selection.isSelected(row)">
-            </mat-checkbox>
-          </td>
-        </ng-container>
-   
-        <!-- Tipo Localización Column -->
-        <ng-container matColumnDef="tipoLocalizacion">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header> TIPO LOCALIZACIÓN </th>
-          <td mat-cell *matCellDef="let row"> {{row.tipoLocalizacion}} </td>
-        </ng-container>
-   
-        <!-- Sede CP Column -->
-        <ng-container matColumnDef="sedeCP">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header> SEDE C.P </th>
-          <td mat-cell *matCellDef="let row"> {{row.sedeCP}} </td>
-        </ng-container>
-   
-        <!-- Planta Edificio Column -->
-        <ng-container matColumnDef="plantaEdificio">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header> PLANTA DEL EDIFICIO </th>
-          <td mat-cell *matCellDef="let row"> {{row.plantaEdificio}} </td>
-        </ng-container>
-   
-        <!-- Descripción Column -->
-        <ng-container matColumnDef="descripcionLocalizacion">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header> DESCRIPCIÓN DE LA LOCALIZACIÓN </th>
-          <td mat-cell *matCellDef="let row"> {{row.descripcionLocalizacion}} </td>
-        </ng-container>
-   
-        <!-- Código de Barras Column -->
-        <ng-container matColumnDef="codigoBarras">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header> CÓDIGO DE BARRAS </th>
-          <td mat-cell *matCellDef="let row"> {{row.codigoBarras}} </td>
-        </ng-container>
-   
-        <!-- Opciones Column -->
-        <ng-container matColumnDef="opciones">
-          <th mat-header-cell *matHeaderCellDef> OPCIONES </th>
-          <td mat-cell *matCellDef="let row">
-            <button mat-icon-button (click)="verLocalizacion(row)" matTooltip="Ver localización">
-              <mat-icon>edit</mat-icon>
-            </button>
-            <button mat-icon-button (click)="imprimirCodigo(row)" matTooltip="Imprimir código">
-              <mat-icon>print</mat-icon>
-            </button>
-            <button mat-icon-button (click)="insertarMuestra(row)" matTooltip="Insertar muestra">
-              <mat-icon>add_box</mat-icon>
-            </button>
-            <button mat-icon-button (click)="verMuestras(row)" matTooltip="Ver muestras">
-              <mat-icon>list</mat-icon>
-            </button>
-            <button mat-icon-button (click)="eliminarLocalizacion(row)" matTooltip="Eliminar">
-              <mat-icon>delete</mat-icon>
-            </button>
-          </td>
-        </ng-container>
-   
-        <tr mat-header-row *matHeaderRowDef="columnasVisibles"></tr>
-        <tr mat-row *matRowDef="let row; columns: columnasVisibles;"></tr>
-      </table>
-    </div>
-   
-    <!-- Paginador -->
-    <mat-paginator 
-      [pageSizeOptions]="[10, 20, 50]"
-      showFirstLastButtons>
-    </mat-paginator>
-   </div>
+  </div>
+  
+  <!-- Tabla de localizaciones -->
+  <div class="contenedor-tabla">
+    <table mat-table [dataSource]="dataSource" matSort>
+      <!-- Checkbox Column -->
+      <ng-container matColumnDef="select">
+        <th mat-header-cell *matHeaderCellDef>
+          <mat-checkbox (change)="$event ? masterToggle() : null"
+                      [checked]="selection.hasValue() && isAllSelected()"
+                      [indeterminate]="selection.hasValue() && !isAllSelected()">
+          </mat-checkbox>
+        </th>
+        <td mat-cell *matCellDef="let row">
+          <mat-checkbox (click)="$event.stopPropagation()"
+                      (change)="$event ? selection.toggle(row) : null"
+                      [checked]="selection.isSelected(row)">
+          </mat-checkbox>
+        </td>
+      </ng-container>
+      
+      <!-- Tipo Localización Column -->
+      <ng-container matColumnDef="tipoLocalizacion">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> TIPO LOCALIZACIÓN </th>
+        <td mat-cell *matCellDef="let row"> 
+          {{ row.tipoLocalizacion === 'local' ? 'Local' : 'Externa' }}
+        </td>
+      </ng-container>
+      
+      <!-- Sede CP Column -->
+      <ng-container matColumnDef="sedeCP">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> SEDE C.P </th>
+        <td mat-cell *matCellDef="let row"> {{row.sedeCP}} </td>
+      </ng-container>
+      
+      <!-- Planta Edificio Column -->
+      <ng-container matColumnDef="plantaEdificio">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> PLANTA DEL EDIFICIO </th>
+        <td mat-cell *matCellDef="let row"> {{row.plantaEdificio || '-'}} </td>
+      </ng-container>
+      
+      <!-- Descripción Column -->
+      <ng-container matColumnDef="descripcionLocalizacion">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> DESCRIPCIÓN </th>
+        <td mat-cell *matCellDef="let row"> {{row.descripcionLocalizacion}} </td>
+      </ng-container>
+      
+      <!-- Código de Barras Column -->
+      <ng-container matColumnDef="codigoBarras">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> CÓDIGO DE BARRAS </th>
+        <td mat-cell *matCellDef="let row"> {{row.codigoBarras}} </td>
+      </ng-container>
+      
+      <!-- Opciones Column -->
+      <ng-container matColumnDef="opciones">
+        <th mat-header-cell *matHeaderCellDef> OPCIONES </th>
+        <td mat-cell *matCellDef="let row">
+          <button mat-icon-button (click)="verLocalizacion(row)" matTooltip="Ver localización">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button (click)="imprimirCodigo(row)" matTooltip="Imprimir código">
+            <mat-icon>print</mat-icon>
+          </button>
+          <button mat-icon-button (click)="insertarMuestra(row)" matTooltip="Insertar muestra">
+            <mat-icon>add_box</mat-icon>
+          </button>
+          <button mat-icon-button (click)="verMuestras(row)" matTooltip="Ver muestras">
+            <mat-icon>list</mat-icon>
+          </button>
+          <button mat-icon-button (click)="eliminarLocalizacion(row)" 
+                  [disabled]="row.tieneMuestras"
+                  matTooltip="{{ row.tieneMuestras ? 'No se puede eliminar: tiene muestras asociadas' : 'Eliminar' }}">
+            <mat-icon [class.disabled-icon]="row.tieneMuestras">delete</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+      
+      <tr mat-header-row *matHeaderRowDef="columnasVisibles"></tr>
+      <tr mat-row *matRowDef="let row; columns: columnasVisibles;"></tr>
+      
+      <!-- Mensaje cuando no hay datos -->
+      <tr class="mat-row" *matNoDataRow>
+        <td class="mat-cell no-data" [attr.colspan]="columnasVisibles.length">
+          No se encontraron localizaciones
+        </td>
+      </tr>
+    </table>
+  </div>
+  
+  <!-- Paginador -->
+  <mat-paginator 
+    [pageSizeOptions]="[10, 20, 50]"
+    showFirstLastButtons>
+  </mat-paginator>
+</div>

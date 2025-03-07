@@ -1,71 +1,140 @@
 <!-- nueva-localizacion.component.html -->
 <div class="contenedor-pagina">
-    <div class="header">
-      <button mat-icon-button class="back-button" routerLink="/gestion-muestras">
-        <mat-icon>arrow_back</mat-icon>
-      </button>
-      <h1>Modificar Localización</h1>
-    </div>
-  
-    <div class="localizacion-container">
-      <h2>LOCALIZACIÓN</h2>
-  
-      <form [formGroup]="localizacionForm" class="localizacion-form">
-        <div class="form-row">
-          <!-- Etiqueta Localización -->
-          <mat-form-field>
-            <mat-label>(*) Etiqueta Localización Local</mat-label>
-            <input matInput formControlName="etiquetaLocalizacion" readonly>
-          </mat-form-field>
-  
-          <!-- Sede C.P -->
-          <mat-form-field>
-            <mat-label>(*) Sede C.P</mat-label>
-            <input matInput formControlName="sedeCP">
-          </mat-form-field>
-        </div>
-  
-        <div class="form-row">
-          <!-- Planta del Edificio -->
-          <mat-form-field>
-            <mat-label>(*) Planta del Edificio</mat-label>
-            <input matInput formControlName="plantaEdificio">
-          </mat-form-field>
-  
-          <!-- Número incremental -->
-          <mat-form-field>
-            <mat-label>(*) Número incremental</mat-label>
-            <input matInput formControlName="numeroIncremental" readonly>
-          </mat-form-field>
-        </div>
-  
-        <!-- Descripción -->
-        <mat-form-field class="full-width">
-          <mat-label>Descripción de la Localización</mat-label>
-          <textarea matInput formControlName="descripcion" rows="4"></textarea>
-          <mat-hint align="end">{{localizacionForm.get('descripcion')?.value?.length || 0}} / 1000</mat-hint>
+  <div class="header">
+    <button mat-icon-button class="back-button" (click)="volver()">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    <h1>{{tituloComponente}}</h1>
+  </div>
+
+  <div class="localizacion-container">
+    <form [formGroup]="localizacionForm" class="localizacion-form">
+      <!-- Tipo de localización -->
+      <div class="radio-group-container">
+        <label class="radio-label">Tipo Localización:</label>
+        <mat-radio-group formControlName="tipoLocalizacion" class="radio-group">
+          <mat-radio-button value="local">Local</mat-radio-button>
+          <mat-radio-button value="externa">Externa</mat-radio-button>
+        </mat-radio-group>
+      </div>
+
+      <div class="form-row">
+        <!-- Etiqueta Localización -->
+        <mat-form-field>
+          <mat-label>Etiqueta Localización</mat-label>
+          <input matInput formControlName="etiquetaLocalizacion" readonly>
         </mat-form-field>
-  
-        <!-- Código de barras -->
-        <div class="codigo-barras-field">
+
+        <!-- Sede C.P -->
+        <mat-form-field>
+          <mat-label>Sede C.P *</mat-label>
+          <input matInput formControlName="sedeCP" placeholder="Ej: 28014">
+          <mat-error *ngIf="localizacionForm.get('sedeCP')?.hasError('required')">
+            Este campo es obligatorio
+          </mat-error>
+          <mat-error *ngIf="localizacionForm.get('sedeCP')?.hasError('pattern')">
+            Debe introducir 5 dígitos
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="form-row">
+        <!-- Planta del Edificio (solo para localizaciones locales) -->
+        <mat-form-field *ngIf="localizacionForm.get('tipoLocalizacion')?.value === 'local'">
+          <mat-label>Planta del Edificio</mat-label>
+          <input matInput formControlName="plantaEdificio">
+          <mat-hint>Ej: 000 para planta baja, 001 para primera planta</mat-hint>
+        </mat-form-field>
+
+        <!-- Número incremental -->
+        <mat-form-field>
+          <mat-label>Número incremental</mat-label>
+          <input matInput formControlName="numeroIncremental" readonly>
+        </mat-form-field>
+      </div>
+
+      <!-- Descripción -->
+      <mat-form-field class="full-width">
+        <mat-label>Descripción de la Localización *</mat-label>
+        <textarea matInput formControlName="descripcionLocalizacion" rows="3"></textarea>
+        <mat-hint align="end">
+          {{localizacionForm.get('descripcionLocalizacion')?.value?.length || 0}} / 1000
+        </mat-hint>
+        <mat-error *ngIf="localizacionForm.get('descripcionLocalizacion')?.hasError('required')">
+          Este campo es obligatorio
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Checkbox para marcar como localización por defecto -->
+      <mat-checkbox formControlName="porDefecto" class="default-checkbox">
+        Marcar como localización por defecto
+      </mat-checkbox>
+
+      <!-- Código de barras -->
+      <div class="codigo-barras-container">
+        <div class="codigo-text">
           <mat-form-field class="full-width">
             <mat-label>Código de barras</mat-label>
             <input matInput [value]="localizacionForm.getRawValue().etiquetaLocalizacion + 
-                                   localizacionForm.getRawValue().sedeCP +
-                                   localizacionForm.getRawValue().plantaEdificio +
-                                   localizacionForm.getRawValue().numeroIncremental" readonly>
+                             localizacionForm.getRawValue().sedeCP +
+                             (localizacionForm.getRawValue().tipoLocalizacion === 'local' ? 
+                              localizacionForm.getRawValue().plantaEdificio : '') +
+                             localizacionForm.getRawValue().numeroIncremental" readonly>
           </mat-form-field>
         </div>
-  
+
         <!-- Visualización del código de barras -->
         <div class="barcode-container" *ngIf="codigoBarrasSVG">
           <div class="barcode-content">
             <div [innerHTML]="codigoBarrasSVG" class="barcode-image"></div>
             <button mat-raised-button color="primary" (click)="imprimirCodigo()" class="imprimir-button">
-              IMPRIMIR CÓDIGO
+              <mat-icon>print</mat-icon> IMPRIMIR CÓDIGO
             </button>
           </div>
         </div>
-      </form>
-    </div>
+      </div>
+
+      <!-- Muestras asociadas (solo en modo edición) -->
+      <div *ngIf="modoEdicion && muestrasAsociadas.length > 0" class="muestras-container">
+        <div class="muestras-header" (click)="toggleMuestrasAsociadas()">
+          <h3>Muestras asociadas ({{muestrasAsociadas.length}})</h3>
+          <mat-icon>{{ mostrarMuestras ? 'expand_less' : 'expand_more' }}</mat-icon>
+        </div>
+
+        <div class="muestras-list" *ngIf="mostrarMuestras">
+          <table mat-table [dataSource]="muestrasAsociadas">
+            <ng-container matColumnDef="codigoBarras">
+              <th mat-header-cell *matHeaderCellDef>Código de Barras</th>
+              <td mat-cell *matCellDef="let muestra">{{muestra.codigoBarras}}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="fechaRegistro">
+              <th mat-header-cell *matHeaderCellDef>Fecha de Registro</th>
+              <td mat-cell *matCellDef="let muestra">
+                {{muestra.fechaRegistro | date:'dd/MM/yyyy HH:mm'}}
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="['codigoBarras', 'fechaRegistro']"></tr>
+            <tr mat-row *matRowDef="let row; columns: ['codigoBarras', 'fechaRegistro'];"></tr>
+          </table>
+        </div>
+      </div>
+
+      <!-- Botones de acción -->
+      <div class="action-buttons">
+        <button mat-raised-button color="primary" (click)="guardar()" [disabled]="localizacionForm.invalid">
+          GUARDAR
+        </button>
+        
+        <button mat-raised-button *ngIf="modoEdicion" (click)="insertarMuestras()">
+          INSERTAR MUESTRAS
+        </button>
+        
+        <button mat-stroked-button (click)="volver()">
+          ATRÁS
+        </button>
+      </div>
+    </form>
   </div>
+</div>

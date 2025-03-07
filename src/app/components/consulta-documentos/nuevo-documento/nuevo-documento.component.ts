@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router'; // Agregar ActivatedRoute aquí
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MockAuthService } from '../../../services/mock-auth.service';
 import { UserProfile } from '../../../interfaces/profile.interface';
+
 
 interface CategoriasPorRol {
   'Director IML': string[];
@@ -25,11 +26,13 @@ interface TiposPorCategoria {
   styleUrls: ['./nuevo-documento.component.css']
 })
 export class NuevoDocumentoComponent implements OnInit {
-  documentoForm!: FormGroup; // Usando el operador de aserción definitiva
+  documentoForm!: FormGroup;
   maxObservaciones = 500;
   categoriasFiltradas: string[] = [];
   tiposFiltrados: string[] = [];
   secuenciaUnica: string = this.generarSecuenciaUnica();
+  episodioId: string | null = null; 
+
 
   private categoriasPermitidas: CategoriasPorRol = {
     'Director IML': [
@@ -90,6 +93,7 @@ export class NuevoDocumentoComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private router: Router,
+    private route: ActivatedRoute,
     private snackBar: MatSnackBar,
     private authService: MockAuthService
   ) {
@@ -120,6 +124,11 @@ export class NuevoDocumentoComponent implements OnInit {
       if (profile && profile.rol) {
         this.categoriasFiltradas = this.categoriasPermitidas[profile.rol] || [];
       }
+    });
+    
+    // Obtener el episodioId de los parámetros de URL
+    this.route.queryParams.subscribe(params => {
+      this.episodioId = params['numEpisodio'];
     });
   }
 
@@ -171,7 +180,9 @@ export class NuevoDocumentoComponent implements OnInit {
       // Verificar si el tipo seleccionado está en la lista de informes compatibles
       if (tiposRemisionMuestras.includes(nuevoDocumento.tipo)) {
         console.log('Redirigiendo a generador de informe de remisión');
-        this.router.navigate(['/generar-informe-remision']);
+        this.router.navigate(['/generar-informe-remision'], {
+          queryParams: { numEpisodio: this.episodioId }
+        });
       } else {
         // Para otros tipos de documentos, mostrar mensaje y redirigir
         this.snackBar.open('Funcionalidad en desarrollo', 'Cerrar', {

@@ -1,5 +1,14 @@
-
+<!-- gestion-muestras.component.html -->
 <div class="contenedor-pagina">
-    <h1>Gestion de Muestras</h1>
+  <h1>Gestión de Muestras</h1>
+  
+  <div class="menu-opciones" *ngIf="!router.url.includes('gestion-muestras/') || router.url === '/gestion-muestras'">
+    <div class="option-card" *ngFor="let option of menuOptions" 
+         (click)="navigateTo(option.route)">
+      <mat-icon>{{option.icon}}</mat-icon>
+      <span>{{option.label}}</span>
+    </div>
+  </div>
+  
   <router-outlet></router-outlet>
 </div>

@@ -25,22 +25,22 @@ export class AgendaService {
   private eventos: Evento[] = [];
 
   constructor() {
-    // Datos de ejemplo para desarrollo
+    // Cargamos eventos iniciales con fechas específicas (no relativas)
     this.cargarEventosIniciales();
   }
 
   private cargarEventosIniciales(): void {
-    const hoy = new Date();
-    const manana = new Date(hoy);
-    manana.setDate(hoy.getDate() + 1);
-    const proximaSemana = new Date(hoy);
-    proximaSemana.setDate(hoy.getDate() + 7);
+    // Definimos fechas específicas para los eventos de ejemplo en lugar de fechas relativas
+    // Primer ejemplo: fecha fija en marzo 2025
+    const fechaCitacion = new Date(2025, 2, 7); // 7 de marzo de 2025
+    const fechaReunion = new Date(2025, 2, 6); // 6 de marzo de 2025
+    const fechaFormacion = new Date(2025, 2, 14); // 14 de marzo de 2025
 
     this.eventos = [
       {
         id: '1',
         titulo: 'Citación a juicio',
-        fecha: manana,
+        fecha: fechaCitacion,
         horaInicio: '10:00',
         horaFin: '11:30',
         descripcion: 'Citación a juicio para caso EP123456',
@@ -54,7 +54,7 @@ export class AgendaService {
       {
         id: '2',
         titulo: 'Reunión equipo forense',
-        fecha: hoy,
+        fecha: fechaReunion,
         horaInicio: '12:00',
         horaFin: '13:00',
         descripcion: 'Reunión mensual del equipo',
@@ -64,7 +64,7 @@ export class AgendaService {
       {
         id: '3',
         titulo: 'Formación SVM-RD 32/2009',
-        fecha: proximaSemana,
+        fecha: fechaFormacion,
         horaInicio: '09:00',
         horaFin: '14:00',
         descripcion: 'Sesión formativa sobre protocolo SVM',
@@ -84,7 +84,10 @@ export class AgendaService {
     return this.eventosSubject.asObservable();
   }
 
-  getEventosPorMes(anio: number, mes: number): Observable<Evento[]> {
+  getEventosPorMes(fecha: Date): Observable<Evento[]> {
+    const anio = fecha.getFullYear();
+    const mes = fecha.getMonth();
+
     return this.eventosSubject.pipe(
       map(eventos => eventos.filter(evento => {
         const fechaEvento = new Date(evento.fecha);
@@ -94,29 +97,40 @@ export class AgendaService {
   }
 
   getEventosPorSemana(fecha: Date): Observable<Evento[]> {
-    // Obtener el primer día de la semana (lunes)
+    // Calculamos correctamente el primer día de la semana (lunes)
     const primerDiaSemana = new Date(fecha);
-    primerDiaSemana.setDate(fecha.getDate() - fecha.getDay() + (fecha.getDay() === 0 ? -6 : 1));
+    const diaSemana = fecha.getDay() || 7; // 0 es domingo, lo convertimos a 7
+    primerDiaSemana.setDate(fecha.getDate() - (diaSemana - 1));
     
-    // Obtener el último día de la semana (domingo)
+    // Establecemos hora, minutos y segundos a 0 para comparar solo fechas
+    primerDiaSemana.setHours(0, 0, 0, 0);
+    
+    // Calculamos el último día de la semana (domingo)
     const ultimoDiaSemana = new Date(primerDiaSemana);
     ultimoDiaSemana.setDate(primerDiaSemana.getDate() + 6);
+    ultimoDiaSemana.setHours(23, 59, 59, 999); // Final del día
 
     return this.eventosSubject.pipe(
       map(eventos => eventos.filter(evento => {
         const fechaEvento = new Date(evento.fecha);
+        // Comparamos solo la parte de fecha
         return fechaEvento >= primerDiaSemana && fechaEvento <= ultimoDiaSemana;
       }))
     );
   }
 
   getEventosPorDia(fecha: Date): Observable<Evento[]> {
+    // Creamos una nueva fecha para no modificar la original
+    const inicioDia = new Date(fecha);
+    inicioDia.setHours(0, 0, 0, 0);
+    
+    const finDia = new Date(fecha);
+    finDia.setHours(23, 59, 59, 999);
+
     return this.eventosSubject.pipe(
       map(eventos => eventos.filter(evento => {
         const fechaEvento = new Date(evento.fecha);
-        return fechaEvento.getDate() === fecha.getDate() &&
-               fechaEvento.getMonth() === fecha.getMonth() &&
-               fechaEvento.getFullYear() === fecha.getFullYear();
+        return fechaEvento >= inicioDia && fechaEvento <= finDia;
       }))
     );
   }
@@ -126,8 +140,14 @@ export class AgendaService {
   }
 
   agregarEvento(evento: Omit<Evento, 'id'>): Observable<Evento> {
+    // Aseguramos que la fecha es un objeto Date
+    const fechaEvento = evento.fecha instanceof Date ? 
+      new Date(evento.fecha) : 
+      new Date(evento.fecha);
+    
     const nuevoEvento: Evento = {
       ...evento,
+      fecha: fechaEvento,
       id: this.generarId()
     };
     
@@ -137,12 +157,20 @@ export class AgendaService {
   }
 
   actualizarEvento(evento: Evento): Observable<Evento> {
-    const index = this.eventos.findIndex(e => e.id === evento.id);
+    // Aseguramos que la fecha es un objeto Date
+    const eventoActualizado = {
+      ...evento,
+      fecha: evento.fecha instanceof Date ? 
+        new Date(evento.fecha) : 
+        new Date(evento.fecha)
+    };
+    
+    const index = this.eventos.findIndex(e => e.id === eventoActualizado.id);
     if (index !== -1) {
-      this.eventos[index] = evento;
+      this.eventos[index] = eventoActualizado;
       this.actualizarEventos();
     }
-    return of(evento);
+    return of(eventoActualizado);
   }
 
   eliminarEvento(id: string): Observable<boolean> {
@@ -163,11 +191,15 @@ export class AgendaService {
     observaciones?: string;
     episodioId: string;
   }): Observable<Evento> {
+    // Creamos una copia de la fecha
+    const fechaCitacion = new Date(citacion.fechaCitacion);
+    
     const nuevaCitacion: Evento = {
       id: this.generarId(),
       titulo: 'Citación a juicio',
-      fecha: citacion.fechaCitacion,
-      horaInicio: citacion.fechaCitacion.toTimeString().substring(0, 5),
+      fecha: fechaCitacion,
+      horaInicio: fechaCitacion.getHours().toString().padStart(2, '0') + ':' + 
+                 fechaCitacion.getMinutes().toString().padStart(2, '0'),
       descripcion: `Citación a juicio para caso ${citacion.episodioId}`,
       direccionJuzgado: citacion.direccionJuzgado,
       observaciones: citacion.observaciones,

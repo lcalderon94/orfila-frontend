@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { RemisionMuestrasService } from '../../../services/remision-muestras.service';
 import { DocumentoService } from '../../../services/documento.service';
@@ -24,11 +24,13 @@ export class RemisionMuestrasComponent implements OnInit, OnDestroy {
     'Cadena de custodia'
   ];
   private subscription = new Subscription();
+  episodioActualId: string = '';
 
   constructor(
     private remisionService: RemisionMuestrasService,
     private documentoService: DocumentoService,
     private router: Router,
+    private route: ActivatedRoute,
     private snackBar: MatSnackBar
   ) {}
 
@@ -39,6 +41,15 @@ export class RemisionMuestrasComponent implements OnInit, OnDestroy {
         this.pasoActual = paso;
       })
     );
+
+    // Obtener el ID del episodio de los parámetros de la ruta
+    this.route.queryParams.subscribe(params => {
+      debugger;
+      if (params['numEpisodio']) {
+        this.episodioActualId = params['numEpisodio'];
+        console.log('Episodio obtenido de parámetros:', this.episodioActualId);
+      }
+    });
   }
 
   ngOnDestroy(): void {
@@ -61,10 +72,15 @@ export class RemisionMuestrasComponent implements OnInit, OnDestroy {
   }
 
   finalizar(): void {
+    debugger;
     this.remisionService.generarInforme().subscribe(
       resultado => {
         if (resultado.success) {
-          // Crear documento simplificado
+          // Determinar el episodio adecuado para el documento
+          const episodioId = this.buscarEpisodioCoincidente(resultado.informe);
+          console.log('Episodio seleccionado para el documento:', episodioId);
+          
+          // Crear documento
           const nuevoDocumento: DocumentoAsociado = {
             id: 'DOC' + Date.now(),
             nombre: resultado.informe.nombre || 'Informe de remisión de muestras',
@@ -73,12 +89,12 @@ export class RemisionMuestrasComponent implements OnInit, OnDestroy {
             fechaCreacion: new Date(),
             autor: '30000332C',
             numAnio: resultado.informe.numero || '',
-            numEpisodio: '',
+            numEpisodio: episodioId,
             autorInforme: '30000332C'
           };
           
-          // Agregar documento directamente
-          this.documentoService.agregarDocumento(nuevoDocumento);
+          // Agregar documento con el episodio seleccionado
+          this.documentoService.agregarDocumento(nuevoDocumento, episodioId);
           
           this.snackBar.open('Informe generado correctamente', 'Cerrar', {
             duration: 3000
@@ -87,8 +103,10 @@ export class RemisionMuestrasComponent implements OnInit, OnDestroy {
           // Resetear datos
           this.remisionService.reiniciarDatos();
           
-          // Navegar a la lista de documentos
-          this.router.navigate(['/consulta-documentos']);
+          // Navegar a la lista de documentos con el ID del episodio
+          this.router.navigate(['/consulta-documentos'], { 
+            queryParams: { numEpisodio: episodioId } 
+          });
         } else {
           this.snackBar.open('Error al generar el informe', 'Cerrar', {
             duration: 3000
@@ -105,12 +123,13 @@ export class RemisionMuestrasComponent implements OnInit, OnDestroy {
   
   // Método para buscar el episodio adecuado según los datos del informe
   private buscarEpisodioCoincidente(informe: any): string {
-    // Si tenemos una referencia directa, la usamos
-    if (informe.referenciaRemitente && this.existeEpisodio(informe.referenciaRemitente)) {
-      return informe.referenciaRemitente;
+    // Siempre usamos el episodio de la URL si está disponible
+    debugger;
+    if (this.episodioActualId) {
+      return this.episodioActualId;
     }
     
-    // Buscar por órgano y número
+    // Buscar por órgano y número (que sí existen en el objeto informe)
     if (informe.organo && informe.numero) {
       for (const [key, tarea] of Object.entries(TAREAS_COMPLETAS)) {
         if (tarea.episodio.organismo === informe.organo && 
@@ -129,15 +148,16 @@ export class RemisionMuestrasComponent implements OnInit, OnDestroy {
       }
     }
     
-    // Si no encontramos coincidencia, usar el primer episodio disponible
-    const primerKey = Object.keys(TAREAS_COMPLETAS)[0];
-    return primerKey;
+    // Usar un episodio específico como valor predeterminado
+    // Esto evita depender del orden de las claves
+    return '81329';
   }
   
   // Verificar si un episodio existe
   private existeEpisodio(id: string): boolean {
     return !!TAREAS_COMPLETAS[id];
   }
+
   cancelar(): void {
     // Preguntar si está seguro de cancelar
     if (confirm('¿Está seguro de que desea cancelar? Se perderán todos los datos introducidos.')) {

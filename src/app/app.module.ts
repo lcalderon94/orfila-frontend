@@ -82,6 +82,8 @@ import { PasoEstudiosComponent } from './components/informes/remision-muestras/p
 import { PasoSujetosComponent } from './components/informes/remision-muestras/paso-sujetos/paso-sujetos.component';
 import { PasoMuestrasComponent } from './components/informes/remision-muestras/paso-muestras/paso-muestras.component';
 import { PasoCustodiaComponent } from './components/informes/remision-muestras/paso-custodia/paso-custodia.component';
+import { HttpClientModule } from '@angular/common/http';
+
 
 
 
@@ -169,7 +171,8 @@ import { PasoCustodiaComponent } from './components/informes/remision-muestras/p
     MatAutocompleteModule,
     MatChipsModule,
     MatNativeDateModule,
-    MatExpansionModule
+    MatExpansionModule,
+    HttpClientModule
   ],
   providers: [
     AgendaService
