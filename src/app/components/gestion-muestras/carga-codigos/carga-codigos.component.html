@@ -1,1 +1,109 @@
-<p>carga-codigos works!</p>
+<div class="contenedor-pagina">
+    <div class="header">
+      <button mat-icon-button class="back-button" (click)="volver()">
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+      <h1>Carga de Códigos desde Lector Bluetooth</h1>
+    </div>
+  
+    <div class="carga-container">
+      <div class="carga-form">
+        <div class="info-panel">
+          <mat-icon color="primary">info</mat-icon>
+          <p>Configure el lector en modo Batch Manual. Realice la lectura de localizaciones y muestras. 
+            Para volcar los datos, coloque el cursor en el área de texto y escanee el código "Lector Descarga".</p>
+        </div>
+  
+        <div class="textarea-container">
+          <mat-form-field class="input-full-width">
+            <textarea matInput
+                      id="codigosCargaInput"
+                      placeholder="Escanee el código 'Lector Descarga' para volcar los datos"
+                      [(ngModel)]="textoCarga"
+                      [disabled]="procesandoDatos"
+                      rows="6"></textarea>
+          </mat-form-field>
+        </div>
+  
+        <div class="buttons-row">
+          <button mat-raised-button color="primary" [disabled]="!textoCarga || procesandoDatos" (click)="procesarCarga()">
+            PROCESAR CARGA
+          </button>
+          <button mat-raised-button [disabled]="!textoCarga || procesandoDatos" (click)="guardarDescarga()">
+            GUARDAR DESCARGA
+          </button>
+        </div>
+      </div>
+  
+      <!-- Tabla de datos procesados -->
+      <div *ngIf="datosRegistros.length > 0" class="registros-container">
+        <h2>Datos escaneados</h2>
+        
+        <table mat-table [dataSource]="datosRegistros" class="registros-table">
+          <!-- CB Localización Column -->
+          <ng-container matColumnDef="codigoBarrasLocalizacion">
+            <th mat-header-cell *matHeaderCellDef>C.B. LOCALIZACIÓN</th>
+            <td mat-cell *matCellDef="let registro">{{registro.codigoBarrasLocalizacion}}</td>
+          </ng-container>
+          
+          <!-- Descripción Localización Column -->
+          <ng-container matColumnDef="descripcionLocalizacion">
+            <th mat-header-cell *matHeaderCellDef>LOCALIZACIÓN</th>
+            <td mat-cell *matCellDef="let registro">{{registro.descripcionLocalizacion}}</td>
+          </ng-container>
+          
+          <!-- Fecha de Registro Column -->
+          <ng-container matColumnDef="fechaRegistro">
+            <th mat-header-cell *matHeaderCellDef>FECHA REGISTRO</th>
+            <td mat-cell *matCellDef="let registro">{{registro.fechaRegistro | date:'dd/MM/yyyy HH:mm:ss'}}</td>
+          </ng-container>
+          
+          <!-- CB Muestra Column -->
+          <ng-container matColumnDef="codigoBarrasMuestra">
+            <th mat-header-cell *matHeaderCellDef>C.B. MUESTRA</th>
+            <td mat-cell *matCellDef="let registro">{{registro.codigoBarrasMuestra}}</td>
+          </ng-container>
+          
+          <!-- Usuario Column -->
+          <ng-container matColumnDef="usuario">
+            <th mat-header-cell *matHeaderCellDef>USUARIO</th>
+            <td mat-cell *matCellDef="let registro">{{registro.usuario}}</td>
+          </ng-container>
+          
+          <!-- Estado Column -->
+          <ng-container matColumnDef="estado">
+            <th mat-header-cell *matHeaderCellDef>ESTADO</th>
+            <td mat-cell *matCellDef="let registro" [ngClass]="'estado-' + registro.estado">
+              <mat-icon *ngIf="registro.estado === 'correcto'">check_circle</mat-icon>
+              <mat-icon *ngIf="registro.estado === 'existente'">info</mat-icon>
+              <mat-icon *ngIf="registro.estado === 'error'">error</mat-icon>
+              {{getEstadoTexto(registro.estado)}}
+            </td>
+          </ng-container>
+          
+          <!-- Opciones Column -->
+          <ng-container matColumnDef="opciones">
+            <th mat-header-cell *matHeaderCellDef>OPCIONES</th>
+            <td mat-cell *matCellDef="let registro; let i = index">
+              <button mat-icon-button color="warn" (click)="eliminarRegistro(i)" matTooltip="Eliminar registro">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </td>
+          </ng-container>
+          
+          <tr mat-header-row *matHeaderRowDef="columnasVisibles"></tr>
+          <tr mat-row *matRowDef="let row; columns: columnasVisibles;"></tr>
+        </table>
+        
+        <div class="botones-accion">
+          <button mat-raised-button color="primary" (click)="aceptarProcesamiento()" 
+                  [disabled]="!puedeAceptarProcesamiento || procesandoDatos">
+            ACEPTAR
+          </button>
+          <button mat-raised-button (click)="cargarCodigosBarras()">
+            CARGAR CÓDIGOS DE BARRAS
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>

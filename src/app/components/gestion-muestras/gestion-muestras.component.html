@@ -2,7 +2,18 @@
 <div class="contenedor-pagina">
   <h1>Gestión de Muestras</h1>
   
-  <div class="menu-opciones" *ngIf="!router.url.includes('gestion-muestras/') || router.url === '/gestion-muestras'">
+  <!-- Botones de depuración -->
+  <div *ngIf="router.url === '/gestion-muestras'" style="margin-bottom: 15px;">
+    <button mat-raised-button color="accent" (click)="verDatosLocalStorage()">
+      Ver datos almacenados
+    </button>
+    <button mat-raised-button color="warn" (click)="limpiarDatos()" style="margin-left: 10px;">
+      Reiniciar datos
+    </button>
+  </div>
+  
+  <!-- Resto del contenido existente -->
+  <div class="menu-opciones" *ngIf="router.url === '/gestion-muestras'">
     <div class="option-card" *ngFor="let option of menuOptions" 
          (click)="navigateTo(option.route)">
       <mat-icon>{{option.icon}}</mat-icon>
@@ -10,5 +21,5 @@
     </div>
   </div>
   
-  <router-outlet></router-outlet>
+  <router-outlet *ngIf="router.url !== '/gestion-muestras'"></router-outlet>
 </div>

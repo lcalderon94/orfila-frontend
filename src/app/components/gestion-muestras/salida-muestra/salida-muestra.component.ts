@@ -85,18 +85,18 @@ export class SalidaMuestraComponent implements OnInit {
       localizaciones => {
         this.localizaciones = localizaciones;
         
+        // Find a default location - assuming porDefecto is boolean
         const predeterminada = localizaciones.find(loc => {
           const pd = loc.porDefecto;
           if (typeof pd === 'string') {
-            // Se convierte a minúsculas y se compara con 'true'
             return pd.toLowerCase() === 'true';
           }
-          // Si es booleano, se compara directamente
           return pd === true;
         });
         
         if (predeterminada) {
-          this.localizacionSeleccionada = predeterminada;
+          // Hacemos una copia profunda para evitar referencias compartidas
+          this.localizacionSeleccionada = JSON.parse(JSON.stringify(predeterminada));
           this.registroForm.patchValue({
             localizacionId: predeterminada.id
           });
@@ -105,15 +105,13 @@ export class SalidaMuestraComponent implements OnInit {
       }
     );
   }
-  
-  
-
 
   onLocalizacionChange(event: any) {
     const locId = event.value;
     const localizacion = this.localizaciones.find(loc => loc.id === locId);
     if (localizacion) {
-      this.localizacionSeleccionada = localizacion;
+      // Hacemos una copia profunda para evitar referencias compartidas
+      this.localizacionSeleccionada = JSON.parse(JSON.stringify(localizacion));
     }
   }
 
@@ -139,12 +137,16 @@ export class SalidaMuestraComponent implements OnInit {
     // Verificar si la muestra existe en el sistema
     // En una implementación real, esto sería una llamada al servicio
     
+    // Crear una copia profunda de la localización seleccionada
+    const localizacionCopia = this.localizacionSeleccionada ? 
+      JSON.parse(JSON.stringify(this.localizacionSeleccionada)) : null;
+    
     // Crear objeto de muestra para guardar
     const nuevaMuestra: Muestra = {
       codigoBarras: codigoBarrasMuestra,
       fechaRegistro: new Date(),
       usuario: 'usuario_actual', // En una implementación real se obtendría del servicio de autenticación
-      localizacion: this.localizacionSeleccionada as Localizacion
+      localizacion: localizacionCopia as Localizacion
     };
 
     // En una implementación real, esto sería una llamada al servicio
@@ -153,11 +155,12 @@ export class SalidaMuestraComponent implements OnInit {
 
     // Añadir la muestra al listado visual
     this.muestrasLeidas.unshift({
-      codigoBarrasLocalizacion: this.localizacionSeleccionada?.codigoBarras,
-      descripcionLocalizacion: this.localizacionSeleccionada?.descripcionLocalizacion,
+      codigoBarrasLocalizacion: localizacionCopia?.codigoBarras,
+      descripcionLocalizacion: localizacionCopia?.descripcionLocalizacion,
       fechaRegistro: new Date(),
       codigoBarrasMuestra: codigoBarrasMuestra,
-      usuario: 'usuario_actual'
+      usuario: 'usuario_actual',
+      localizacion: localizacionCopia // Guardamos la copia completa de la localización
     });
 
     // Limpiar el campo de código de barras para la siguiente lectura
@@ -184,12 +187,54 @@ export class SalidaMuestraComponent implements OnInit {
     }
 
     // En una implementación real, esto sería una llamada al servicio para guardar todas las muestras
-    this.snackBar.open(`${this.muestrasLeidas.length} muestras registradas para salida correctamente`, 'Cerrar', {
-      duration: 3000
+    // Procesamos cada una de las muestras leídas
+    let completadas = 0;
+    const total = this.muestrasLeidas.length;
+    let errores = 0;
+    
+    const verificarFinalizacion = () => {
+      if (completadas === total) {
+        if (errores === 0) {
+          this.snackBar.open(`${total} muestras registradas para salida correctamente`, 'Cerrar', {
+            duration: 3000
+          });
+          // Limpiar el listado después de guardar
+          this.muestrasLeidas = [];
+        } else {
+          this.snackBar.open(`Se registraron ${total - errores} muestras correctamente. Hubo ${errores} errores.`, 'Cerrar', {
+            duration: 5000
+          });
+        }
+      }
+    };
+    
+    this.muestrasLeidas.forEach(muestraLeida => {
+      if (!muestraLeida.localizacion) {
+        completadas++;
+        errores++;
+        return;
+      }
+      
+      const nuevaMuestra: Muestra = {
+        codigoBarras: muestraLeida.codigoBarrasMuestra,
+        fechaRegistro: new Date(),
+        usuario: muestraLeida.usuario,
+        localizacion: muestraLeida.localizacion // Usar la copia guardada
+      };
+      
+      this.muestrasService.registrarMuestra(nuevaMuestra).subscribe(
+        muestra => {
+          completadas++;
+          verificarFinalizacion();
+        },
+        error => {
+          completadas++;
+          errores++;
+          console.error('Error al registrar muestra:', error);
+          verificarFinalizacion();
+        }
+      );
     });
-
-    // Limpiar el listado después de guardar
-    this.muestrasLeidas = [];
   }
 
   toggleUsarPredeterminada() {
@@ -200,13 +245,29 @@ export class SalidaMuestraComponent implements OnInit {
         localizacionId: ''
       });
       this.localizacionSeleccionada = null;
+    } else {
+      // Buscar localización predeterminada
+      const predeterminada = this.localizaciones.find(loc => {
+        const pd = loc.porDefecto;
+        if (typeof pd === 'string') {
+          return pd.toLowerCase() === 'true';
+        }
+        return pd === true;
+      });
+      
+      if (predeterminada) {
+        // Hacemos una copia profunda para evitar referencias compartidas
+        this.localizacionSeleccionada = JSON.parse(JSON.stringify(predeterminada));
+        this.registroForm.patchValue({
+          localizacionId: predeterminada.id
+        });
+      }
     }
   }
 
   private validarCodigoBarrasMuestra(codigo: string): boolean {
     return !!codigo && codigo.length >= 10;
-  }
-  
+  }                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
 
   volver() {
     this.router.navigate(['/gestion-muestras/localizaciones']);

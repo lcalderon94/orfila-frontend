@@ -13,6 +13,8 @@ import { MuestrasService, Muestra } from 'src/app/services/muestras.service';
   styleUrls: ['./muestras-list.component.css']
 })
 export class MuestrasListComponent implements OnInit, AfterViewInit {
+  tituloComponente: string = 'Listado de Muestras';
+
   columnasVisibles: string[] = [
     'codigoBarrasMuestra',
     'fechaRegistro',
@@ -51,18 +53,19 @@ export class MuestrasListComponent implements OnInit, AfterViewInit {
   }
   
   ngOnInit() {
-    // Comprobar si se han pasado parámetros en la URL
     this.route.queryParams.subscribe(params => {
-      if (params['localizacionId']) {
-        this.filtros.codigoBarrasLocalizacion = params['localizacionId'];
-      }
-      
-      if (params['tipoRegistro']) {
-        this.filtros.tipoRegistro = params['tipoRegistro'];
-      }
-      
-      // Aplicar filtros automáticamente si se recibieron parámetros
-      if (Object.keys(params).length > 0) {
+      if (params['codigoBarrasLocalizacion']) {
+        this.filtros.codigoBarrasLocalizacion = params['codigoBarrasLocalizacion'];
+        
+        // Actualizar el título si tenemos la descripción
+        if (params['descripcionLocalizacion']) {
+          this.tituloComponente = `Listado de Muestras de la localización ${params['descripcionLocalizacion']}`;
+        }
+        
+        if (params['tipoRegistro']) {
+          this.filtros.tipoRegistro = params['tipoRegistro'];
+        }
+        
         this.aplicarFiltros();
       }
     });

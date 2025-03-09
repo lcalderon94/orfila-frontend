@@ -42,23 +42,37 @@ export class NuevaLocalizacionComponent implements OnInit {
       porDefecto: [false]
     });
 
-    // Escuchar cambios en tipo de localización
-    this.localizacionForm.get('tipoLocalizacion')?.valueChanges.subscribe(tipo => {
-      const etiquetaControl = this.localizacionForm.get('etiquetaLocalizacion');
-      const plantaControl = this.localizacionForm.get('plantaEdificio');
-      
-      if (tipo === 'local') {
-        etiquetaControl?.setValue('LI');
-        plantaControl?.enable();
-      } else {
-        etiquetaControl?.setValue('LE');
-        plantaControl?.disable();
-        plantaControl?.setValue('');
-      }
-      
-      this.actualizarCodigoBarras();
-    });
-  }
+    // Escuchar cambios en TODOS los campos que afectan al código de barras
+  this.localizacionForm.get('tipoLocalizacion')?.valueChanges.subscribe(tipo => {
+    const etiquetaControl = this.localizacionForm.get('etiquetaLocalizacion');
+    const plantaControl = this.localizacionForm.get('plantaEdificio');
+    
+    if (tipo === 'local') {
+      etiquetaControl?.setValue('LI');
+      plantaControl?.enable();
+    } else {
+      etiquetaControl?.setValue('LE');
+      plantaControl?.disable();
+      plantaControl?.setValue('');
+    }
+    
+    this.actualizarCodigoBarras();
+  });
+
+  // Nuevas suscripciones para actualización en tiempo real
+  this.localizacionForm.get('sedeCP')?.valueChanges.subscribe(() => {
+    this.actualizarCodigoBarras();
+  });
+
+  this.localizacionForm.get('plantaEdificio')?.valueChanges.subscribe(() => {
+    this.actualizarCodigoBarras();
+  });
+
+  // Aunque numeroIncremental normalmente es readonly, lo incluimos por si acaso
+  this.localizacionForm.get('numeroIncremental')?.valueChanges.subscribe(() => {
+    this.actualizarCodigoBarras();
+  });
+}
 
   ngOnInit() {
     this.route.paramMap.subscribe(params => {
@@ -104,9 +118,14 @@ export class NuevaLocalizacionComponent implements OnInit {
   }
 
   private cargarMuestrasAsociadas(id: number) {
-    this.muestrasService.getMuestrasPorLocalizacion(id).subscribe(
+    this.muestrasService.getMuestrasPorLocalizacionId(id).subscribe(
       muestras => {
         this.muestrasAsociadas = muestras;
+      },
+      error => {
+        this.snackBar.open('Error al cargar las muestras asociadas', 'Cerrar', {
+          duration: 3000
+        });
       }
     );
   }
@@ -120,16 +139,27 @@ export class NuevaLocalizacionComponent implements OnInit {
 
   private actualizarCodigoBarras() {
     const formValue = this.localizacionForm.getRawValue();
+    
+    // Verificar si tenemos todos los datos necesarios para generar un código válido
+    if (!formValue.etiquetaLocalizacion || !formValue.numeroIncremental || 
+        (formValue.tipoLocalizacion === 'local' && !formValue.plantaEdificio)) {
+      return;
+    }
+    
+    // Obtener el código de sede (con validación)
+    const sedeCP = formValue.sedeCP || '';
+    
     const codigoPartes = [
       formValue.etiquetaLocalizacion,
-      formValue.sedeCP,
+      sedeCP,
       formValue.tipoLocalizacion === 'local' ? formValue.plantaEdificio : '',
       formValue.numeroIncremental
     ];
     
     const codigo = codigoPartes.join('');
     
-    if (!codigo || codigo.includes('undefined') || codigo.includes('null')) {
+    // Verificar que el código tiene suficientes caracteres para generar un código de barras válido
+    if (codigo.length < 3) {
       return;
     }
     
@@ -146,7 +176,7 @@ export class NuevaLocalizacionComponent implements OnInit {
         margin: 10,
         background: "#ffffff"
       });
-
+  
       this.codigoBarrasSVG = this.sanitizer.bypassSecurityTrustHtml(svg.outerHTML);
     } catch (error) {
       console.error('Error al generar el código de barras:', error);

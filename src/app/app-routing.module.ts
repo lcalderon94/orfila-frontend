@@ -34,6 +34,7 @@ import { AgendaMensualComponent } from './components/agenda/agenda-mensual/agend
 import { AgendaSemanalComponent } from './components/agenda/agenda-semanal/agenda-semanal.component';
 import { AgendaHorariaComponent } from './components/agenda/agenda-horaria/agenda-horaria.component';
 import { RemisionMuestrasComponent } from './components/informes/remision-muestras/remision-muestras.component';
+import { MuestraDetalleComponent } from './components/gestion-muestras/muestra-detalle/muestra-detalle.component';
 
 
 
@@ -104,17 +105,21 @@ const routes: Routes = [
   },
   
   // Gestión de muestras routes
-  { 
-    path: 'gestion-muestras', 
+  {
+    path: 'gestion-muestras',
     component: GestionMuestrasComponent,
     children: [
-      { path: '', redirectTo: 'nueva-localizacion', pathMatch: 'full' },
+      { path: '', component: GestionMuestrasComponent },
       { path: 'nueva-localizacion', component: NuevaLocalizacionComponent },
+      { path: 'nueva-localizacion/:id', component: NuevaLocalizacionComponent },
       { path: 'localizaciones', component: LocalizacionesComponent },
       { path: 'registro-muestras', component: RegistroMuestrasComponent },
+      { path: 'registro-muestras/:id', component: RegistroMuestrasComponent },
       { path: 'salida-muestra', component: SalidaMuestraComponent },
+      { path: 'salida-muestra/:id', component: SalidaMuestraComponent },
       { path: 'carga-codigos', component: CargaCodigosComponent },
-      { path: 'muestras', component: MuestrasListComponent },
+      { path: 'muestras-list', component: MuestrasListComponent },
+      { path: 'muestra-detalle/:id', component: MuestraDetalleComponent }, // Añadir esta línea
       { path: 'cargas-sistema', component: CargasSistemaComponent }
     ]
   },

@@ -1,0 +1,115 @@
+<div class="contenedor-pagina">
+    <div class="header">
+      <button class="back-button" (click)="volver()">
+        <span>←</span> Volver
+      </button>
+      <h1>Detalle de Muestra</h1>
+    </div>
+  
+    <div class="muestra-container" *ngIf="muestra">
+      <form class="muestra-form">
+        <!-- Sección información registro -->
+        <div class="form-section">
+          <h2>INFORMACIÓN DE REGISTRO</h2>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Fecha</label>
+              <input type="text" [value]="muestra.fechaRegistro | date:'dd/MM/yyyy HH:mm:ss'" readonly>
+            </div>
+            
+            <div class="form-group">
+              <label>Usuario</label>
+              <input type="text" [value]="muestra.usuario" readonly>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Sección localización -->
+        <div class="form-section">
+          <h2>LOCALIZACIÓN</h2>
+          <div class="form-row">
+            <div class="form-group">
+              <label>C.B. Localización</label>
+              <input type="text" [value]="muestra.localizacion.codigoBarras || ''" readonly>
+            </div>
+            
+            <div class="form-group">
+              <label>Descripción</label>
+              <input type="text" [value]="muestra.localizacion.descripcionLocalizacion || ''" readonly>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Sección muestra -->
+        <div class="form-section">
+          <h2>MUESTRA</h2>
+          <div class="form-row">
+            <div class="form-group">
+              <label>C.B. Muestra</label>
+              <input type="text" [value]="muestra.codigoBarras || ''" readonly>
+            </div>
+            
+            <div class="form-group">
+              <label>Descripción</label>
+              <input type="text" [(ngModel)]="muestra.descripcion" name="descripcion">
+            </div>
+          </div>
+        </div>
+        
+        <!-- Sección episodio/sujeto -->
+        <div class="form-section" *ngIf="muestra.episodioId || muestra.sujetoId">
+          <h2>RELACIONES</h2>
+          <div class="form-row">
+            <div class="form-group" *ngIf="muestra.episodioId">
+              <label>Episodio</label>
+              <div class="input-with-button">
+                <input type="text" [value]="muestra.episodioNumero || ''" readonly>
+                <button class="link-button" (click)="irAlEpisodio()">
+                  <span>🔗</span>
+                </button>
+              </div>
+            </div>
+            
+            <div class="form-group" *ngIf="muestra.sujetoId">
+              <label>Sujeto</label>
+              <div class="input-with-button">
+                <input type="text" [value]="muestra.sujetoNombre || ''" readonly>
+                <button class="link-button" (click)="irAlSujeto()">
+                  <span>🔗</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Sección imagen -->
+        <div class="form-section">
+          <h2>AÑADIR IMAGEN</h2>
+          <div class="imagen-container">
+            <div class="upload-section">
+              <input type="file" accept="image/*" (change)="onArchivoSeleccionado($event)" 
+                    id="upload-image" style="display: none">
+              <button class="upload-button" (click)="activarInputFile()">
+                <span>📤</span> Seleccionar imagen
+              </button>
+            </div>
+            
+            <div class="image-preview" *ngIf="imagenPreview">
+              <img [src]="imagenPreview" alt="Vista previa de la imagen">
+            </div>
+          </div>
+        </div>
+        
+        <!-- Botones de acción -->
+        <div class="action-buttons">
+          <button class="primary-button" (click)="guardar()">
+            GUARDAR
+          </button>
+          
+          <button class="secondary-button" (click)="volver()">
+            ATRÁS
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>

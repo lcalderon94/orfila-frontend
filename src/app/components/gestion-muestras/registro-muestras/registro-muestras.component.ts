@@ -1,4 +1,3 @@
-// registro-muestras.component.ts
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -18,6 +17,7 @@ export class RegistroMuestrasComponent implements OnInit {
   localizacionId: number | null = null;
   usarPredeterminada = false;
   tiempoEspera = 200; // ms para esperar entre lectura de códigos
+  guardando = false; // Flag para evitar múltiples envíos simultáneos
 
   constructor(
     private fb: FormBuilder,
@@ -94,10 +94,7 @@ export class RegistroMuestrasComponent implements OnInit {
         });
         
         if (predeterminada) {
-          // Forzar la conversión de porDefecto a booleano:
-          this.usarPredeterminada = (typeof predeterminada.porDefecto === 'string'
-            ? predeterminada.porDefecto.toLowerCase() === 'true'
-            : predeterminada.porDefecto) || false;
+          this.usarPredeterminada = true;
           this.localizacionSeleccionada = predeterminada;
           this.registroForm.patchValue({
             localizacionId: predeterminada.id
@@ -106,14 +103,13 @@ export class RegistroMuestrasComponent implements OnInit {
       }
     );
   }
-  
-  
 
   onLocalizacionChange(event: any) {
     const locId = event.value;
     const localizacion = this.localizaciones.find(loc => loc.id === locId);
     if (localizacion) {
-      this.localizacionSeleccionada = localizacion;
+      // Hacemos una copia profunda para evitar referencias compartidas
+      this.localizacionSeleccionada = JSON.parse(JSON.stringify(localizacion));
     }
   }
 
@@ -124,46 +120,65 @@ export class RegistroMuestrasComponent implements OnInit {
       });
       return;
     }
-
+  
     const formValue = this.registroForm.value;
     const codigoBarrasMuestra = formValue.codigoBarrasMuestra;
     
-    // Validar que el código de barras tenga un formato válido
-    if (!this.validarCodigoBarrasMuestra(codigoBarrasMuestra)) {
-      this.snackBar.open('El código de barras de la muestra no tiene un formato válido', 'Cerrar', {
+    // Validaciones existentes...
+    
+    // Verificar si ya existe esta muestra en esta localización
+    const muestraExistenteEnLista = this.muestrasLeidas.some(m => 
+      m.codigoBarrasMuestra === codigoBarrasMuestra && 
+      m.localizacion?.id === this.localizacionSeleccionada?.id
+    );
+    
+    if (muestraExistenteEnLista) {
+      this.snackBar.open('Esta muestra ya ha sido escaneada para esta localización', 'Cerrar', {
         duration: 3000
       });
+      this.limpiarCampoCodigoBarras();
       return;
     }
-
-    // Crear objeto de muestra para guardar
-    const nuevaMuestra: Muestra = {
-      codigoBarras: codigoBarrasMuestra,
-      fechaRegistro: new Date(),
-      usuario: 'usuario_actual', // En una implementación real se obtendría del servicio de autenticación
-      localizacion: this.localizacionSeleccionada as Localizacion
-    };
-
-    // En una implementación real, esto sería una llamada al servicio
-    // Aquí simulamos la respuesta exitosa
-    // this.muestrasService.registrarMuestra(nuevaMuestra).subscribe(...)
-
-    // Añadir la muestra al listado visual
-    this.muestrasLeidas.unshift({
-      codigoBarrasLocalizacion: this.localizacionSeleccionada?.codigoBarras,
-      descripcionLocalizacion: this.localizacionSeleccionada?.descripcionLocalizacion,
-      fechaRegistro: new Date(),
-      codigoBarrasMuestra: codigoBarrasMuestra,
-      usuario: 'usuario_actual'
-    });
-
-    // Limpiar el campo de código de barras para la siguiente lectura
+    
+    // Verificar si la muestra ya existe en el sistema para esta localización
+    this.muestrasService.verificarMuestraExistente(codigoBarrasMuestra, this.localizacionSeleccionada?.id)
+      .subscribe(
+        existe => {
+          if (existe) {
+            this.snackBar.open('Esta muestra ya existe en esta localización', 'Cerrar', {
+              duration: 3000
+            });
+            this.limpiarCampoCodigoBarras();
+          } else {
+            this.agregarMuestraALista(codigoBarrasMuestra);
+          }
+        }
+      );
+  }
+  
+  private limpiarCampoCodigoBarras() {
     this.registroForm.patchValue({
       codigoBarrasMuestra: ''
     });
-
-    // Enfocar el campo de código de barras para la siguiente lectura
     document.getElementById('codigoBarrasMuestraInput')?.focus();
+  }
+  
+  private agregarMuestraALista(codigoBarrasMuestra: string) {
+    // Hacer una copia profunda de la localización seleccionada
+    const localizacionCopia = this.localizacionSeleccionada ? 
+      JSON.parse(JSON.stringify(this.localizacionSeleccionada)) : null;
+  
+    // Añadir la muestra al listado visual
+    this.muestrasLeidas.unshift({
+      codigoBarrasLocalizacion: localizacionCopia?.codigoBarras,
+      descripcionLocalizacion: localizacionCopia?.descripcionLocalizacion,
+      fechaRegistro: new Date(),
+      codigoBarrasMuestra: codigoBarrasMuestra,
+      usuario: 'usuario_actual',
+      localizacion: localizacionCopia
+    });
+  
+    this.limpiarCampoCodigoBarras();
   }
 
   eliminarRegistro(index: number) {
@@ -174,19 +189,81 @@ export class RegistroMuestrasComponent implements OnInit {
 
   guardar() {
     if (this.muestrasLeidas.length === 0) {
-      this.snackBar.open('No hay muestras para guardar', 'Cerrar', {
+      this.snackBar.open('No hay muestras para registrar', 'Cerrar', {
         duration: 3000
       });
       return;
     }
-
-    // En una implementación real, esto sería una llamada al servicio para guardar todas las muestras
-    this.snackBar.open(`${this.muestrasLeidas.length} muestras guardadas correctamente`, 'Cerrar', {
-      duration: 3000
+    
+    if (this.guardando) {
+      return; // Evitar múltiples peticiones
+    }
+    
+    this.guardando = true;
+    
+    // Contador para seguimiento de operaciones completadas
+    let completadas = 0;
+    const total = this.muestrasLeidas.length;
+    let errores = 0;
+    
+    // Función para verificar si todas las operaciones han finalizado
+    const verificarFinalizacion = () => {
+      if (completadas === total) {
+        this.guardando = false;
+        
+        if (errores === 0) {
+          this.snackBar.open(`${total} muestras registradas correctamente`, 'Cerrar', {
+            duration: 3000
+          });
+          
+          // Limpiar la lista de muestras leídas
+          this.muestrasLeidas = [];
+        } else {
+          this.snackBar.open(`Se registraron ${total - errores} muestras correctamente. Hubo ${errores} errores.`, 'Cerrar', {
+            duration: 5000
+          });
+        }
+      }
+    };
+    
+    // Procesar cada muestra leída
+    this.muestrasLeidas.forEach(muestraLeida => {
+      if (!muestraLeida.localizacion) {
+        completadas++;
+        errores++;
+        return;
+      }
+      
+      const nuevaMuestra: Muestra = {
+        codigoBarras: muestraLeida.codigoBarrasMuestra,
+        fechaRegistro: new Date(),
+        usuario: muestraLeida.usuario,
+        localizacion: muestraLeida.localizacion, // Usamos la copia de la localización guardada
+        // Agregar episodio y sujeto si estuvieran disponibles
+        episodioId: muestraLeida.episodioId,
+        episodioNumero: muestraLeida.episodioNumero,
+        sujetoId: muestraLeida.sujetoId,
+        sujetoNombre: muestraLeida.sujetoNombre
+      };
+      
+      this.muestrasService.registrarMuestra(nuevaMuestra).subscribe(
+        muestra => {
+          completadas++;
+          verificarFinalizacion();
+        },
+        error => {
+          completadas++;
+          errores++;
+          console.error('Error al registrar muestra:', error);
+          verificarFinalizacion();
+        }
+      );
     });
-
-    // Limpiar el listado después de guardar
-    this.muestrasLeidas = [];
+    
+    // Si no hay ninguna operación (por algún error), finalizar
+    if (total === 0) {
+      this.guardando = false;
+    }
   }
 
   toggleUsarPredeterminada() {
@@ -197,13 +274,25 @@ export class RegistroMuestrasComponent implements OnInit {
         localizacionId: ''
       });
       this.localizacionSeleccionada = null;
+    } else {
+      // Buscar localización predeterminada
+      const predeterminada = this.localizaciones.find(loc => {
+        const pd = loc.porDefecto;
+        if (typeof pd === 'string') {
+          return pd.toLowerCase() === 'true';
+        }
+        return pd === true;
+      });
+      
+      if (predeterminada) {
+        // Hacemos una copia profunda para evitar referencias compartidas
+        this.localizacionSeleccionada = JSON.parse(JSON.stringify(predeterminada));
+        this.registroForm.patchValue({
+          localizacionId: predeterminada.id
+        });
+      }
     }
   }
-
-  private validarCodigoBarrasMuestra(codigo: string): boolean {
-    return codigo.length >= 10;
-  }
-  
 
   volver() {
     this.router.navigate(['/gestion-muestras/localizaciones']);

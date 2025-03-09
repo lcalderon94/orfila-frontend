@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -28,6 +28,7 @@ import { MuestrasListComponent } from './components/gestion-muestras/muestras-li
 import { CargasSistemaComponent } from './components/gestion-muestras/cargas-sistema/cargas-sistema.component';
 import { AdministracionSujetosComponent } from './components/administracion-sujetos/administracion-sujetos.component';
 import { PortafirmasListadoComponent } from './components/portafirmas/portafirmas-listado/portafirmas-listado.component';
+import { MuestraDetalleComponent } from './components/gestion-muestras/muestra-detalle/muestra-detalle.component';
 
 import { HeaderComponent } from './header/header.component';
 import { SidebarComponent } from './sidebar/sidebar.component';
@@ -137,6 +138,8 @@ import { HttpClientModule } from '@angular/common/http';
     PasoSujetosComponent,
     PasoMuestrasComponent,
     PasoCustodiaComponent,
+    MuestraDetalleComponent
+    
   ],
   imports: [
     BrowserModule,
@@ -177,6 +180,7 @@ import { HttpClientModule } from '@angular/common/http';
   providers: [
     AgendaService
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class AppModule { }

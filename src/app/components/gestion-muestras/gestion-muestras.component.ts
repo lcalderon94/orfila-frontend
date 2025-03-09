@@ -1,6 +1,7 @@
 // gestion-muestras.component.ts
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { MuestrasService } from '../../services/muestras.service';
 
 @Component({
   selector: 'app-gestion-muestras',
@@ -18,12 +19,27 @@ export class GestionMuestrasComponent implements OnInit {
     { label: 'Cargas del Sistema', route: 'cargas-sistema', icon: 'system_update' }
   ];
 
-  constructor(public router: Router) { } // Changed from private to public
+  constructor(
+    public router: Router,
+    private muestrasService: MuestrasService
+  ) { } // Changed from private to public
 
   ngOnInit(): void {
   }
 
   navigateTo(route: string): void {
     this.router.navigate(['/gestion-muestras', route]);
+  }
+
+  // Método para ver datos almacenados
+  verDatosLocalStorage() {
+    console.log('Localizaciones:', JSON.parse(localStorage.getItem('localizaciones') || '[]'));
+    console.log('Muestras:', JSON.parse(localStorage.getItem('muestras') || '[]'));
+  }
+  
+  // Método para limpiar datos
+  limpiarDatos() {
+    this.muestrasService.resetStorageData();
+    window.location.reload();
   }
 }

@@ -1,0 +1,102 @@
+.contenedor-pagina {
+    padding: 20px;
+  }
+  
+  .header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .header h1 {
+    margin-left: 10px;
+  }
+  
+  .filtros-container {
+    margin-bottom: 20px;
+  }
+  
+  .contenedor-filtros {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    background-color: #f5f5f5;
+    padding: 10px 15px;
+    border-radius: 4px;
+    margin-bottom: 10px;
+  }
+  
+  .contenedor-filtros mat-icon:first-child {
+    margin-right: 10px;
+  }
+  
+  .contenedor-filtros mat-icon:last-child {
+    margin-left: auto;
+  }
+  
+  .filtros-panel {
+    background-color: #f9f9f9;
+    padding: 15px;
+    border-radius: 4px;
+    margin-bottom: 20px;
+  }
+  
+  .filtro-seccion {
+    margin-bottom: 20px;
+  }
+  
+  .filtro-seccion h3 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-size: 16px;
+    font-weight: bold;
+  }
+  
+  .radio-group {
+    display: flex;
+    flex-direction: row;
+    gap: 15px;
+  }
+  
+  .fechas-container {
+    display: flex;
+    gap: 15px;
+  }
+  
+  .botones-filtro {
+    display: flex;
+    gap: 15px;
+    justify-content: flex-end;
+    margin-top: 20px;
+  }
+  
+  .contenedor-tabla {
+    width: 100%;
+    overflow-x: auto;
+  }
+  
+  .registros-selector {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  
+  .registros-por-pagina {
+    width: 60px;
+    margin: 0 10px;
+  }
+  
+  table {
+    width: 100%;
+  }
+  
+  .disabled-icon {
+    color: rgba(0, 0, 0, 0.26);
+  }
+  
+  .no-data {
+    padding: 20px;
+    text-align: center;
+    font-style: italic;
+    color: rgba(0, 0, 0, 0.54);
+  }

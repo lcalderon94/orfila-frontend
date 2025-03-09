@@ -1,0 +1,98 @@
+.contenedor-pagina {
+    padding: 20px;
+  }
+  
+  .header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .header h1 {
+    margin-left: 10px;
+  }
+  
+  .carga-container {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  .carga-form {
+    margin-bottom: 20px;
+  }
+  
+  .info-panel {
+    display: flex;
+    align-items: center;
+    background-color: #e3f2fd;
+    padding: 15px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+  }
+  
+  .info-panel mat-icon {
+    margin-right: 10px;
+    color: #1976d2;
+  }
+  
+  .info-panel p {
+    margin: 0;
+    line-height: 1.5;
+  }
+  
+  .textarea-container {
+    margin-bottom: 20px;
+  }
+  
+  .input-full-width {
+    width: 100%;
+  }
+  
+  .buttons-row {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+  }
+  
+  .registros-container {
+    margin-top: 30px;
+  }
+  
+  .registros-container h2 {
+    margin-bottom: 15px;
+  }
+  
+  .registros-table {
+    width: 100%;
+    margin-bottom: 20px;
+  }
+  
+  .botones-accion {
+    display: flex;
+    gap: 15px;
+    margin: 20px 0;
+  }
+  
+  .estado-correcto {
+    color: #4caf50;
+    display: flex;
+    align-items: center;
+  }
+  
+  .estado-existente {
+    color: #ff9800;
+    display: flex;
+    align-items: center;
+  }
+  
+  .estado-error {
+    color: #f44336;
+    display: flex;
+    align-items: center;
+  }
+  
+  .estado-correcto mat-icon,
+  .estado-existente mat-icon,
+  .estado-error mat-icon {
+    margin-right: 5px;
+  }
