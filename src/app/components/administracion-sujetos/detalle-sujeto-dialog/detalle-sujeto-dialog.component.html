@@ -1,0 +1,86 @@
+<h2 mat-dialog-title>Detalle del Sujeto</h2>
+
+<mat-dialog-content>
+  <div *ngIf="cargando" class="loading-container">
+    <mat-spinner diameter="40"></mat-spinner>
+    <p>Cargando información...</p>
+  </div>
+
+  <div *ngIf="!cargando">
+    <div class="seccion-detalle">
+      <h3>Información Personal</h3>
+      
+      <div class="fila-detalle">
+        <div class="etiqueta">Nº Expediente:</div>
+        <div class="valor">{{sujeto.numExpediente}}</div>
+      </div>
+      
+      <div class="fila-detalle">
+        <div class="etiqueta">Identificación:</div>
+        <div class="valor">{{sujeto.tipoIdentificacion}} - {{sujeto.numIdentificacion}}</div>
+      </div>
+      
+      <div class="fila-detalle">
+        <div class="etiqueta">Nombre completo:</div>
+        <div class="valor">{{sujeto.nombre}} {{sujeto.apellido1}} {{sujeto.apellido2}}</div>
+      </div>
+      
+      <div class="fila-detalle" *ngIf="sujeto.fechaNacimiento">
+        <div class="etiqueta">Fecha de nacimiento:</div>
+        <div class="valor">{{sujeto.fechaNacimiento | date:'dd/MM/yyyy'}}</div>
+      </div>
+      
+      <div class="fila-detalle">
+        <div class="etiqueta">Instituto:</div>
+        <div class="valor">{{sujeto.nombreIml}}</div>
+      </div>
+      
+      <div *ngIf="sujeto.unificado" class="alerta-unificado">
+        <mat-icon>info</mat-icon>
+        Este sujeto se ha unificado anteriormente
+      </div>
+    </div>
+    
+    <div class="seccion-episodios" *ngIf="episodios.length > 0">
+      <h3>Episodios Asociados</h3>
+      
+      <table mat-table [dataSource]="episodios" class="tabla-episodios">
+        <ng-container matColumnDef="nEpisodio">
+          <th mat-header-cell *matHeaderCellDef>Nº Episodio</th>
+          <td mat-cell *matCellDef="let episodio">{{episodio.nEpisodio}}</td>
+        </ng-container>
+        
+        <ng-container matColumnDef="fechaHecho">
+          <th mat-header-cell *matHeaderCellDef>Fecha Hecho</th>
+          <td mat-cell *matCellDef="let episodio">{{episodio.fechaHecho | date:'dd/MM/yyyy'}}</td>
+        </ng-container>
+        
+        <ng-container matColumnDef="organoAseguradora">
+          <th mat-header-cell *matHeaderCellDef>Órgano/Aseguradora</th>
+          <td mat-cell *matCellDef="let episodio">{{episodio.organoAseguradora}}</td>
+        </ng-container>
+        
+        <ng-container matColumnDef="tipoProcedimiento">
+          <th mat-header-cell *matHeaderCellDef>Tipo de Procedimiento</th>
+          <td mat-cell *matCellDef="let episodio">{{episodio.tipoProcedimiento}}</td>
+        </ng-container>
+        
+        <ng-container matColumnDef="nAnio">
+          <th mat-header-cell *matHeaderCellDef>Nº/Año</th>
+          <td mat-cell *matCellDef="let episodio">{{episodio.nAnio}}/{{episodio.anio}}</td>
+        </ng-container>
+        
+        <tr mat-header-row *matHeaderRowDef="['nEpisodio', 'fechaHecho', 'organoAseguradora', 'tipoProcedimiento', 'nAnio']"></tr>
+        <tr mat-row *matRowDef="let row; columns: ['nEpisodio', 'fechaHecho', 'organoAseguradora', 'tipoProcedimiento', 'nAnio'];"></tr>
+      </table>
+      
+      <div *ngIf="episodios.length === 0" class="sin-episodios">
+        No se encontraron episodios asociados a este sujeto.
+      </div>
+    </div>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="cerrar()">Cerrar</button>
+</mat-dialog-actions>

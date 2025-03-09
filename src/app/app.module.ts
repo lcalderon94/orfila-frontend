@@ -84,6 +84,9 @@ import { PasoSujetosComponent } from './components/informes/remision-muestras/pa
 import { PasoMuestrasComponent } from './components/informes/remision-muestras/paso-muestras/paso-muestras.component';
 import { PasoCustodiaComponent } from './components/informes/remision-muestras/paso-custodia/paso-custodia.component';
 import { HttpClientModule } from '@angular/common/http';
+import { DetalleSujetoDialogComponent } from './components/administracion-sujetos/detalle-sujeto-dialog/detalle-sujeto-dialog.component';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+
 
 
 
@@ -138,7 +141,8 @@ import { HttpClientModule } from '@angular/common/http';
     PasoSujetosComponent,
     PasoMuestrasComponent,
     PasoCustodiaComponent,
-    MuestraDetalleComponent
+    MuestraDetalleComponent,
+    DetalleSujetoDialogComponent
     
   ],
   imports: [
@@ -175,7 +179,8 @@ import { HttpClientModule } from '@angular/common/http';
     MatChipsModule,
     MatNativeDateModule,
     MatExpansionModule,
-    HttpClientModule
+    HttpClientModule,
+    MatProgressSpinnerModule
   ],
   providers: [
     AgendaService

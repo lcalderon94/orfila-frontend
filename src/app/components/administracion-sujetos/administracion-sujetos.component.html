@@ -86,72 +86,87 @@
     </div>
   </div>
 
-  <!-- Buscadores superiores -->
-  <div class="buscadores-superiores">
-    <input type="text" placeholder="Nombre IML">
-    <input type="text" placeholder="Nº Expediente">
-    <input type="text" placeholder="Tipo Identificación">
-    <input type="text" placeholder="Nº Identificación">
-    <input type="text" placeholder="Nombre">
-    <input type="text" placeholder="Apellido 1"> 
-    <input type="text" placeholder="Apellido 2">
-    <input type="text" placeholder="Fecha Nacimiento">
-  </div>
-
-  <!-- Tabla -->
+  <!-- Tabla de resultados de búsqueda -->
   <div class="contenedor-tabla">
     <table mat-table [dataSource]="dataSource" matSort>
+      <ng-container matColumnDef="seleccionPrincipal">
+        <th mat-header-cell *matHeaderCellDef>Principal</th>
+        <td mat-cell *matCellDef="let elemento">
+          <mat-radio-button 
+            [checked]="sujetoPrincipal?.numExpediente === elemento.numExpediente" 
+            (change)="seleccionarSujetoPrincipal(elemento)" 
+            [disabled]="sujetosAUnificar.includes(elemento) || elemento.unificado">
+          </mat-radio-button>
+        </td>
+      </ng-container>
+
       <ng-container matColumnDef="nombreIml">
-        <th mat-header-cell *matHeaderCellDef>NOMBRE IML</th>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>NOMBRE IML</th>
         <td mat-cell *matCellDef="let elemento">{{elemento.nombreIml}}</td>
       </ng-container>
 
       <ng-container matColumnDef="numExpediente">
-        <th mat-header-cell *matHeaderCellDef>Nº EXPEDIENTE</th>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Nº EXPEDIENTE</th>
         <td mat-cell *matCellDef="let elemento">{{elemento.numExpediente}}</td>
       </ng-container>
 
       <ng-container matColumnDef="tipoIdentificacion">
-        <th mat-header-cell *matHeaderCellDef>TIPO IDENTIFICACIÓN</th>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>TIPO IDENTIFICACIÓN</th>
         <td mat-cell *matCellDef="let elemento">{{elemento.tipoIdentificacion}}</td>
       </ng-container>
 
       <ng-container matColumnDef="numIdentificacion">
-        <th mat-header-cell *matHeaderCellDef>Nº IDENTIFICACIÓN</th>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Nº IDENTIFICACIÓN</th>
         <td mat-cell *matCellDef="let elemento">{{elemento.numIdentificacion}}</td>
       </ng-container>
 
       <ng-container matColumnDef="nombre">
-        <th mat-header-cell *matHeaderCellDef>NOMBRE</th>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>NOMBRE</th>
         <td mat-cell *matCellDef="let elemento">{{elemento.nombre}}</td>
       </ng-container>
 
       <ng-container matColumnDef="apellido1">
-        <th mat-header-cell *matHeaderCellDef>APELLIDO 1</th>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>APELLIDO 1</th>
         <td mat-cell *matCellDef="let elemento">{{elemento.apellido1}}</td>
       </ng-container>
 
       <ng-container matColumnDef="apellido2">
-        <th mat-header-cell *matHeaderCellDef>APELLIDO 2</th>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>APELLIDO 2</th>
         <td mat-cell *matCellDef="let elemento">{{elemento.apellido2}}</td>
       </ng-container>
 
       <ng-container matColumnDef="fechaNacimiento">
-        <th mat-header-cell *matHeaderCellDef>FECHA NACIMIENTO</th>
-        <td mat-cell *matCellDef="let elemento">{{elemento.fechaNacimiento | date}}</td>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>FECHA NACIMIENTO</th>
+        <td mat-cell *matCellDef="let elemento">{{elemento.fechaNacimiento | date:'dd/MM/yyyy'}}</td>
       </ng-container>
 
       <ng-container matColumnDef="opciones">
         <th mat-header-cell *matHeaderCellDef>OPCIONES</th>
         <td mat-cell *matCellDef="let row">
-          <button mat-icon-button matTooltip="Ver detalle">
+          <!-- Icono de añadir a unificación -->
+          <button mat-icon-button matTooltip="Añadir a unificación" 
+            (click)="agregarSujetoUnificacion(row)" 
+            [disabled]="row.unificado">
+            <mat-icon>add_circle_outline</mat-icon>
+          </button>
+
+          <!-- Indicador de sujeto unificado -->
+          <mat-icon *ngIf="row.unificado" 
+            matTooltip="Este sujeto se ha unificado anteriormente" 
+            class="icono-unificado">
+            merge_type
+          </mat-icon>
+
+          <!-- Ver detalle -->
+          <button mat-icon-button matTooltip="Ver detalle" (click)="verDetalle(row)">
             <mat-icon>visibility</mat-icon>
           </button>
         </td>
       </ng-container>
 
       <tr mat-header-row *matHeaderRowDef="columnasVisibles"></tr>
-      <tr mat-row *matRowDef="let row; columns: columnasVisibles;"></tr>
+      <tr mat-row *matRowDef="let row; columns: columnasVisibles;" 
+        [ngClass]="{'fila-unificada': row.unificado}"></tr>
     </table>
   </div>
 
@@ -161,4 +176,69 @@
     [pageSize]="itemsPorPagina"
     showFirstLastButtons>
   </mat-paginator>
+
+  <!-- Sección de sujetos seleccionados para unificación -->
+  <div *ngIf="sujetoPrincipal || sujetosAUnificar.length > 0" class="seccion-unificacion">
+    <h2>Sujetos seleccionados para unificación</h2>
+    
+    <div *ngIf="sujetoPrincipal" class="sujeto-principal">
+      <h3>Sujeto Principal</h3>
+      <div class="tarjeta-sujeto">
+        <p><strong>Expediente:</strong> {{sujetoPrincipal.numExpediente}}</p>
+        <p><strong>Identificación:</strong> {{sujetoPrincipal.tipoIdentificacion}} - {{sujetoPrincipal.numIdentificacion}}</p>
+        <p><strong>Nombre:</strong> {{sujetoPrincipal.nombre}} {{sujetoPrincipal.apellido1}} {{sujetoPrincipal.apellido2}}</p>
+        <button mat-icon-button color="warn" (click)="quitarSujetoPrincipal()" matTooltip="Eliminar">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </div>
+    </div>
+
+    <div *ngIf="sujetosAUnificar.length > 0" class="sujetos-unificar">
+      <h3>Sujetos a unificar</h3>
+      <div class="tarjeta-sujeto" *ngFor="let sujeto of sujetosAUnificar">
+        <p><strong>Expediente:</strong> {{sujeto.numExpediente}}</p>
+        <p><strong>Identificación:</strong> {{sujeto.tipoIdentificacion}} - {{sujeto.numIdentificacion}}</p>
+        <p><strong>Nombre:</strong> {{sujeto.nombre}} {{sujeto.apellido1}} {{sujeto.apellido2}}</p>
+        <button mat-icon-button color="warn" (click)="quitarSujetoUnificar(sujeto)" matTooltip="Eliminar">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </div>
+    </div>
+
+    <div class="acciones-unificacion">
+      <button mat-stroked-button color="warn" (click)="limpiarSeleccionUnificacion()">Cancelar</button>
+      <button mat-raised-button color="primary" (click)="iniciarUnificacion()" 
+        [disabled]="!sujetoPrincipal || sujetosAUnificar.length === 0">
+        Unificar
+      </button>
+    </div>
+  </div>
 </div>
+
+<!-- Diálogo de confirmación de unificación -->
+<ng-template #dialogoConfirmacion>
+  <h2 mat-dialog-title>Confirmar unificación</h2>
+  <mat-dialog-content>
+    <p>¿Está seguro de que desea unificar los sujetos seleccionados?</p>
+    <p>Esta acción no podrá deshacerse.</p>
+    
+    <div *ngIf="sujetoPrincipal" class="sujeto-principal">
+      <h3>Sujeto Principal</h3>
+      <p><strong>Expediente:</strong> {{sujetoPrincipal.numExpediente}}</p>
+      <p><strong>Nombre:</strong> {{sujetoPrincipal.nombre}} {{sujetoPrincipal.apellido1}} {{sujetoPrincipal.apellido2}}</p>
+    </div>
+    
+    <div *ngIf="sujetosAUnificar.length > 0" class="sujetos-unificar">
+      <h3>Sujetos a unificar</h3>
+      <ul>
+        <li *ngFor="let sujeto of sujetosAUnificar">
+          {{sujeto.numExpediente}} - {{sujeto.nombre}} {{sujeto.apellido1}} {{sujeto.apellido2}}
+        </li>
+      </ul>
+    </div>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close>Cancelar</button>
+    <button mat-raised-button color="primary" [mat-dialog-close]="true">Confirmar</button>
+  </mat-dialog-actions>
+</ng-template>
