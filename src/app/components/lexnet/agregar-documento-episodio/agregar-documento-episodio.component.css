@@ -1,0 +1,64 @@
+/* agregar-documento-episodio.component.css */
+.contenedor-pagina {
+    padding: 16px;
+  }
+  
+  .cabecera-detalle {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+  
+  .documento-card {
+    margin-bottom: 16px;
+  }
+  
+  .documento-info {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+  
+  .campo-info {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .etiqueta {
+    font-weight: bold;
+    color: #666;
+    font-size: 12px;
+  }
+  
+  .valor {
+    font-size: 14px;
+  }
+  
+  .formulario-card {
+    margin-bottom: 16px;
+  }
+  
+  .form-fields {
+    display: grid;
+    gap: 16px;
+  }
+  
+  .full-width {
+    width: 100%;
+  }
+  
+  .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 16px;
+  }
+  
+  .cargando-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 300px;
+  }

@@ -99,12 +99,18 @@ export class EpisodiosService {
     });
   }
 
-  crearEpisodio(nuevoEpisodio: Episodio): Observable<void> {
+  crearEpisodio(nuevoEpisodio: Episodio): Observable<Episodio> {
     return new Observable(observer => {
       const episodios = this.episodiosSubject.value;
+      
+      // Generar un ID único para el episodio si no tiene uno
+      if (!nuevoEpisodio.nEpisodio) {
+        nuevoEpisodio.nEpisodio = `EP${new Date().getFullYear()}${String(Math.floor(Math.random() * 100000)).padStart(5, '0')}`;
+      }
+      
       episodios.push(nuevoEpisodio);
       this.episodiosSubject.next(episodios);
-      observer.next();
+      observer.next(nuevoEpisodio); // Devolver el episodio completo
       observer.complete();
     });
   }

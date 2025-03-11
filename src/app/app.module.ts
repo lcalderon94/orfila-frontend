@@ -86,6 +86,12 @@ import { PasoCustodiaComponent } from './components/informes/remision-muestras/p
 import { HttpClientModule } from '@angular/common/http';
 import { DetalleSujetoDialogComponent } from './components/administracion-sujetos/detalle-sujeto-dialog/detalle-sujeto-dialog.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { DetalleNotificacionComponent } from './components/lexnet/detalle-notificacion/detalle-notificacion.component';
+import { DetalleEscritoComponent } from './components/lexnet/detalle-escrito/detalle-escrito.component';
+import { AgregarDocumentoEpisodioComponent } from './components/lexnet/agregar-documento-episodio/agregar-documento-episodio.component';
+import { EnvioLexnetComponent } from './components/lexnet/envio-lexnet/envio-lexnet.component';
+import { AcuseReciboComponent } from './components/lexnet/acuse-recibo/acuse-recibo.component';
+import { DetalleEnvioComponent } from './components/lexnet/detalle-envio/detalle-envio.component';
 
 
 
@@ -142,7 +148,13 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     PasoMuestrasComponent,
     PasoCustodiaComponent,
     MuestraDetalleComponent,
-    DetalleSujetoDialogComponent
+    DetalleSujetoDialogComponent,
+    DetalleNotificacionComponent,
+    DetalleEscritoComponent,
+    AgregarDocumentoEpisodioComponent,
+    EnvioLexnetComponent,
+    AcuseReciboComponent,
+    DetalleEnvioComponent
     
   ],
   imports: [

@@ -1,0 +1,117 @@
+<!-- detalle-notificacion.component.html -->
+<div class="contenedor-pagina" *ngIf="!cargando; else cargandoTemplate">
+    <h1>Integración. LexNET</h1>
+    
+    <div class="cabecera-detalle">
+      <h2>Detalle de Notificación</h2>
+      <button mat-button (click)="volver()">
+        <mat-icon>arrow_back</mat-icon> ATRÁS
+      </button>
+    </div>
+  
+    <mat-card class="info-notificacion" *ngIf="notificacion">
+      <mat-card-content>
+        <div class="grid-info">
+          <div class="campo-info">
+            <span class="etiqueta">Tipo Mensaje:</span>
+            <span class="valor">{{ notificacion.tipoMensaje }}</span>
+          </div>
+          <div class="campo-info">
+            <span class="etiqueta">Remitente:</span>
+            <span class="valor">{{ notificacion.remitente }}</span>
+          </div>
+          <div class="campo-info">
+            <span class="etiqueta">Asunto:</span>
+            <span class="valor">{{ notificacion.asunto }}</span>
+          </div>
+          <div class="campo-info">
+            <span class="etiqueta">Nº/Año:</span>
+            <span class="valor">{{ notificacion.nAnio }}</span>
+          </div>
+          <div class="campo-info">
+            <span class="etiqueta">Tipo de Procedimiento:</span>
+            <span class="valor">{{ notificacion.tipoProcedimiento }}</span>
+          </div>
+          <div class="campo-info">
+            <span class="etiqueta">Fecha de Notificación:</span>
+            <span class="valor">{{ notificacion.fechaNotificacion | date:'dd/MM/yyyy HH:mm' }}</span>
+          </div>
+          <div class="campo-info" *ngIf="notificacion.nig">
+            <span class="etiqueta">NIG:</span>
+            <span class="valor">{{ notificacion.nig }}</span>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  
+    <div class="documentos-seccion" *ngIf="notificacion">
+      <h3>Documentos de la Notificación</h3>
+      
+      <table mat-table [dataSource]="notificacion.documentos" class="mat-elevation-z2">
+        <!-- Columna de selección -->
+        <ng-container matColumnDef="seleccion">
+          <th mat-header-cell *matHeaderCellDef>
+            <mat-checkbox (change)="$event ? masterToggle() : null"
+                         [checked]="selection.hasValue() && isAllSelected()"
+                         [indeterminate]="selection.hasValue() && !isAllSelected()"
+                         [aria-label]="checkboxLabel()">
+            </mat-checkbox>
+          </th>
+          <td mat-cell *matCellDef="let documento">
+            <mat-checkbox (click)="$event.stopPropagation()"
+                         (change)="$event ? selection.toggle(documento) : null"
+                         [checked]="selection.isSelected(documento)"
+                         [aria-label]="checkboxLabel(documento)">
+            </mat-checkbox>
+          </td>
+        </ng-container>
+  
+        <!-- Columna Nombre -->
+        <ng-container matColumnDef="nombre">
+          <th mat-header-cell *matHeaderCellDef>NOMBRE</th>
+          <td mat-cell *matCellDef="let documento">{{ documento.nombre }}</td>
+        </ng-container>
+  
+        <!-- Columna Descripción Documento -->
+        <ng-container matColumnDef="descripcion">
+          <th mat-header-cell *matHeaderCellDef>DESCRIPCIÓN DOCUMENTO</th>
+          <td mat-cell *matCellDef="let documento">{{ documento.descripcion }}</td>
+        </ng-container>
+  
+        <!-- Columna Opciones -->
+        <ng-container matColumnDef="opciones">
+          <th mat-header-cell *matHeaderCellDef>OPCIONES</th>
+          <td mat-cell *matCellDef="let documento">
+            <button mat-icon-button (click)="visualizarDocumento(documento)" matTooltip="Leer documento">
+              <mat-icon>visibility</mat-icon>
+            </button>
+            <button mat-icon-button (click)="anadirDocumentoAEpisodio(documento)" matTooltip="Añadir documento a episodio" [disabled]="!episodioExistente">
+              <mat-icon>add_circle</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+  
+        <tr mat-header-row *matHeaderRowDef="columnas"></tr>
+        <tr mat-row *matRowDef="let row; columns: columnas;"></tr>
+      </table>
+      
+      <div class="botones-accion">
+        <ng-container *ngIf="episodioExistente; else botonCrearEpisodio">
+          <button mat-raised-button color="primary" (click)="irAEpisodio()">IR A EPISODIO</button>
+          <button mat-raised-button color="accent" (click)="anadirSeleccionados()" [disabled]="selection.selected.length === 0">AÑADIR SELECCIONADOS</button>
+          <button mat-raised-button color="warn" (click)="anadirTodos()">AÑADIR TODOS</button>
+        </ng-container>
+        
+        <ng-template #botonCrearEpisodio>
+          <button mat-raised-button color="primary" (click)="crearEpisodio()">CREAR EPISODIO</button>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+  
+  <ng-template #cargandoTemplate>
+    <div class="cargando-container">
+      <mat-spinner diameter="40"></mat-spinner>
+      <p>Cargando información de la notificación...</p>
+    </div>
+  </ng-template>

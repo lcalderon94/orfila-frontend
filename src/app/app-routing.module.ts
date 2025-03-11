@@ -17,6 +17,11 @@ import { PortafirmasComponent } from './components/portafirmas/portafirmas.compo
 import { LexnetComponent } from './components/lexnet/lexnet.component';
 import { MensajesRecibidosComponent } from './components/lexnet/mensajes-recibidos/mensajes-recibidos.component';
 import { EstadoEnviosComponent } from './components/lexnet/estado-envios/estado-envios.component';
+import { DetalleNotificacionComponent } from './components/lexnet/detalle-notificacion/detalle-notificacion.component';
+import { DetalleEscritoComponent } from './components/lexnet/detalle-escrito/detalle-escrito.component';
+import { EnvioLexnetComponent } from './components/lexnet/envio-lexnet/envio-lexnet.component';
+import { AgregarDocumentoEpisodioComponent } from './components/lexnet/agregar-documento-episodio/agregar-documento-episodio.component';
+import { AcuseReciboComponent } from './components/lexnet/acuse-recibo/acuse-recibo.component';
 import { GestionMuestrasComponent } from './components/gestion-muestras/gestion-muestras.component';
 import { NuevaLocalizacionComponent } from './components/gestion-muestras/nueva-localizacion/nueva-localizacion.component';
 import { LocalizacionesComponent } from './components/gestion-muestras/localizaciones/localizaciones.component';
@@ -35,10 +40,7 @@ import { AgendaSemanalComponent } from './components/agenda/agenda-semanal/agend
 import { AgendaHorariaComponent } from './components/agenda/agenda-horaria/agenda-horaria.component';
 import { RemisionMuestrasComponent } from './components/informes/remision-muestras/remision-muestras.component';
 import { MuestraDetalleComponent } from './components/gestion-muestras/muestra-detalle/muestra-detalle.component';
-
-
-
-
+import { DetalleEnvioComponent } from './components/lexnet/detalle-envio/detalle-envio.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/tareas', pathMatch: 'full' },
@@ -46,7 +48,7 @@ const routes: Routes = [
     path: 'tareas',
     children: [
       { path: '', component: TareasComponent },
-      { path: ':numEpisodio', component: TareaDetalleComponent } // <-- renombrado
+      { path: ':numEpisodio', component: TareaDetalleComponent }
     ]
   },
   
@@ -93,14 +95,20 @@ const routes: Routes = [
     ]
   },
   
-  // LexNET routes
+  // LexNET routes - Actualizado con las nuevas rutas
   { 
     path: 'lexnet', 
     component: LexnetComponent,
     children: [
       { path: '', redirectTo: 'mensajes-recibidos', pathMatch: 'full' },
       { path: 'mensajes-recibidos', component: MensajesRecibidosComponent },
-      { path: 'estado-envios', component: EstadoEnviosComponent }
+      { path: 'estado-envios', component: EstadoEnviosComponent },
+      { path: 'detalle-notificacion/:id', component: DetalleNotificacionComponent },
+      { path: 'detalle-escrito/:id', component: DetalleEscritoComponent },
+      { path: 'envio-lexnet/:id', component: EnvioLexnetComponent },
+      { path: 'agregar-documento-episodio/:documentoId', component: AgregarDocumentoEpisodioComponent },
+      { path: 'acuse-recibo/:id', component: AcuseReciboComponent },
+      { path: 'detalle-envio/:id', component: DetalleEnvioComponent }
     ]
   },
   
@@ -119,7 +127,7 @@ const routes: Routes = [
       { path: 'salida-muestra/:id', component: SalidaMuestraComponent },
       { path: 'carga-codigos', component: CargaCodigosComponent },
       { path: 'muestras-list', component: MuestrasListComponent },
-      { path: 'muestra-detalle/:id', component: MuestraDetalleComponent }, // Añadir esta línea
+      { path: 'muestra-detalle/:id', component: MuestraDetalleComponent },
       { path: 'cargas-sistema', component: CargasSistemaComponent }
     ]
   },

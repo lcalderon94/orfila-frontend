@@ -1,28 +1,17 @@
-import { Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+// estado-envios.component.ts (actualizado)
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { ESTADOS_ENVIO_MOCK } from '../../../mock-data/lexnet.mock';
-
-
-export interface EstadoEnvio {
-  fEnvio: string;
-  nEnvio: string;
-  episodio: string;
-  tipoProcedimiento: string;
-  nAnio: string;
-  tipoDocPrincipal: string;
-  usuario: string;
-  estado: string;
-}
+import { Router } from '@angular/router';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { LexnetService, EstadoEnvio } from 'src/app/services/lexnet.service';
 
 @Component({
   selector: 'app-estado-envios',
   templateUrl: './estado-envios.component.html',
-  styleUrls: ['./estado-envios.component.css'],
-  encapsulation: ViewEncapsulation.None
+  styleUrls: ['./estado-envios.component.css']
 })
 export class EstadoEnviosComponent implements OnInit {
   
@@ -39,18 +28,9 @@ export class EstadoEnviosComponent implements OnInit {
   ];
 
   dataSource: MatTableDataSource<EstadoEnvio>;
-  itemsPorPagina = 10;
+  itemsPorPagina = 20; // Según requisito RF-REG-138, mostrar 20 registros por defecto
   
-  filtrosForm: FormGroup = this.fb.group({
-    fechaDesde: [''],
-    fechaHasta: [''],
-    episodio: [''],
-    tipoProcedimiento: [''],
-    nAnio: [''],
-    tipoDocPrincipal: [''],
-    usuario: [''],
-    estado: ['']
-  });
+  filtrosForm: FormGroup;
 
   filtrosColumnas = {
     fEnvio: '',
@@ -68,9 +48,16 @@ export class EstadoEnviosComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private snackBar: MatSnackBar
+    private router: Router,
+    private snackBar: MatSnackBar,
+    private lexnetService: LexnetService
   ) {
-    this.dataSource = new MatTableDataSource<EstadoEnvio>(ESTADOS_ENVIO_MOCK);
+    this.dataSource = new MatTableDataSource<EstadoEnvio>([]);
+    
+    this.filtrosForm = this.fb.group({
+      fechaDesde: [''],
+      fechaHasta: ['']
+    });
   }
 
   ngOnInit() {
@@ -103,7 +90,15 @@ export class EstadoEnviosComponent implements OnInit {
   }
 
   cargarDatos() {
-    this.dataSource.data = ESTADOS_ENVIO_MOCK;
+    this.lexnetService.getEstadosEnvios(this.filtrosForm.value).subscribe({
+      next: (estadosEnvio) => {
+        this.dataSource.data = estadosEnvio;
+      },
+      error: (error) => {
+        console.error('Error al cargar estados de envío:', error);
+        this.snackBar.open('Error al cargar los estados de envío', 'Cerrar', { duration: 3000 });
+      }
+    });
   }
 
   aplicarFiltrosColumnas() {
@@ -127,24 +122,28 @@ export class EstadoEnviosComponent implements OnInit {
       estado: ''
     };
     this.aplicarFiltrosColumnas();
-    this.mostrarMensaje('Filtros limpiados');
+    this.snackBar.open('Filtros limpiados', 'Cerrar', { duration: 3000 });
   }
 
   buscar() {
     console.log('Filtros aplicados:', this.filtrosForm.value);
-    this.mostrarMensaje('Búsqueda realizada');
+    this.cargarDatos();
   }
 
   actualizarEstadoMensajes() {
-    this.mostrarMensaje('Actualizando estados de mensajes...');
+    this.lexnetService.actualizarEstadoMensajes().subscribe({
+      next: (resultado) => {
+        this.cargarDatos();
+      }
+    });
   }
 
   verDetalle(envio: EstadoEnvio) {
-    console.log('Ver detalle:', envio);
+    this.router.navigate(['/lexnet/detalle-envio', envio.id]);
   }
 
   verAcuse(envio: EstadoEnvio) {
-    console.log('Ver acuse:', envio);
+    this.router.navigate(['/lexnet/acuse-recibo', envio.id]);
   }
 
   cambiarItemsPorPagina() {
@@ -154,12 +153,16 @@ export class EstadoEnviosComponent implements OnInit {
     }
   }
 
-  private mostrarMensaje(mensaje: string) {
-    this.snackBar.open(mensaje, 'Cerrar', {
-      duration: 3000,
-      horizontalPosition: 'center',
-      verticalPosition: 'top',
-    });
+  exportarWord() {
+    this.snackBar.open('Exportando a Word...', 'Cerrar', { duration: 3000 });
+  }
+
+  exportarPDF() {
+    this.snackBar.open('Exportando a PDF...', 'Cerrar', { duration: 3000 });
+  }
+
+  exportarExcel() {
+    this.snackBar.open('Exportando a Excel...', 'Cerrar', { duration: 3000 });
   }
 
   obtenerTituloColumna(columna: string): string {

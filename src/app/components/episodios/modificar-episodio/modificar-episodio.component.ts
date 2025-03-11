@@ -205,4 +205,33 @@ export class ModificarEpisodioComponent implements OnInit {
       this.snackBar.open('Por favor, complete todos los campos requeridos', 'Cerrar', { duration: 3000 });
     }
   }
+
+  // modificar-episodio.component.ts (fragmento)
+loadEpisodio(episodioId: string) {
+  this.episodiosService.getEpisodioById(episodioId).subscribe({
+    next: (episodio) => {
+      if (episodio) {
+        this.episodioForm.patchValue({
+          // ... resto del código ...
+        });
+        
+        // Verificar si hay documentos pendientes de LexNET
+        this.route.queryParams.subscribe(params => {
+          if (params['lexnetDocIds']) {
+            const docIds = params['lexnetDocIds'].split(',');
+            if (docIds.length > 0) {
+              this.snackBar.open(`Se han detectado ${docIds.length} documentos de LexNET pendientes de asociar`, 'Cerrar', {
+                duration: 5000
+              });
+              // Aquí podrías implementar la lógica para mostrar estos documentos
+            }
+          }
+        });
+      }
+    },
+    error: (error) => {
+      // ... manejo de errores ...
+    }
+  });
+}
 }

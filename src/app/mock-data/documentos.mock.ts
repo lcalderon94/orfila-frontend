@@ -1,5 +1,5 @@
 // src/app/mock-data/documentos.mock.ts
-interface Documento {
+export interface Documento {
     fechaCreacion: Date;
     tipo: string;
     nombre: string;

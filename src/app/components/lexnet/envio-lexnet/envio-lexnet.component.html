@@ -1,0 +1,136 @@
+<!-- envio-lexnet.component.html -->
+<div class="contenedor-pagina" *ngIf="!cargando; else cargandoTemplate">
+    <div class="cabecera-detalle">
+      <h2>Envío a LexNET</h2>
+      <div class="informacion-episodio" *ngIf="episodioDetalle">
+        <p>
+          <strong>Episodio:</strong> {{ episodioId }} - 
+          <strong>Procedimiento:</strong> {{ episodioDetalle.tipoProcedimiento }} - 
+          <strong>Nº/Año:</strong> {{ episodioDetalle.nAnio }}
+        </p>
+      </div>
+    </div>
+  
+    <mat-card class="documentos-card">
+      <mat-card-header>
+        <mat-card-title>Selección de Documentos</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <table mat-table [dataSource]="documentosDisponibles" class="mat-elevation-z4">
+          <!-- Columna Principal -->
+          <ng-container matColumnDef="principal">
+            <th mat-header-cell *matHeaderCellDef>PRINCIPAL</th>
+            <td mat-cell *matCellDef="let documento">
+              <mat-radio-button 
+                [checked]="esDocumentoPrincipal(documento.id)"
+                (change)="onSeleccionPrincipal(documento.id)">
+              </mat-radio-button>
+            </td>
+          </ng-container>
+  
+          <!-- Columna Adjunto -->
+          <ng-container matColumnDef="adjunto">
+            <th mat-header-cell *matHeaderCellDef>ADJUNTO</th>
+            <td mat-cell *matCellDef="let documento">
+              <mat-checkbox 
+                [checked]="esDocumentoAdjunto(documento.id)"
+                (change)="onSeleccionAdjunto($event, documento.id)">
+              </mat-checkbox>
+            </td>
+          </ng-container>
+  
+          <!-- Columna Nombre -->
+          <ng-container matColumnDef="nombre">
+            <th mat-header-cell *matHeaderCellDef>NOMBRE</th>
+            <td mat-cell *matCellDef="let documento">{{ documento.nombre }}</td>
+          </ng-container>
+  
+          <!-- Columna Descripción -->
+          <ng-container matColumnDef="descripcion">
+            <th mat-header-cell *matHeaderCellDef>DESCRIPCIÓN</th>
+            <td mat-cell *matCellDef="let documento">{{ documento.descripcion }}</td>
+          </ng-container>
+  
+          <tr mat-header-row *matHeaderRowDef="['principal', 'adjunto', 'nombre', 'descripcion']"></tr>
+          <tr mat-row *matRowDef="let row; columns: ['principal', 'adjunto', 'nombre', 'descripcion'];"></tr>
+        </table>
+      </mat-card-content>
+    </mat-card>
+  
+    <mat-card class="formulario-envio">
+      <mat-card-header>
+        <mat-card-title>Datos del Envío</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <form [formGroup]="formEnvio">
+          <div class="grid-container">
+            <!-- Descripción -->
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Descripción</mat-label>
+              <input matInput formControlName="descripcion">
+              <mat-error *ngIf="formEnvio.get('descripcion')?.hasError('required')">
+                La descripción es obligatoria
+              </mat-error>
+            </mat-form-field>
+  
+            <!-- Tipo de Documento -->
+            <mat-form-field appearance="outline">
+              <mat-label>Tipo de Documento</mat-label>
+              <mat-select formControlName="tipoDocumento">
+                <mat-option value="INFORME">INFORME</mat-option>
+                <mat-option value="SENTENCIA">SENTENCIA</mat-option>
+                <mat-option value="OFICIO">OFICIO</mat-option>
+              </mat-select>
+              <mat-error *ngIf="formEnvio.get('tipoDocumento')?.hasError('required')">
+                El tipo de documento es obligatorio
+              </mat-error>
+            </mat-form-field>
+  
+            <!-- Subtipo de Documento -->
+            <mat-form-field appearance="outline">
+              <mat-label>Subtipo de Documento</mat-label>
+              <mat-select formControlName="subtipoDocumento">
+                <mat-option value="INFORME">INFORME</mat-option>
+                <mat-option value="INFORME_PERICIAL">INFORME PERICIAL</mat-option>
+                <mat-option value="INFORME_FORENSE">INFORME FORENSE</mat-option>
+              </mat-select>
+              <mat-error *ngIf="formEnvio.get('subtipoDocumento')?.hasError('required')">
+                El subtipo de documento es obligatorio
+              </mat-error>
+            </mat-form-field>
+  
+            <!-- Urgente -->
+            <div class="checkbox-container">
+              <mat-checkbox formControlName="urgente">Urgente</mat-checkbox>
+            </div>
+  
+            <!-- Observaciones -->
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Observaciones</mat-label>
+              <textarea matInput formControlName="observaciones" rows="4"></textarea>
+              <mat-hint align="end">{{ formEnvio.get('observaciones')?.value?.length || 0 }}/200</mat-hint>
+              <mat-error *ngIf="formEnvio.get('observaciones')?.hasError('maxlength')">
+                Máximo 200 caracteres
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </form>
+      </mat-card-content>
+      <mat-card-actions>
+        <div class="acciones-envio">
+          <button mat-button (click)="volver()">ATRÁS</button>
+          <button mat-raised-button color="primary" (click)="enviarALexnet()" [disabled]="enviando">
+            <mat-icon>send</mat-icon>
+            ENVIAR A LEXNET
+          </button>
+        </div>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+  
+  <ng-template #cargandoTemplate>
+    <div class="cargando-container">
+      <mat-spinner diameter="40"></mat-spinner>
+      <p>Cargando documentos disponibles...</p>
+    </div>
+  </ng-template>

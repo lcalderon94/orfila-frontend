@@ -1,0 +1,76 @@
+/* detalle-notificacion.component.css */
+.contenedor-pagina {
+    padding: 16px;
+  }
+  
+  .cabecera-detalle {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+  
+  .info-notificacion {
+    margin-bottom: 20px;
+  }
+  
+  .grid-info {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+  
+  .campo-info {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 8px;
+  }
+  
+  .etiqueta {
+    font-weight: bold;
+    color: #666;
+    font-size: 12px;
+  }
+  
+  .valor {
+    font-size: 14px;
+  }
+  
+  .documentos-seccion {
+    margin-top: 20px;
+  }
+  
+  .documentos-seccion h3 {
+    margin-bottom: 16px;
+    font-size: 18px;
+    font-weight: 500;
+  }
+  
+  table {
+    width: 100%;
+    margin-bottom: 20px;
+  }
+  
+  .mat-column-seleccion {
+    width: 60px;
+  }
+  
+  .mat-column-opciones {
+    width: 100px;
+    text-align: center;
+  }
+  
+  .botones-accion {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 16px;
+  }
+  
+  .cargando-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 300px;
+  }

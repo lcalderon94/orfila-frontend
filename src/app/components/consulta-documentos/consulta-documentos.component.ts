@@ -11,6 +11,7 @@ import { Router } from '@angular/router';
 import { SelectionModel } from '@angular/cdk/collections';
 import { DocumentoService } from '../../services/documento.service';
 import { Subscription } from 'rxjs';
+import { LexnetService } from 'src/app/services/lexnet.service';
 
 export interface Documento {
   id?: string;
@@ -18,7 +19,6 @@ export interface Documento {
   tipo: string;
   nombre: string;
   estado: string;
-  autor: string;
   descLexnet?: string;
   numAnio?: string;
   numEpisodio?: string;
@@ -73,21 +73,30 @@ export class ConsultaDocumentosComponent implements OnInit, OnDestroy {
     private snackBar: MatSnackBar,
     private route: ActivatedRoute,
     private router: Router,
-    private documentoService: DocumentoService
+    private documentoService: DocumentoService,
+    private lexnetService: LexnetService
   ) {
     this.dataSource = new MatTableDataSource<Documento>([]);
     this.inicializarFormulario();
   }
 
   ngOnInit() {
-    // Suscribirse a actualizaciones de documentos
+    // Suscribirse a actualizaciones de ambos servicios
     this.subscription.add(
       this.documentoService.actualizaciones$.subscribe(() => {
-        console.log('Recibida notificación de actualización, recargando datos...');
+        console.log('Recibida notificación de actualización desde DocumentoService');
         this.cargarDatos();
       })
     );
     
+    this.subscription.add(
+      this.lexnetService.actualizaciones$.subscribe(() => {
+        console.log('Recibida notificación de actualización desde LexnetService');
+        this.cargarDatos();
+      })
+    );
+    
+    // Inicialización normal
     this.route.queryParams.subscribe((params: { [key: string]: string }) => {
       this.episodioId = params['numEpisodio'];
       this.cargarDatos();
@@ -212,7 +221,7 @@ export class ConsultaDocumentosComponent implements OnInit, OnDestroy {
   cargarDatos() {
     if (this.episodioId) {
       // Cargar documentos de un episodio específico
-      this.documentoService.getDocumentosByTarea(this.episodioId).subscribe(docs => {
+      this.documentoService.getDocumentosByEpisodio(this.episodioId).subscribe(docs => {
         console.log('Documentos cargados por episodio:', docs);
         this.dataSource.data = docs as Documento[];
       });

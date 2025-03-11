@@ -1,0 +1,67 @@
+<!-- acuse-recibo.component.html -->
+<div class="contenedor-pagina" *ngIf="!cargando; else cargandoTemplate">
+    <div class="cabecera-detalle">
+      <h2>Acuse de Recibo</h2>
+      <div class="acciones-acuse">
+        <button mat-button (click)="volver()">
+          <mat-icon>arrow_back</mat-icon> ATRÁS
+        </button>
+        <button mat-raised-button color="primary" (click)="imprimirAcuse()">
+          <mat-icon>print</mat-icon> IMPRIMIR
+        </button>
+      </div>
+    </div>
+  
+    <mat-card class="acuse-card" *ngIf="acuseRecibo">
+      <mat-card-content>
+        <div class="acuse-header">
+          <img [src]="logoMinisterioUrl" alt="Logo Ministerio de Justicia" class="logo-ministerio">
+          <h3>ACUSE DE RECIBO LEXNET</h3>
+        </div>
+  
+        <div class="acuse-info">
+          <div class="campo-info">
+            <span class="etiqueta">Número de Envío:</span>
+            <span class="valor">{{ acuseRecibo.nEnvio }}</span>
+          </div>
+          <div class="campo-info">
+            <span class="etiqueta">Fecha de Envío:</span>
+            <span class="valor">{{ acuseRecibo.fechaEnvio }}</span>
+          </div>
+          <div class="campo-info">
+            <span class="etiqueta">Estado:</span>
+            <span class="valor">{{ acuseRecibo.estado }}</span>
+          </div>
+          <div class="campo-info">
+            <span class="etiqueta">Fecha del Acuse:</span>
+            <span class="valor">{{ acuseRecibo.fechaAcuse }}</span>
+          </div>
+          <div class="campo-info">
+            <span class="etiqueta">Código del Acuse:</span>
+            <span class="valor">{{ acuseRecibo.codigoAcuse }}</span>
+          </div>
+          <div class="campo-info">
+            <span class="etiqueta">Órgano Destino:</span>
+            <span class="valor">{{ acuseRecibo.organoDestino }}</span>
+          </div>
+        </div>
+  
+        <div class="acuse-contenido">
+          <h4>Contenido del Acuse</h4>
+          <p>{{ acuseRecibo.contenido }}</p>
+        </div>
+  
+        <div class="acuse-footer">
+          <p>Este acuse de recibo certifica que el envío ha sido procesado correctamente en el sistema LexNET.</p>
+          <p>Fecha de generación del acuse: {{ acuseRecibo.fechaAcuse }}</p>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+  
+  <ng-template #cargandoTemplate>
+    <div class="cargando-container">
+      <mat-spinner diameter="40"></mat-spinner>
+      <p>Cargando acuse de recibo...</p>
+    </div>
+  </ng-template>
