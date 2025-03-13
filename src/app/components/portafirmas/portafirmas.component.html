@@ -1,34 +1,421 @@
+<!-- portafirmas.component.html -->
 <div class="contenedor-pagina">
-  <ng-container *ngIf="!mostrarListado">
-    <!-- Logo principal centrado -->
-    <div class="portafirmas-header">
-      <img src="https://www.kno-sys.com/sites/default/files/2020-10/portafirma.jpg" alt="Portafirmas Logo"/>
+  <div class="portafirmas-header">
+    <img src="assets/images/portafirmas-logo.png" alt="Portafirmas" />
+    <button mat-button color="primary" class="boton-volver" (click)="volverAListadoInformes()">
+      <mat-icon>arrow_back</mat-icon> LISTADO INFORMES
+    </button>
+  </div>
+
+  <div class="tabs-container">
+    <div class="tab" [class.active]="pestanaActiva === 'firmante'" (click)="cambiarPestana('firmante')">FIRMANTE</div>
+    <div class="tab" [class.active]="pestanaActiva === 'tramitador'" (click)="cambiarPestana('tramitador')">TRAMITADOR</div>
+    <div class="tab" [class.active]="pestanaActiva === 'historico'" (click)="cambiarPestana('historico')">HISTÓRICO</div>
+    <div class="tab" [class.active]="pestanaActiva === 'validar'" (click)="cambiarPestana('validar')">VALIDAR</div>
+  </div>
+
+  <div class="tab-content">
+    <div class="header-panel">
+      <h2 *ngIf="pestanaActiva === 'firmante'">Documentos pendientes de firma</h2>
+      <h2 *ngIf="pestanaActiva === 'tramitador'">Documentos tramitados</h2>
+      <h2 *ngIf="pestanaActiva === 'historico'">Histórico de documentos</h2>
+      <h2 *ngIf="pestanaActiva === 'validar'">Validación de documentos</h2>
     </div>
 
-    <!-- Contenido principal -->
-    <div class="portafirmas-intro">
-      <div class="portafirmas-base">
-        <img src="https://www.aeioros.com/sites/default/files/Images/soluciones%20de%20administracion/Fotos%20tecnologias/portafirma_1.jpg" alt="Portafirmas Logo"/>
-      </div>
-      <div class="portafirmas-info">
-        <h2>Portal Portafirmas</h2>
-        <p>Para acceder a las distintas posibilidades que ofrece el sistema, pulse en las pestañas que componen el menú.</p>
-        <p>La aplicación dispone de ayudas que pueden facilitar la cumplimentación de los distintos campos de datos.</p>
-        <p>Los distintos enlaces y botones de navegación tienen un significado y resultado normalizado.</p>
-        <p>Este Portal web permite a los usuarios gestionar la configuración de las aplicaciones integradoras en la plataforma, asegurando:</p>
-        <ul>
-          <li>Un proceso seguro, donde un usuario podrá realizar únicamente acciones acordes a su perfil sobre los documentos a él asignados.</li>
-          <li>Un proceso trazable, identificando las actividades realizadas por cada usuario y manteniendo un registro de acciones auditadas por el aplicativo.</li>
-        </ul>
-      </div>
-    </div>
-    
-    <div class="portafirmas-acceso">
-      <button mat-raised-button color="primary" (click)="abrirPortafirmas()">
-        Acceder al Portafirmas
+    <!-- Botones de acción - Solo para pestaña Firmante -->
+    <div class="action-buttons" *ngIf="pestanaActiva === 'firmante'">
+      <button mat-raised-button color="primary" [disabled]="docsToSign.size === 0" (click)="firmarSeleccionados()">
+        FIRMAR SELECCIONADOS
+      </button>
+      <button mat-raised-button color="warn" [disabled]="docsToReject.size === 0" (click)="abrirDialogoRechazo()">
+        RECHAZAR
       </button>
     </div>
-  </ng-container>
 
-  <app-portafirmas-listado *ngIf="mostrarListado"></app-portafirmas-listado>
+    <!-- Botones de acción - Solo para pestaña Tramitador -->
+    <div class="action-buttons" *ngIf="pestanaActiva === 'tramitador'">
+      <button mat-raised-button color="primary" [disabled]="!selection.hasValue()" (click)="modificarFlujoFirma()">
+        <mat-icon>edit</mat-icon> MODIFICAR FLUJO
+      </button>
+      <button mat-raised-button color="accent" [disabled]="!selection.hasValue()" (click)="reasignarFirmantes()">
+        <mat-icon>compare_arrows</mat-icon> REASIGNAR
+      </button>
+      <button mat-raised-button color="warn" [disabled]="!selection.hasValue()" (click)="anularFlujo()">
+        <mat-icon>cancel</mat-icon> ANULAR FLUJO
+      </button>
+      <button mat-raised-button color="primary" (click)="crearNuevoFlujo()">
+        <mat-icon>add</mat-icon> NUEVO FLUJO
+      </button>
+    </div>
+
+    <!-- Botones de acción - Solo para pestaña Validar -->
+    <div class="action-buttons" *ngIf="pestanaActiva === 'validar'">
+      <button mat-raised-button color="primary" [disabled]="!selection.hasValue()" (click)="validarSeleccionados()">
+        <mat-icon>check_circle</mat-icon> VALIDAR
+      </button>
+      <button mat-raised-button color="warn" [disabled]="!selection.hasValue()" (click)="abrirDialogoRechazoValidacion()">
+        <mat-icon>cancel</mat-icon> RECHAZAR VALIDACIÓN
+      </button>
+    </div>
+
+    <!-- Tabla de documentos -->
+    <div class="table-container">
+      <mat-progress-bar *ngIf="cargando" mode="indeterminate"></mat-progress-bar>
+
+      <table mat-table [dataSource]="dataSource" matSort>
+        <!-- Checkbox Column -->
+        <ng-container matColumnDef="select">
+          <th mat-header-cell *matHeaderCellDef>
+            <mat-checkbox (change)="onHeaderCheckboxToggle($event)" 
+                         [checked]="selection.hasValue() && isAllSelected()"
+                         [indeterminate]="selection.hasValue() && !isAllSelected()"
+                         [disabled]="pestanaActiva === 'historico'">
+            </mat-checkbox>
+          </th>
+          <td mat-cell *matCellDef="let row">
+            <mat-checkbox (change)="onRowCheckboxToggle($event, row)"
+                         [checked]="selection.isSelected(row)"
+                         [disabled]="pestanaActiva === 'historico'">
+            </mat-checkbox>
+          </td>
+        </ng-container>
+
+        <!-- Aplicación Column -->
+        <ng-container matColumnDef="aplicacion">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>APLICACIÓN</th>
+          <td mat-cell *matCellDef="let element">{{element.aplicacion}}</td>
+        </ng-container>
+
+        <!-- Título Column -->
+        <ng-container matColumnDef="titulo">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>TÍTULO</th>
+          <td mat-cell *matCellDef="let element">{{element.titulo}}</td>
+        </ng-container>
+
+        <!-- Tramitador Column -->
+        <ng-container matColumnDef="tramitador">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>TRAMITADOR</th>
+          <td mat-cell *matCellDef="let element">{{element.tramitador}}</td>
+        </ng-container>
+
+        <!-- Estado Column -->
+        <ng-container matColumnDef="estado">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>ESTADO</th>
+          <td mat-cell *matCellDef="let element">
+            <div class="estado-cell">
+              <mat-icon>{{getIconoEstado(element.estado)}}</mat-icon>
+              {{element.estado}}
+            </div>
+          </td>
+        </ng-container>
+
+        <!-- Progreso Column -->
+        <ng-container matColumnDef="progreso">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>PROGRESO</th>
+          <td mat-cell *matCellDef="let element">{{element.progreso}}</td>
+        </ng-container>
+
+        <!-- Fecha Alta Column -->
+        <ng-container matColumnDef="fechaAlta">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>FECHA ALTA</th>
+          <td mat-cell *matCellDef="let element">{{element.fechaAlta | date:'dd/MM/yyyy'}}</td>
+        </ng-container>
+
+        <!-- Motivo Rechazo Column (solo en histórico) -->
+        <ng-container matColumnDef="motivoRechazo">
+          <th mat-header-cell *matHeaderCellDef>MOTIVO RECHAZO</th>
+          <td mat-cell *matCellDef="let element">
+            <span *ngIf="element.estado === 'Rechazado'">{{element.motivoRechazo || 'No especificado'}}</span>
+          </td>
+        </ng-container>
+
+        <!-- Firmantes Column (específica para TRAMITADOR) -->
+        <ng-container matColumnDef="firmantes">
+          <th mat-header-cell *matHeaderCellDef>FIRMANTES</th>
+          <td mat-cell *matCellDef="let element">
+            <button mat-icon-button matTooltip="Ver firmantes" (click)="verFirmantes(element)">
+              <mat-icon>people</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+        <!-- Mark Column (X - Rechazar) - Solo en Firmante -->
+        <ng-container matColumnDef="mark">
+          <th mat-header-cell *matHeaderCellDef><mat-icon>close</mat-icon></th>
+          <td mat-cell *matCellDef="let row">
+            <mat-checkbox 
+              [checked]="isDocumentMarkedForReject(row.id)"
+              [disabled]="pestanaActiva !== 'firmante' || isDocumentMarkedForSign(row.id)"
+              (change)="toggleRejectDocument($event, row)">
+            </mat-checkbox>
+          </td>
+        </ng-container>
+
+        <!-- Done Column (✓ - Firmar) - Solo en Firmante -->
+        <ng-container matColumnDef="done">
+          <th mat-header-cell *matHeaderCellDef><mat-icon>done</mat-icon></th>
+          <td mat-cell *matCellDef="let row">
+            <mat-checkbox 
+              [checked]="isDocumentMarkedForSign(row.id)"
+              [disabled]="pestanaActiva !== 'firmante' || isDocumentMarkedForReject(row.id)"
+              (change)="toggleSignDocument($event, row)">
+            </mat-checkbox>
+          </td>
+        </ng-container>
+
+        <!-- Actions Column -->
+        <ng-container matColumnDef="acciones">
+          <th mat-header-cell *matHeaderCellDef>ACCIONES</th>
+          <td mat-cell *matCellDef="let element">
+            <button mat-icon-button (click)="descargarDocumento(element)" matTooltip="Descargar documento">
+              <mat-icon>file_download</mat-icon>
+            </button>
+            <button mat-icon-button (click)="verDetallesDocumento(element)" matTooltip="Ver detalles">
+              <mat-icon>info</mat-icon>
+            </button>
+            <button mat-icon-button *ngIf="pestanaActiva === 'tramitador'" (click)="verHistorialFlujo(element)" matTooltip="Ver historial">
+              <mat-icon>history</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="columnas"></tr>
+        <tr mat-row *matRowDef="let row; columns: columnas;"></tr>
+      </table>
+
+      <div *ngIf="dataSource.data.length === 0 && !cargando" class="no-resultados">
+        <p *ngIf="pestanaActiva === 'firmante'">No hay documentos pendientes de firma</p>
+        <p *ngIf="pestanaActiva === 'tramitador'">No hay documentos tramitados</p>
+        <p *ngIf="pestanaActiva === 'historico'">No hay documentos en el histórico</p>
+        <p *ngIf="pestanaActiva === 'validar'">No hay documentos para validar</p>
+      </div>
+
+      <mat-paginator [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 50]"></mat-paginator>
+    </div>
+  </div>
+
+  <!-- Diálogo de rechazo para firmante -->
+  <div *ngIf="mostrarDialogoRechazo" class="rejection-dialog-overlay">
+    <div class="rejection-dialog">
+      <h2>Motivo de rechazo</h2>
+      <form [formGroup]="motivoForm">
+        <mat-form-field appearance="fill" class="full-width">
+          <mat-label>Indique el motivo del rechazo</mat-label>
+          <textarea matInput formControlName="motivo" rows="5"></textarea>
+          <mat-error *ngIf="motivoForm.get('motivo')?.hasError('required')">
+            El motivo es obligatorio
+          </mat-error>
+          <mat-error *ngIf="motivoForm.get('motivo')?.hasError('minlength')">
+            El motivo debe tener al menos 10 caracteres
+          </mat-error>
+        </mat-form-field>
+
+        <div class="dialog-buttons">
+          <button mat-button (click)="cancelarRechazo()">CANCELAR</button>
+          <button mat-raised-button color="warn" [disabled]="motivoForm.invalid" (click)="confirmarRechazo()">
+            CONFIRMAR RECHAZO
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Diálogo de modificación de flujo -->
+  <div *ngIf="mostrarDialogoModificacionFlujo" class="modify-dialog-overlay">
+    <div class="modify-dialog">
+      <h2>Modificar flujo de firma</h2>
+      <form [formGroup]="flujoForm">
+        <h3>Documento: {{documentoSeleccionado?.titulo}}</h3>
+        
+        <div class="tipo-flujo-container">
+          <mat-label>Tipo de flujo:</mat-label>
+          <mat-radio-group formControlName="tipoFlujo">
+            <mat-radio-button value="secuencial">Secuencial</mat-radio-button>
+            <mat-radio-button value="paralelo">Paralelo</mat-radio-button>
+          </mat-radio-group>
+        </div>
+        
+        <div class="firmantes-container">
+          <h3>Firmantes</h3>
+          
+          <table class="firmantes-table">
+            <thead>
+              <tr>
+                <th>Orden</th>
+                <th>Nombre</th>
+                <th>DNI</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let firmante of firmantes.controls; let i = index">
+                <td>{{i + 1}}</td>
+                <td>
+                  <mat-form-field>
+                    <input matInput [formControl]="getFirmanteControl(i, 'nombre')">
+                  </mat-form-field>
+                </td>
+                <td>
+                  <mat-form-field>
+                    <input matInput [formControl]="getFirmanteControl(i, 'dni')">
+                  </mat-form-field>
+                </td>
+                <td>
+                  <button mat-icon-button (click)="moverArribaFirmante(i)" [disabled]="i === 0">
+                    <mat-icon>arrow_upward</mat-icon>
+                  </button>
+                  <button mat-icon-button (click)="moverAbajoFirmante(i)" [disabled]="i === firmantes.length - 1">
+                    <mat-icon>arrow_downward</mat-icon>
+                  </button>
+                  <button mat-icon-button color="warn" (click)="eliminarFirmante(i)">
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          
+          <button mat-raised-button color="primary" (click)="agregarFirmante()" class="agregar-firmante-btn">
+            <mat-icon>add</mat-icon> AÑADIR FIRMANTE
+          </button>
+        </div>
+
+        <div class="dialog-buttons">
+          <button mat-button (click)="cancelarModificacionFlujo()">CANCELAR</button>
+          <button mat-raised-button color="primary" [disabled]="flujoForm.invalid" (click)="guardarModificacionFlujo()">
+            GUARDAR CAMBIOS
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Diálogo de rechazo para validador -->
+  <div *ngIf="mostrarDialogoRechazoValidacion" class="rejection-dialog-overlay">
+    <div class="rejection-dialog">
+      <h2>Motivo de rechazo de validación</h2>
+      <form [formGroup]="motivoValidacionForm">
+        <mat-form-field appearance="fill" class="full-width">
+          <mat-label>Indique el motivo del rechazo de validación</mat-label>
+          <textarea matInput formControlName="motivo" rows="5"></textarea>
+          <mat-error *ngIf="motivoValidacionForm.get('motivo')?.hasError('required')">
+            El motivo es obligatorio
+          </mat-error>
+          <mat-error *ngIf="motivoValidacionForm.get('motivo')?.hasError('minlength')">
+            El motivo debe tener al menos 10 caracteres
+          </mat-error>
+        </mat-form-field>
+
+        <div class="dialog-buttons">
+          <button mat-button (click)="cancelarRechazoValidacion()">CANCELAR</button>
+          <button mat-raised-button color="warn" [disabled]="motivoValidacionForm.invalid" (click)="confirmarRechazoValidacion()">
+            CONFIRMAR RECHAZO
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Diálogo de nuevo flujo -->
+<div *ngIf="mostrarDialogoNuevoFlujo" class="nuevo-flujo-dialog-overlay">
+  <div class="nuevo-flujo-dialog">
+    <h2>Crear nuevo flujo de firma</h2>
+    <form [formGroup]="nuevoFlujoForm">
+      <div class="form-row">
+        <mat-form-field appearance="fill" class="full-width">
+          <mat-label>Título del documento</mat-label>
+          <input matInput formControlName="titulo">
+          <mat-error *ngIf="nuevoFlujoForm.get('titulo')?.hasError('required')">
+            El título es obligatorio
+          </mat-error>
+        </mat-form-field>
+      </div>
+      
+      <div class="form-row">
+        <mat-form-field appearance="fill" class="full-width">
+          <mat-label>Descripción</mat-label>
+          <textarea matInput formControlName="descripcion" rows="3"></textarea>
+          <mat-error *ngIf="nuevoFlujoForm.get('descripcion')?.hasError('required')">
+            La descripción es obligatoria
+          </mat-error>
+        </mat-form-field>
+      </div>
+      
+      <div class="form-row">
+        <mat-form-field appearance="fill" class="full-width">
+          <mat-label>Tipo de documento</mat-label>
+          <select matNativeControl formControlName="tipoDocumento">
+            <option value="informe">Informe</option>
+            <option value="oficio">Oficio</option>
+            <option value="solicitud">Solicitud</option>
+            <option value="comunicacion">Comunicación</option>
+          </select>
+          <mat-error *ngIf="nuevoFlujoForm.get('tipoDocumento')?.hasError('required')">
+            El tipo de documento es obligatorio
+          </mat-error>
+        </mat-form-field>
+      </div>
+      
+      <div class="tipo-flujo-container">
+        <mat-label>Tipo de flujo:</mat-label>
+        <mat-radio-group formControlName="tipoFlujo">
+          <mat-radio-button value="secuencial">Secuencial</mat-radio-button>
+          <mat-radio-button value="paralelo">Paralelo</mat-radio-button>
+        </mat-radio-group>
+      </div>
+      
+      <div class="firmantes-container">
+        <h3>Firmantes</h3>
+        
+        <table class="firmantes-table">
+          <thead>
+            <tr>
+              <th>Orden</th>
+              <th>Nombre</th>
+              <th>DNI</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let firmante of nuevosFirmantes.controls; let i = index">
+              <td>{{i + 1}}</td>
+              <td>
+                <mat-form-field>
+                  <input matInput [formControl]="getNuevoFirmanteControl(i, 'nombre')">
+                </mat-form-field>
+              </td>
+              <td>
+                <mat-form-field>
+                  <input matInput [formControl]="getNuevoFirmanteControl(i, 'dni')">
+                </mat-form-field>
+              </td>
+              <td>
+                <button mat-icon-button (click)="moverArribaNuevoFirmante(i)" [disabled]="i === 0">
+                  <mat-icon>arrow_upward</mat-icon>
+                </button>
+                <button mat-icon-button (click)="moverAbajoNuevoFirmante(i)" [disabled]="i === nuevosFirmantes.length - 1">
+                  <mat-icon>arrow_downward</mat-icon>
+                </button>
+                <button mat-icon-button color="warn" (click)="eliminarNuevoFirmante(i)">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        
+        <button mat-raised-button color="primary" (click)="agregarNuevoFirmante()" class="agregar-firmante-btn">
+          <mat-icon>add</mat-icon> AÑADIR FIRMANTE
+        </button>
+      </div>
+
+      <div class="dialog-buttons">
+        <button mat-button (click)="cancelarNuevoFlujo()">CANCELAR</button>
+        <button mat-raised-button color="primary" [disabled]="nuevoFlujoForm.invalid" (click)="guardarNuevoFlujo()">
+          CREAR FLUJO
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
 </div>

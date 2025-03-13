@@ -92,6 +92,8 @@ import { AgregarDocumentoEpisodioComponent } from './components/lexnet/agregar-d
 import { EnvioLexnetComponent } from './components/lexnet/envio-lexnet/envio-lexnet.component';
 import { AcuseReciboComponent } from './components/lexnet/acuse-recibo/acuse-recibo.component';
 import { DetalleEnvioComponent } from './components/lexnet/detalle-envio/detalle-envio.component';
+import { PortafirmasDocumentosComponent } from './components/portafirmas/portafirmas-documentos/portafirmas-documentos.component';
+import { DocumentoDetallesComponent } from './components/portafirmas/documento-detalles/documento-detalles.component';
 
 
 
@@ -154,7 +156,9 @@ import { DetalleEnvioComponent } from './components/lexnet/detalle-envio/detalle
     AgregarDocumentoEpisodioComponent,
     EnvioLexnetComponent,
     AcuseReciboComponent,
-    DetalleEnvioComponent
+    DetalleEnvioComponent,
+    PortafirmasDocumentosComponent,
+    DocumentoDetallesComponent
     
   ],
   imports: [

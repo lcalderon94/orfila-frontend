@@ -78,11 +78,7 @@ const routes: Routes = [
   },
   { 
     path: 'portafirmas', 
-    component: PortafirmasComponent,
-    children: [
-      { path: '', component: PortafirmasComponent },
-      { path: 'listado', component: PortafirmasListadoComponent }
-    ]
+    component: PortafirmasComponent
   },
   { 
     path: 'agenda', 

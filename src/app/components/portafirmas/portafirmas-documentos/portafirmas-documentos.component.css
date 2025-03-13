@@ -1,0 +1,81 @@
+/* portafirmas-documentos.component.css */
+.contenedor-documentos {
+    width: 100%;
+  }
+  
+  .buscadores-superiores {
+    display: flex;
+    margin-bottom: 16px;
+    gap: 8px;
+  }
+  
+  .buscadores-superiores input {
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    flex: 1;
+  }
+  
+  .botones-accion {
+    margin-bottom: 16px;
+    display: flex;
+    gap: 8px;
+  }
+  
+  .tabla-container {
+    position: relative;
+    overflow: auto;
+    margin-bottom: 20px;
+  }
+  
+  table {
+    width: 100%;
+  }
+  
+  .estado-cell {
+    display: flex;
+    align-items: center;
+  }
+  
+  .estado-cell mat-icon {
+    margin-right: 8px;
+    font-size: 20px;
+  }
+  
+  .no-resultados {
+    padding: 24px;
+    text-align: center;
+    color: #666;
+  }
+  
+  .dialogo-rechazo-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+  
+  .dialogo-rechazo {
+    background-color: white;
+    padding: 24px;
+    border-radius: 4px;
+    width: 500px;
+    max-width: 90%;
+  }
+  
+  .full-width {
+    width: 100%;
+  }
+  
+  .botones-dialogo {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 16px;
+  }

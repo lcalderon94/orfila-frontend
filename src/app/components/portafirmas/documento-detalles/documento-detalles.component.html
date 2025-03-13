@@ -1,0 +1,70 @@
+<!-- src/app/components/documento-detalles/documento-detalles.component.html -->
+<div class="documento-detalles">
+    <h2 mat-dialog-title>Detalles del documento</h2>
+    
+    <mat-dialog-content>
+      <div class="detalle-grid">
+        <div class="detalle-item">
+          <span class="label">Título:</span>
+          <span class="valor">{{data.titulo}}</span>
+        </div>
+        
+        <div class="detalle-item">
+          <span class="label">Aplicación:</span>
+          <span class="valor">{{data.aplicacion}}</span>
+        </div>
+        
+        <div class="detalle-item">
+          <span class="label">Estado:</span>
+          <span class="valor">{{data.estado}}</span>
+        </div>
+        
+        <div class="detalle-item">
+          <span class="label">Tramitador:</span>
+          <span class="valor">{{data.tramitador}}</span>
+        </div>
+        
+        <div class="detalle-item">
+          <span class="label">Fecha Alta:</span>
+          <span class="valor">{{data.fechaAlta | date:'dd/MM/yyyy HH:mm'}}</span>
+        </div>
+        
+        <div class="detalle-item">
+          <span class="label">Tamaño:</span>
+          <span class="valor">{{data.tamanio}}</span>
+        </div>
+        
+        <div class="detalle-item full-width">
+          <span class="label">Firmantes:</span>
+          <div class="firmantes-lista">
+            <div *ngFor="let firmante of data.firmantes" class="firmante">
+              {{firmante}}
+            </div>
+          </div>
+        </div>
+        
+        <div class="detalle-item full-width">
+          <span class="label">Historial de cambios:</span>
+          <table class="historial-tabla">
+            <thead>
+              <tr>
+                <th>Fecha</th>
+                <th>Acción</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let cambio of data.historialCambios">
+                <td>{{cambio.fecha | date:'dd/MM/yyyy HH:mm'}}</td>
+                <td>{{cambio.accion}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </mat-dialog-content>
+    
+    <mat-dialog-actions align="end">
+      <button mat-button (click)="cerrarDialog()">CERRAR</button>
+      <button mat-raised-button color="primary" (click)="cerrarDialog()">ACEPTAR</button>
+    </mat-dialog-actions>
+  </div>
