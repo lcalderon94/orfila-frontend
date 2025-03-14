@@ -23,11 +23,8 @@ jobs:
       - name: Build Angular App
         run: npm run build -- --configuration production --base-href=/orfila-frontend/
 
-      - name: Copy files to docs directory
+      - name: Add .nojekyll file
         run: |
-          rm -rf docs
-          mkdir -p docs
-          cp -r dist/orfila-frontend/* docs/
           touch docs/.nojekyll
 
       - name: Commit and push changes
