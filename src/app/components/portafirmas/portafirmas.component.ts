@@ -215,6 +215,15 @@ export class PortafirmasComponent implements OnInit {
           if (documento) {
             this.selection.select(documento);
             this.docsToSign.add(documento.id); // Por defecto marcarlo para firmar
+            
+            // Opcionalmente, mostrar un mensaje indicando que se ha seleccionado el documento
+            this.snackBar.open(`Documento seleccionado para firmar: ${documento.titulo}`, 'Cerrar', {
+              duration: 3000
+            });
+          } else {
+            this.snackBar.open('No se encontró el documento especificado', 'Cerrar', {
+              duration: 3000
+            });
           }
         }
       },

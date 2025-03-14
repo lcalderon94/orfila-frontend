@@ -8,8 +8,8 @@ export interface DocumentoFirma {
   estado: string;
   progreso: string;
   fechaAlta: Date;
-  documentoId?: string;
-  motivoRechazo?: string; // Añadimos esta propiedad como opcional
+  documentoId?: string; // Campo para vincular con el ID del documento en gestión documental
+  motivoRechazo?: string;
 }
 
 
@@ -95,5 +95,15 @@ export const DOCUMENTOS_FIRMA_MOCK: DocumentoFirma[] = [
     estado: 'Pendiente de firma',
     progreso: '0/1',
     fechaAlta: new Date('2022-05-25')
+  },
+  {
+    id: '10',
+    aplicacion: 'IMLZ',
+    titulo: 'Informe_Preliminar.pdf',
+    tramitador: 'ARANDA RAMIREZ, CAROLINA',
+    estado: 'Pendiente de firma',
+    progreso: '0/1',
+    fechaAlta: new Date('2022-07-27')
   }
+
 ];

@@ -1,96 +1,108 @@
 // portafirmas.service.ts
 import { Injectable } from '@angular/core';
-import { Observable, of, BehaviorSubject } from 'rxjs';
+import { Observable, of, BehaviorSubject, Subject } from 'rxjs';
 import { delay, tap } from 'rxjs/operators';
 import { DOCUMENTOS_FIRMA_MOCK, DocumentoFirma } from '../mock-data/portafirmas.mock';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { EPISODIOS_DOCUMENTOS_MAP } from '../mock-data/episodios-documentos.mock';
+import { TAREAS_COMPLETAS } from '../mock-data/tareas.mock';
+import { DocumentoService } from './documento.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PortafirmasService {
-  // Estado interno de documentos
-  private documentosPendientes: DocumentoFirma[] = [...DOCUMENTOS_FIRMA_MOCK];
-  private documentosFirmados: DocumentoFirma[] = [];
-  private documentosRechazados: DocumentoFirma[] = [];
+ // Estado interno de documentos
+ private documentosPendientes: DocumentoFirma[] = [...DOCUMENTOS_FIRMA_MOCK];
+ private documentosFirmados: DocumentoFirma[] = [];
+ private documentosRechazados: DocumentoFirma[] = [];
+ 
+ // Subjects para notificar cambios
+ private documentosPendientesSubject = new BehaviorSubject<DocumentoFirma[]>(this.documentosPendientes);
+ private documentosFirmadosSubject = new BehaviorSubject<DocumentoFirma[]>(this.documentosFirmados);
+ private documentosRechazadosSubject = new BehaviorSubject<DocumentoFirma[]>(this.documentosRechazados);
+ 
+ // Nuevo subject para notificar cambios generales
+ private cambiosRealizadosSubject = new Subject<void>();
+ 
+ // Observables públicos
+ public documentosPendientes$ = this.documentosPendientesSubject.asObservable();
+ public documentosFirmados$ = this.documentosFirmadosSubject.asObservable();
+ public documentosRechazados$ = this.documentosRechazadosSubject.asObservable();
+ public cambiosRealizados$ = this.cambiosRealizadosSubject.asObservable();
+ 
+ constructor(
+  private snackBar: MatSnackBar,
+  private documentoService: DocumentoService) {
+   this.actualizarDocumentos();
+ }
   
-  // Subjects para notificar cambios
-  private documentosPendientesSubject = new BehaviorSubject<DocumentoFirma[]>(this.documentosPendientes);
-  private documentosFirmadosSubject = new BehaviorSubject<DocumentoFirma[]>(this.documentosFirmados);
-  private documentosRechazadosSubject = new BehaviorSubject<DocumentoFirma[]>(this.documentosRechazados);
+ private actualizarDocumentos(): void {
+  this.documentosPendientesSubject.next([...this.documentosPendientes]);
+  this.documentosFirmadosSubject.next([...this.documentosFirmados]);
+  this.documentosRechazadosSubject.next([...this.documentosRechazados]);
   
-  // Observables públicos
-  public documentosPendientes$ = this.documentosPendientesSubject.asObservable();
-  public documentosFirmados$ = this.documentosFirmadosSubject.asObservable();
-  public documentosRechazados$ = this.documentosRechazadosSubject.asObservable();
+  // Notificar cambios generales
+  this.cambiosRealizadosSubject.next();
+}
   
-  constructor(private snackBar: MatSnackBar) {
-    this.actualizarDocumentos();
-  }
-  
-  private actualizarDocumentos(): void {
-    this.documentosPendientesSubject.next([...this.documentosPendientes]);
-    this.documentosFirmadosSubject.next([...this.documentosFirmados]);
-    this.documentosRechazadosSubject.next([...this.documentosRechazados]);
-  }
-  
-  getDocumentosPendientes(): Observable<DocumentoFirma[]> {
-    return of([...this.documentosPendientes]).pipe(delay(300));
-  }
+getDocumentosPendientes(): Observable<DocumentoFirma[]> {
+  return of([...this.documentosPendientes]).pipe(delay(300));
+}
 
-  getDocumentosTramitador(): Observable<DocumentoFirma[]> {
-    // Simular documentos en tramitación
-    const documentosTramitador = [...this.documentosPendientes].map(doc => ({
+getDocumentosTramitador(): Observable<DocumentoFirma[]> {
+  // Simular documentos en tramitación
+  const documentosTramitador = [...this.documentosPendientes].map(doc => ({
+    ...doc,
+    estado: ['Pendiente de firma', 'En proceso', 'Firmado', 'Rechazado'][Math.floor(Math.random() * 4)]
+  }));
+  
+  return of(documentosTramitador).pipe(delay(500));
+}
+
+getDocumentosValidar(): Observable<DocumentoFirma[]> {
+  // Crear una copia superficial de los documentos pendientes para no modificar los originales
+  const copiaDocumentos = [...this.documentosPendientes];
+  
+  // Filtrar solo los que ya están marcados como pendientes de validación
+  let documentosParaValidar = copiaDocumentos.filter(doc => 
+    doc.estado === 'Pendiente de validación'
+  );
+  
+  // Si hay menos de 3 documentos para validar, añadimos algunos más (máximo 3 en total)
+  // PERO SOLO EN LA COPIA, no modificamos los originales
+  if (documentosParaValidar.length < 3) {
+    // Documentos no marcados para validación y que no estén en el histórico
+    const candidatos = copiaDocumentos
+      .filter(doc => doc.estado !== 'Pendiente de validación');
+    
+    // Tomar solo los necesarios para completar 3 (o menos si no hay suficientes)
+    const adicionales = candidatos.slice(0, 3 - documentosParaValidar.length);
+    
+    // Crear copias temporales con estado modificado (no afecta a los originales)
+    const documentosTemporales = adicionales.map(doc => ({
       ...doc,
-      estado: ['Pendiente de firma', 'En proceso', 'Firmado', 'Rechazado'][Math.floor(Math.random() * 4)]
+      estado: 'Pendiente de validación'
     }));
     
-    return of(documentosTramitador).pipe(delay(500));
-  }
-
-  getDocumentosValidar(): Observable<DocumentoFirma[]> {
-    // Crear una copia superficial de los documentos pendientes para no modificar los originales
-    const copiaDocumentos = [...this.documentosPendientes];
-    
-    // Filtrar solo los que ya están marcados como pendientes de validación
-    let documentosParaValidar = copiaDocumentos.filter(doc => 
-      doc.estado === 'Pendiente de validación'
-    );
-    
-    // Si hay menos de 3 documentos para validar, añadimos algunos más (máximo 3 en total)
-    // PERO SOLO EN LA COPIA, no modificamos los originales
-    if (documentosParaValidar.length < 3) {
-      // Documentos no marcados para validación y que no estén en el histórico
-      const candidatos = copiaDocumentos
-        .filter(doc => doc.estado !== 'Pendiente de validación');
-      
-      // Tomar solo los necesarios para completar 3 (o menos si no hay suficientes)
-      const adicionales = candidatos.slice(0, 3 - documentosParaValidar.length);
-      
-      // Crear copias temporales con estado modificado (no afecta a los originales)
-      const documentosTemporales = adicionales.map(doc => ({
-        ...doc,
-        estado: 'Pendiente de validación'
-      }));
-      
-      // Añadir los documentos temporales a la lista
-      documentosParaValidar = [...documentosParaValidar, ...documentosTemporales];
-    }
-    
-    return of(documentosParaValidar).pipe(delay(300));
+    // Añadir los documentos temporales a la lista
+    documentosParaValidar = [...documentosParaValidar, ...documentosTemporales];
   }
   
-  getDocumentosHistorico(): Observable<DocumentoFirma[]> {
-    // Combinamos firmados y rechazados para el histórico
-    const historico = [...this.documentosFirmados, ...this.documentosRechazados];
-    
-    // Ordenamos por fecha descendente (más recientes primero)
-    historico.sort((a, b) => {
-      return new Date(b.fechaAlta).getTime() - new Date(a.fechaAlta).getTime();
-    });
-    
-    return of(historico).pipe(delay(300));
-  }
+  return of(documentosParaValidar).pipe(delay(300));
+}
+  
+getDocumentosHistorico(): Observable<DocumentoFirma[]> {
+  // Combinamos firmados y rechazados para el histórico
+  const historico = [...this.documentosFirmados, ...this.documentosRechazados];
+  
+  // Ordenamos por fecha descendente (más recientes primero)
+  historico.sort((a, b) => {
+    return new Date(b.fechaAlta).getTime() - new Date(a.fechaAlta).getTime();
+  });
+  
+  return of(historico).pipe(delay(300));
+}
   
 firmarDocumentos(ids: string[]): Observable<boolean> {
   const documentosFirmados: DocumentoFirma[] = [];
@@ -112,6 +124,11 @@ firmarDocumentos(ids: string[]): Observable<boolean> {
       // Guardar en firmados y eliminar de pendientes
       documentosFirmados.push(documento);
       this.documentosPendientes.splice(index, 1);
+      
+      // Actualizar el documento en gestión documental mediante el servicio
+      if (documento.titulo) {
+        this.documentoService.actualizarEstadoDocumento(documento.titulo, 'Firmado');
+      }
     }
   });
   
@@ -127,50 +144,88 @@ firmarDocumentos(ids: string[]): Observable<boolean> {
   });
   
   setTimeout(() => {
-    this.snackBar.open('Actualice la página de Orfila para ver los cambios (F5)', 'Cerrar', {
+    this.snackBar.open('Se han actualizado los estados de los documentos en gestión documental', 'Cerrar', {
       duration: 5000
     });
   }, 3100);
   
   return of(true).pipe(delay(500));
 }
+
+private actualizarDocumentoEnGestionDocumental(titulo: string): void {
+  let actualizado = false;
   
-  rechazarDocumentos(ids: string[], motivo: string): Observable<boolean> {
-    const documentosRechazados: DocumentoFirma[] = [];
-    
-    ids.forEach(id => {
-      const index = this.documentosPendientes.findIndex(doc => doc.id === id);
-      if (index !== -1) {
-        // Obtener el documento y cambiar su estado
-        const documento = {...this.documentosPendientes[index]};
-        documento.estado = 'Rechazado';
-        documento.motivoRechazo = motivo;
-        
-        // Guardar en rechazados y eliminar de pendientes
-        documentosRechazados.push(documento);
-        this.documentosPendientes.splice(index, 1);
+  // Iterar sobre todas las tareas para encontrar documentos con ese título
+  Object.values(TAREAS_COMPLETAS).forEach(tarea => {
+    if (tarea.actuacion?.documentosAsociados) {
+      tarea.actuacion.documentosAsociados.forEach(doc => {
+        if (doc.nombre === titulo && doc.estado === 'Completado') {
+          doc.estado = 'Firmado';
+          actualizado = true;
+          console.log(`Documento "${doc.nombre}" actualizado a estado Firmado`);
+        }
+      });
+    }
+  });
+  
+  // También buscar en el mapa de episodios
+  Object.keys(EPISODIOS_DOCUMENTOS_MAP).forEach(key => {
+    const docs = EPISODIOS_DOCUMENTOS_MAP[key];
+    docs.forEach(doc => {
+      if (doc.nombre === titulo && doc.estado === 'Completado') {
+        doc.estado = 'Firmado';
+        actualizado = true;
+        console.log(`Documento "${doc.nombre}" actualizado a estado Firmado en mapa de episodios para ${key}`);
       }
     });
-    
-    // Añadir todos los documentos rechazados a la lista
-    this.documentosRechazados.push(...documentosRechazados);
-    
-    // Actualizar los observables
-    this.actualizarDocumentos();
-    
-    // Notificaciones
-    this.snackBar.open(`${ids.length} documentos rechazados`, 'Cerrar', {
-      duration: 3000
-    });
-    
-    setTimeout(() => {
-      this.snackBar.open('Actualice la página de Orfila para ver los cambios (F5)', 'Cerrar', {
-        duration: 5000
-      });
-    }, 3100);
-    
-    return of(true).pipe(delay(500));
+  });
+  
+  if (!actualizado) {
+    console.warn(`No se encontró ningún documento con título "${titulo}" en estado Completado para actualizar`);
   }
+}
+  
+rechazarDocumentos(ids: string[], motivo: string): Observable<boolean> {
+  const documentosRechazados: DocumentoFirma[] = [];
+  
+  ids.forEach(id => {
+    const index = this.documentosPendientes.findIndex(doc => doc.id === id);
+    if (index !== -1) {
+      // Obtener el documento y cambiar su estado
+      const documento = {...this.documentosPendientes[index]};
+      documento.estado = 'Rechazado';
+      documento.motivoRechazo = motivo;
+      
+      // Guardar en rechazados y eliminar de pendientes
+      documentosRechazados.push(documento);
+      this.documentosPendientes.splice(index, 1);
+      
+      // Actualizar el documento en gestión documental mediante el servicio
+      if (documento.titulo) {
+        this.documentoService.actualizarEstadoDocumento(documento.titulo, 'Rechazado');
+      }
+    }
+  });
+  
+  // Añadir todos los documentos rechazados a la lista
+  this.documentosRechazados.push(...documentosRechazados);
+  
+  // Actualizar los observables
+  this.actualizarDocumentos();
+  
+  // Notificaciones
+  this.snackBar.open(`${ids.length} documentos rechazados`, 'Cerrar', {
+    duration: 3000
+  });
+  
+  setTimeout(() => {
+    this.snackBar.open('Se han actualizado los estados de los documentos en gestión documental', 'Cerrar', {
+      duration: 5000
+    });
+  }, 3100);
+  
+  return of(true).pipe(delay(500));
+}
   
   descargarDocumento(id: string): Observable<boolean> {
     // Buscar en todas las listas
@@ -362,5 +417,27 @@ firmarDocumentos(ids: string[]): Observable<boolean> {
         this.actualizarDocumentos();
       })
     );
+  }
+
+  buscarDocumentoPorDocumentoId(documentoId: string): Observable<DocumentoFirma | null> {
+    const documento = this.documentosPendientes.find(doc => 
+      doc.documentoId === documentoId || // Intentar por documentoId
+      doc.titulo.includes(documentoId)   // Intentar por título que contenga el ID
+    );
+    
+    return of(documento || null).pipe(delay(100));
+  }
+
+  vincularDocumento(documentoId: string, portafirmasId: string): Observable<boolean> {
+    const index = this.documentosPendientes.findIndex(doc => doc.id === portafirmasId);
+    
+    if (index !== -1) {
+      // Actualizar el documento con la referencia
+      this.documentosPendientes[index].documentoId = documentoId;
+      this.actualizarDocumentos();
+      return of(true).pipe(delay(100));
+    }
+    
+    return of(false).pipe(delay(100));
   }
 }

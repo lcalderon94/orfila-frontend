@@ -441,3 +441,152 @@ mat-radio-button {
 .portafirmas-dialog .mat-mdc-dialog-surface {
   border-radius: 8px;
 }
+
+/* ===== SOLUCIONES RESPONSIVAS GLOBALES ===== */
+
+/* Configuración esencial del viewport y box model */
+html, body {
+  overflow-x: hidden;
+  width: 100%;
+  max-width: 100%;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* Prevenir desbordamiento horizontal en todos los elementos */
+body * {
+  max-width: 100%;
+}
+
+/* Manejo responsive de imágenes y media */
+img, video, iframe, object, embed {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Corrección de tablas */
+table {
+  width: 100%;
+  table-layout: fixed;
+}
+
+.contenedor-tabla {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Permitir que las celdas de tabla tengan salto de línea cuando sea necesario */
+.mat-mdc-cell {
+  white-space: normal !important;
+  word-break: break-word;
+}
+
+/* Contenedor principal con límite de ancho máximo */
+.main-content {
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 15px;
+}
+
+/* ===== MEJORAS RESPONSIVAS PARA COMPONENTES ESPECÍFICOS ===== */
+
+/* Mejorar responsividad de inputs */
+.buscadores-superiores input {
+  width: 100%;
+  max-width: 180px;
+}
+
+/* Grid responsivo mejorado */
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 15px;
+}
+
+/* Mejorar layout de filas */
+.fila {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-bottom: 15px;
+}
+
+.fila > * {
+  flex: 1 1 200px;
+}
+
+/* Grupos de checkbox responsivos */
+.checkbox-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 10px;
+}
+
+/* Botones responsivos */
+.botones-accion {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: space-between;
+}
+
+.botones-derecha {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+/* ===== MEDIA QUERIES MEJORADOS ===== */
+
+/* Tabletas */
+@media (max-width: 768px) {
+  .barra-acciones {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  
+  .contenedor-filtros {
+    width: 100%;
+  }
+  
+  .botones-filtro {
+    width: 100%;
+    justify-content: flex-start;
+  }
+  
+  .numero-anio, .anio {
+    flex: 1 1 100%;
+  }
+}
+
+/* Móviles */
+@media (max-width: 480px) {
+  h1 {
+    font-size: 20px;
+  }
+  
+  .filtro-seccion {
+    padding: 10px;
+  }
+  
+  .botones-accion {
+    flex-direction: column;
+  }
+  
+  button.mat-raised-button,
+  button.mat-stroked-button {
+    width: 100%;
+  }
+  
+  .buscadores-superiores {
+    flex-direction: column;
+  }
+  
+  .buscadores-superiores input {
+    max-width: 100%;
+  }
+}
