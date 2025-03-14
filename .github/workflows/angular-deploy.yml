@@ -1,0 +1,39 @@
+name: Build and Deploy Angular App
+
+on:
+  push:
+    branches:
+      - develop
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'  # Ajusta esto a la versión de Node que uses
+
+      - name: Install dependencies
+        run: npm ci  # Instala dependencias basadas en package-lock.json
+
+      - name: Build Angular App
+        run: npm run build -- --configuration production --base-href=/orfila-frontend/
+
+      - name: Copy files to docs directory
+        run: |
+          rm -rf docs
+          mkdir -p docs
+          cp -r dist/orfila-frontend/* docs/
+          touch docs/.nojekyll
+
+      - name: Commit and push changes
+        run: |
+          git config --global user.name 'GitHub Actions'
+          git config --global user.email 'actions@github.com'
+          git add docs
+          git commit -m "Actualización automática del build para GitHub Pages" || echo "No changes to commit"
+          git push
